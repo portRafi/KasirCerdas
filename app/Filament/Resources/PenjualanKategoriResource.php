@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\KategoriResource\Pages;
-use App\Filament\Resources\KategoriResource\RelationManagers;
-use App\Models\Kategori;
+use App\Filament\Resources\PenjualanKategoriResource\Pages;
+use App\Filament\Resources\PenjualanKategoriResource\RelationManagers;
+use App\Models\PenjualanKategori;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,22 +13,28 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class KategoriResource extends Resource
+class PenjualanKategoriResource extends Resource
 {
-    protected static ?string $model = Kategori::class;
+    protected static ?string $model = PenjualanKategori::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Database';
-    protected static ?string $navigationLabel = 'Kategori';
-
-
+    protected static ?string $navigationGroup = 'laporan';
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama')
+                Forms\Components\TextInput::make('kode')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('jumlah_barang')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('total_pendapatan')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('keuntungan')
+                    ->required()
+                    ->numeric(),
             ]);
     }
 
@@ -36,8 +42,17 @@ class KategoriResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama')
+                Tables\Columns\TextColumn::make('kode')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('jumlah_barang')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('total_pendapatan')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('keuntungan')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -70,9 +85,9 @@ class KategoriResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListKategoris::route('/'),
-            'create' => Pages\CreateKategori::route('/create'),
-            'edit' => Pages\EditKategori::route('/{record}/edit'),
+            'index' => Pages\ListPenjualanKategoris::route('/'),
+            'create' => Pages\CreatePenjualanKategori::route('/create'),
+            'edit' => Pages\EditPenjualanKategori::route('/{record}/edit'),
         ];
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\KategoriResource\Pages;
-use App\Filament\Resources\KategoriResource\RelationManagers;
-use App\Models\Kategori;
+use App\Filament\Resources\DiskonResource\Pages;
+use App\Filament\Resources\DiskonResource\RelationManagers;
+use App\Models\Diskon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,22 +13,22 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class KategoriResource extends Resource
+class DiskonResource extends Resource
 {
-    protected static ?string $model = Kategori::class;
+    protected static ?string $model = Diskon::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Database';
-    protected static ?string $navigationLabel = 'Kategori';
-
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama')
+                Forms\Components\TextInput::make('nama_diskon')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('jumlah_diskon')
+                    ->required()
+                    ->numeric(),
             ]);
     }
 
@@ -36,8 +36,11 @@ class KategoriResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama')
+                Tables\Columns\TextColumn::make('nama_diskon')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('jumlah_diskon')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -70,9 +73,9 @@ class KategoriResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListKategoris::route('/'),
-            'create' => Pages\CreateKategori::route('/create'),
-            'edit' => Pages\EditKategori::route('/{record}/edit'),
+            'index' => Pages\ListDiskons::route('/'),
+            'create' => Pages\CreateDiskon::route('/create'),
+            'edit' => Pages\EditDiskon::route('/{record}/edit'),
         ];
     }
 }

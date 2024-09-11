@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\SupplierResource\Pages;
-use App\Filament\Resources\SupplierResource\RelationManagers;
-use App\Models\Supplier;
+use App\Filament\Resources\KeunganResource\Pages;
+use App\Filament\Resources\KeunganResource\RelationManagers;
+use App\Models\Keuangan;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,14 +13,12 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class SupplierResource extends Resource
+class KeunganResource extends Resource
 {
-    protected static ?string $model = Supplier::class;
+    protected static ?string $model = Keuangan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Database';
-    protected static ?string $nvaigationLabel = 'Supplier';
-    
+    protected static ?string $navigationGroup = 'laporan';
     public static function form(Form $form): Form
     {
         return $form
@@ -58,9 +56,9 @@ class SupplierResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListSuppliers::route('/'),
-            'create' => Pages\CreateSupplier::route('/create'),
-            'edit' => Pages\EditSupplier::route('/{record}/edit'),
+            'index' => Pages\ListKeungans::route('/'),
+            'create' => Pages\CreateKeungan::route('/create'),
+            'edit' => Pages\EditKeungan::route('/{record}/edit'),
         ];
     }
 }

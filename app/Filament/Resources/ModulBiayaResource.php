@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\KategoriResource\Pages;
-use App\Filament\Resources\KategoriResource\RelationManagers;
-use App\Models\Kategori;
+use App\Filament\Resources\ModulBiayaResource\Pages;
+use App\Filament\Resources\ModulBiayaResource\RelationManagers;
+use App\Models\ModulBiaya;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,15 +13,12 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class KategoriResource extends Resource
+class ModulBiayaResource extends Resource
 {
-    protected static ?string $model = Kategori::class;
+    protected static ?string $model = ModulBiaya::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Database';
-    protected static ?string $navigationLabel = 'Kategori';
-
-
     public static function form(Form $form): Form
     {
         return $form
@@ -29,6 +26,9 @@ class KategoriResource extends Resource
                 Forms\Components\TextInput::make('nama')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('nominal')
+                    ->required()
+                    ->numeric(),
             ]);
     }
 
@@ -38,6 +38,9 @@ class KategoriResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('nominal')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -70,9 +73,9 @@ class KategoriResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListKategoris::route('/'),
-            'create' => Pages\CreateKategori::route('/create'),
-            'edit' => Pages\EditKategori::route('/{record}/edit'),
+            'index' => Pages\ListModulBiayas::route('/'),
+            'create' => Pages\CreateModulBiaya::route('/create'),
+            'edit' => Pages\EditModulBiaya::route('/{record}/edit'),
         ];
     }
 }
