@@ -17,8 +17,10 @@ class PenjualanKategoriResource extends Resource
 {
     protected static ?string $model = PenjualanKategori::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'laporan';
+    protected static ?string $navigationLabel = 'Penjualan Kategori';
+
     public static function form(Form $form): Form
     {
         return $form

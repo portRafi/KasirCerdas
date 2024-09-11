@@ -19,6 +19,8 @@ class LabaRugiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'laporan';
+    protected static ?string $navigationLabel = 'Laba Rugi';
+
     public static function form(Form $form): Form
     {
         return $form

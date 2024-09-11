@@ -19,6 +19,8 @@ class PenjualanBarangResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'laporan';
+    protected static ?string $navigationLabel = 'Penjualan Barang';
+
     public static function form(Form $form): Form
     {
         return $form
