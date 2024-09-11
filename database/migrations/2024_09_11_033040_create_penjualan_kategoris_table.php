@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pelanggans', function (Blueprint $table) {
+        Schema::create('penjualan_kategoris', function (Blueprint $table) {
             $table->id();
-            $table->varchar('nama');
-            $table->unique('email');
-            $table->integer('no_hp');
-            $table->integer('poin_didapat');
-            $table->integer('poin_ditukar');
-            $table->integer('total_transaksi');
+            $table->varchar('kode');
+            $table->integer('jumlah_barang');
+            $table->decimal('total_pendapatan', 10,2);
+            $table->decimal('keuntungan', 10,2);
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pelanggans');
+        Schema::dropIfExists('penjualan_kategoris');
     }
 };
