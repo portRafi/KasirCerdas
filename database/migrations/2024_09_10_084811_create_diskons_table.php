@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('diskons', function (Blueprint $table) {
             $table->id();
             $table->varchar('nama_diskon');
-            $table->integer('jumlah_diskon');
+            // $table->integer('jumlah_diskon');
             $table->timestamps();
         });
     }
