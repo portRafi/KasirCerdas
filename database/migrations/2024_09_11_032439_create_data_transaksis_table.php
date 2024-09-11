@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('data_transaksis', function (Blueprint $table) {
             $table->id();
             $table->integer('id_struk');
-            $table->varchar('email_staff');
+            $table->string('email_staff');
             $table->date('tanggal');
-            $table->varchar('metode_pembayaran');
+            $table->string('metode_pembayaran');
             $table->decimal('keuntungan', 10,2);            
             $table->decimal('total_tagihan', 10,2);
             $table->decimal('yang_dibayarkan', 10,2);            
-            $table->varchar('label');
+            $table->string('label');
             $table->timestamps();
         });
     }

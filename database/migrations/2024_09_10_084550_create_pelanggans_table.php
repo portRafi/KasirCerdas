@@ -13,12 +13,10 @@ return new class extends Migration
     {
         Schema::create('pelanggans', function (Blueprint $table) {
             $table->id();
-            $table->varchar('nama');
-            $table->unique('email');
+            $table->string('nama');
+            $table->string('email')->unique();
             $table->integer('no_hp');
-            $table->integer('poin_didapat');
-            $table->integer('poin_ditukar');
-            $table->integer('total_transaksi');
+            $table->integer('poin');
             $table->timestamps();
         });
     }

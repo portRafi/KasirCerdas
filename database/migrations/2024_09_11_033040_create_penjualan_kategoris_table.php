@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('penjualan_kategoris', function (Blueprint $table) {
             $table->id();
-            $table->varchar('kode');
+            $table->string('kode');
             $table->integer('jumlah_barang');
             $table->decimal('total_pendapatan', 10,2);
             $table->decimal('keuntungan', 10,2);

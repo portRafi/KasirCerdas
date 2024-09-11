@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pajaks', function (Blueprint $table) {
             $table->id();
-            $table->varchar('nama_pajak');
+            $table->string('nama_pajak');
             $table->integer('jumlah_pajak');
             $table->timestamps();
         });

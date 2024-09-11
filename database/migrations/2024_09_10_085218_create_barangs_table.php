@@ -13,18 +13,18 @@ return new class extends Migration
     {
         Schema::create('barangs', function (Blueprint $table) {
             $table->id();
-            $table->varchar('kode')->unique();
-            $table->varchar('nama');
-            $table->varchar('kategori');
+            $table->string('kode')->unique();
+            $table->string('nama');
+            $table->string('kategori');
             $table->decimal('harga_beli' ,10,2);
             $table->decimal('harga_jual' ,10,2);
             $table->integer('stok');
             $table->integer('diskon');
-            $table->varchar('tipe_barang')->default('default');
-            $table->varchar('satuan');
+            $table->string('tipe_barang')->default('default');
+            $table->string('satuan');
             $table->integer('berat');
             $table->integer('letak_rak');
-            $table->varchar('keteragan');
+            $table->string('keteragan');
             $table->timestamps();
         });
     }

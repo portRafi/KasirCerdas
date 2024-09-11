@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('data_pembelians', function (Blueprint $table) {
             $table->id();
             $table->integer('id_struk');
-            $table->varchar('email_staff');
+            $table->string('email_staff');
             $table->date('tanggal');
-            $table->varchar('tipe_pembayaran');
+            $table->string('tipe_pembayaran');
             $table->integer('diskon');
             $table->integer('pajak');
             $table->decimal('total_tagihan', 10,2);
