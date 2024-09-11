@@ -17,7 +17,8 @@ class CashDrawerResource extends Resource
 {
     protected static ?string $model = CashDrawer::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $activeNavigationIcon = 'heroicon-m-banknotes';
     protected static ?string $navigationGroup = 'Database';
     protected static ?string $navigationLabel = 'Cash Drawer';
 

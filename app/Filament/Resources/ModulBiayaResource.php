@@ -17,7 +17,8 @@ class ModulBiayaResource extends Resource
 {
     protected static ?string $model = ModulBiaya::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    protected static ?string $activeNavigationIcon = 'heroicon-m-book-open';
     protected static ?string $navigationGroup = 'Database';
     protected static ?string $navigationLabel = 'Modul Biaya';
 
