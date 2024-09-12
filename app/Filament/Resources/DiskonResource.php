@@ -26,6 +26,12 @@ class DiskonResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('tipe_diskon')
+                ->options([
+                    'draft' => 'Aktif',
+                    'nonaktif' => 'Nonaktif',
+                    
+                ]),
                 Forms\Components\TextInput::make('nama_diskon')
                     ->required()
                     ->maxLength(255),
@@ -39,6 +45,8 @@ class DiskonResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('tipe_diskon')
+                 ->searchable(),
                 Tables\Columns\TextColumn::make('nama_diskon')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('jumlah_diskon')

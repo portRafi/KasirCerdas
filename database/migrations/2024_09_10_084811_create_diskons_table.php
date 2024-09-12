@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('diskons', function (Blueprint $table) {
             $table->id();
+            $table->boolean('tipe_diskon')->default('false');
             $table->string('nama_diskon');
             $table->integer('jumlah_diskon');
             $table->timestamps();

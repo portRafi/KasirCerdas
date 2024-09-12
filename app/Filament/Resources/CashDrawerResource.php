@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\SelectColumn;
 
 class CashDrawerResource extends Resource
 {
@@ -26,7 +27,18 @@ class CashDrawerResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('nama')
+                ->required()
+                ->maxLength(255),
+                Forms\Components\Select::make('status')
+                ->options([
+                    'draft' => 'Aktif',
+                    'nonaktif' => 'Nonaktif',
+                ]),
+                Forms\Components\TextInput::make('nominal')
+                ->required()
+                ->numeric()
+                ->maxLength(255),
             ]);
     }
 
@@ -34,7 +46,16 @@ class CashDrawerResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('nama')
+                ->searchable(),
+                Tables\Columns\SelectColumn::make('status')
+                ->options([
+                    'draft' => 'Aktif',
+                    'nonaktif' => 'Nonaktif',
+                    
+                ]),
+                Tables\Columns\TextColumn::make('nominal')
+                ->sortable()
             ])
             ->filters([
                 //
