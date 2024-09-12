@@ -25,7 +25,20 @@ class SupplierResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('nama')
+                ->required()
+                ->maxLength(255),
+                Forms\Components\TextInput::make('alamat')
+                ->required()
+                ->maxLength(255),
+                Forms\Components\TextInput::make('email')
+                ->required()
+                ->maxLength(255),
+                Forms\Components\TextInput::make('no_hp')
+                ->required()
+                ->numeric()
+
+
             ]);
     }
 
@@ -33,7 +46,15 @@ class SupplierResource extends Resource
     {
         return $table
             ->columns([
-                //
+                    Tables\Columns\TextColumn::make('nama')
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('alamat')
+                    ->searchable(),Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('no_hp')
+                    ->required()
+                    ->numeric()
+
             ])
             ->filters([
                 //
