@@ -28,6 +28,10 @@ class BarangResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\FileUpload::make('foto')
+                    ->image()
+                    ->directory('product')
+                    ->required(),
                 Forms\Components\TextInput::make('kode')
                     ->required()
                     ->maxLength(255),
@@ -62,7 +66,7 @@ class BarangResource extends Resource
                 Forms\Components\TextInput::make('letak_rak')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('keteragan')
+                Forms\Components\TextInput::make('keterangan')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -72,6 +76,7 @@ class BarangResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('foto'),
                 Tables\Columns\TextColumn::make('kode')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama')

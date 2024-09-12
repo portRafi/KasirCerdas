@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('barangs', function (Blueprint $table) {
             $table->id();
+            $table->string('foto')->nullable();
             $table->string('kode')->unique();
             $table->string('nama');
             $table->string('kategori');
@@ -24,7 +25,7 @@ return new class extends Migration
             $table->string('satuan');
             $table->integer('berat');
             $table->integer('letak_rak');
-            $table->string('keterangan');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }
