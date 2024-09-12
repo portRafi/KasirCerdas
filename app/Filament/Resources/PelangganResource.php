@@ -50,10 +50,10 @@ class PelangganResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('no_hp')
-                    ->numeric()
+                
                     ->sortable(),
                 Tables\Columns\TextColumn::make('poin')
-                    ->numeric()
+                   
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

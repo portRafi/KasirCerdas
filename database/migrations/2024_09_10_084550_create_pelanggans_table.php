@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('email')->unique();
-            $table->integer('no_hp');
+            $table->bigInteger('no_hp');
             $table->integer('poin');
             $table->timestamps();
         });

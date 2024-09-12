@@ -35,10 +35,8 @@ class SupplierResource extends Resource
                 ->required()
                 ->maxLength(255),
                 Forms\Components\TextInput::make('no_hp')
-                ->required()
                 ->numeric()
-
-
+                ->maxLength(20)
             ]);
     }
 
@@ -49,12 +47,11 @@ class SupplierResource extends Resource
                     Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
                     Tables\Columns\TextColumn::make('alamat')
-                    ->searchable(),Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                     Tables\Columns\TextColumn::make('no_hp')
-                    ->required()
-                    ->numeric()
-
+                    ->searchable(),
             ])
             ->filters([
                 //
