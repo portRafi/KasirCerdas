@@ -22,8 +22,8 @@ class BarangResource extends Resource
     protected static ?string $activeNavigationIcon = 'heroicon-m-squares-plus';
     protected static ?string $navigationGroup = 'Database';
     protected static ?string $navigationLabel = 'Barang';
-    
-    
+
+
     public static function form(Form $form): Form
     {
         return $form
@@ -76,7 +76,9 @@ class BarangResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('foto'),
+                Tables\Columns\ImageColumn::make('foto')
+                    ->url(fn($record) => $record->foto ? asset('storage/app/public/product/' . $record->foto) : null)
+                    ->tooltip(fn(?string $state): string => $state ?? 'no img'),
                 Tables\Columns\TextColumn::make('kode')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama')
