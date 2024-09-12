@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('satuan');
             $table->integer('berat');
             $table->integer('letak_rak');
-            $table->string('keteragan');
+            $table->string('keterangan');
             $table->timestamps();
         });
     }

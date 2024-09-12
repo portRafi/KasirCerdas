@@ -92,16 +92,16 @@ class BarangResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tipe_barang')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('satuan')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('berat')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('letak_rak')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('keteragan')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('satuan')
+                //     ->searchable(),
+                // Tables\Columns\TextColumn::make('berat')
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('letak_rak')
+                //     ->numeric()
+                //     ->sortable(),
+                // Tables\Columns\TextColumn::make('keterangan')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
