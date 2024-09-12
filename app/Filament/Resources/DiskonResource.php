@@ -20,7 +20,7 @@ class DiskonResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-percent-badge';
     protected static ?string $activeNavigationIcon = 'heroicon-m-percent-badge';
     protected static ?string $navigationGroup = 'Database';
-    protected static ?string $navigationLabel = 'Diskon';
+    // protected static ?string $navigationLabel = 'Diskon';
 
     public static function form(Form $form): Form
     {
