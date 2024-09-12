@@ -118,6 +118,7 @@ class BarangResource extends Resource
             ])
             ->filters([
                 //
+                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
