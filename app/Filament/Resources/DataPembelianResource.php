@@ -13,7 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
-use Filament\Widgets\Widget;
+
 
 
 class DataPembelianResource extends Resource
@@ -115,7 +115,7 @@ class DataPembelianResource extends Resource
     public static function getWidgets(): array
     {
         return [
-            DataPembelianResource\Widgets\Date::class,
+           
         ];
     }
     public static function getPages(): array
