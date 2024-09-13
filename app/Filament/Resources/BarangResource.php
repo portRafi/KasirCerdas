@@ -123,7 +123,7 @@ class BarangResource extends Resource
                 //
             ])
             ->actions([
-               
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

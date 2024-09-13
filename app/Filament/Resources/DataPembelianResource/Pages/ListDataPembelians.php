@@ -16,4 +16,10 @@ class ListDataPembelians extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            DataPembelianResource\Widgets\Date::class,
+        ];
+    }
 }

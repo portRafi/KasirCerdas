@@ -12,6 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+use Filament\Widgets\Widget;
+
 
 class DataPembelianResource extends Resource
 {
@@ -20,6 +23,7 @@ class DataPembelianResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'laporan';
     protected static ?string $navigationLabel = 'Data Pembelian';
+
 
     public static function form(Form $form): Form
     {
@@ -96,6 +100,7 @@ class DataPembelianResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    
                 ]),
             ]);
     }
@@ -107,6 +112,12 @@ class DataPembelianResource extends Resource
         ];
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            DataPembelianResource\Widgets\Date::class,
+        ];
+    }
     public static function getPages(): array
     {
         return [
