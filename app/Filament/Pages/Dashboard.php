@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+use Filament\Forms\Components\DateTimePicker;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {

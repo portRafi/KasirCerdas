@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
 
 
-
 class DataPembelianResource extends Resource
 {
     protected static ?string $model = DataPembelian::class;
@@ -100,7 +99,7 @@ class DataPembelianResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                    
+
                 ]),
             ]);
     }
@@ -111,11 +110,10 @@ class DataPembelianResource extends Resource
             //
         ];
     }
-
     public static function getWidgets(): array
     {
         return [
-           
+            DataPembelianResource\Widgets\DateWidget::class,
         ];
     }
     public static function getPages(): array
