@@ -100,7 +100,7 @@ class DataPembelianResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                    
+
                 ]),
             ]);
     }
@@ -111,11 +111,10 @@ class DataPembelianResource extends Resource
             //
         ];
     }
-
     public static function getWidgets(): array
     {
         return [
-            DataPembelianResource\Widgets\Date::class,
+            DataPembelianResource\Widgets\DateWidget::class,
         ];
     }
     public static function getPages(): array
