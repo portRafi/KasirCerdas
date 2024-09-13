@@ -18,6 +18,7 @@ class Date extends Widget
         return $form->schema([
             DatePicker::make('Dari Tanggal'),
             DatePicker::make('Sampai Tanggal')
+            //
         ]);
     }
 
