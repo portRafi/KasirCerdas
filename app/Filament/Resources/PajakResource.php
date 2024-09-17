@@ -29,6 +29,7 @@ class PajakResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('jumlah_pajak')
+                ->prefix('Rp')
                     ->required()
                     ->numeric(),
             ]);
@@ -76,8 +77,8 @@ class PajakResource extends Resource
     {
         return [
             'index' => Pages\ListPajaks::route('/'),
-            'create' => Pages\CreatePajak::route('/create'),
-            'edit' => Pages\EditPajak::route('/{record}/edit'),
+            // 'create' => Pages\CreatePajak::route('/create'),
+            // 'edit' => Pages\EditPajak::route('/{record}/edit'),
         ];
     }
 }

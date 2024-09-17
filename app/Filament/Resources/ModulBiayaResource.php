@@ -30,6 +30,7 @@ class ModulBiayaResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('nominal')
+                    ->prefix('Rp')
                     ->required()
                     ->numeric(),
             ]);
@@ -77,8 +78,8 @@ class ModulBiayaResource extends Resource
     {
         return [
             'index' => Pages\ListModulBiayas::route('/'),
-            'create' => Pages\CreateModulBiaya::route('/create'),
-            'edit' => Pages\EditModulBiaya::route('/{record}/edit'),
+            // 'create' => Pages\CreateModulBiaya::route('/create'),
+            // 'edit' => Pages\EditModulBiaya::route('/{record}/edit'),
         ];
     }
 }

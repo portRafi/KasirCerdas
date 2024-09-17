@@ -36,6 +36,7 @@ class CashDrawerResource extends Resource
                     'nonaktif' => 'Nonaktif',
                 ]),
                 Forms\Components\TextInput::make('nominal')
+                ->prefix('Rp')
                 ->required()
                 ->numeric()
                 ->maxLength(255),
@@ -52,7 +53,6 @@ class CashDrawerResource extends Resource
                 ->options([
                     'draft' => 'Aktif',
                     'nonaktif' => 'Nonaktif',
-                    
                 ]),
                 Tables\Columns\TextColumn::make('nominal')
                 ->sortable()
@@ -62,6 +62,7 @@ class CashDrawerResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -9,17 +9,4 @@ use Filament\Resources\Pages\ListRecords;
 class ListDataPembelians extends ListRecords
 {
     protected static string $resource = DataPembelianResource::class;
-
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            DataPembelianResource\Widgets\DateWidget::class,
-        ];
-    }
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\CreateAction::make(),
-        ];
-    }
 }

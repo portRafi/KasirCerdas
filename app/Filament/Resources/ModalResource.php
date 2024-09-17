@@ -6,6 +6,7 @@ use App\Filament\Resources\ModalResource\Pages;
 use App\Filament\Resources\ModalResource\RelationManagers;
 use App\Models\Modal;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -25,7 +26,7 @@ class ModalResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('')
             ]);
     }
 

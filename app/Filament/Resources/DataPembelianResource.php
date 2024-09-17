@@ -2,17 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DataPembelianResource\Pages;
-use App\Filament\Resources\DataPembelianResource\RelationManagers;
-use App\Models\DataPembelian;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Widgets\Widget;
+use App\Models\DataPembelian;
+use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+use App\Filament\Resources\DataPembelianResource\Pages;
+use App\Filament\Resources\DataPembelianResource\RelationManagers;
 
 
 class DataPembelianResource extends Resource
@@ -47,9 +50,11 @@ class DataPembelianResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('total_tagihan')
+                    ->prefix('Rp')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('yang_dibayarkan')
+                    ->prefix('Rp')
                     ->required()
                     ->numeric(),
             ]);
@@ -91,7 +96,26 @@ class DataPembelianResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Filter::make('date_range')
+                    ->form([
+                        DatePicker::make('start_date')
+                            ->label('Start Date')
+                            ->required(),
+                        DatePicker::make('end_date')
+                            ->label('End Date')
+                            ->required(),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['start_date'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date)
+                            )
+                            ->when(
+                                $data['end_date'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date)
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -110,12 +134,7 @@ class DataPembelianResource extends Resource
             //
         ];
     }
-    public static function getWidgets(): array
-    {
-        return [
-            DataPembelianResource\Widgets\DateWidget::class,
-        ];
-    }
+
     public static function getPages(): array
     {
         return [

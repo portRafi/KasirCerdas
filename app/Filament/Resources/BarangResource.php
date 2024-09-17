@@ -33,40 +33,55 @@ class BarangResource extends Resource
                     ->directory('product')
                     ->required(),
                 Forms\Components\TextInput::make('kode')
+                    ->placeholder('Kode Barang')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('nama')
+                    ->placeholder('Nama Barang')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('kategori')
+                    ->placeholder('Kategori Barang')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('harga_beli')
+                    ->placeholder('Harga Beli')
+                    ->prefix('Rp')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('harga_jual')
+                    ->placeholder('Harga Jual')
+                    ->prefix('Rp')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('stok')
+                    ->placeholder('Stok Barang')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('diskon')
-                    ->required()
-                    ->numeric(),
+                    ->placeholder('Diskon')
+                    ->options([
+                        //data from other resource will be showing here
+                    ]),
                 Forms\Components\TextInput::make('tipe_barang')
+                    ->placeholder('Tipe Barang')
                     ->required()
                     ->maxLength(255)
                     ->default('default'),
                 Forms\Components\TextInput::make('satuan')
+                    ->placeholder('Satuan')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('berat')
+                    ->placeholder('Berat')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('letak_rak')
+                    ->placeholder('Letak Rak')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('keterangan')
+                    ->placeholder('Keterangan')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -122,9 +137,7 @@ class BarangResource extends Resource
                 //
                 //
             ])
-            ->actions([
-
-            ])
+            ->actions([])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
