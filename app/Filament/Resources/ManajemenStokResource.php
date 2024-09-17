@@ -34,6 +34,9 @@ class ManajemenStokResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('foto')
+                    ->url(fn($record) => $record->foto ? asset('storage/app/public/product/' . $record->foto) : null)
+                    ->tooltip(fn(?string $state): string => $state ?? 'no img'),
                 Tables\Columns\TextColumn::make('kode')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama')
@@ -47,6 +50,9 @@ class ManajemenStokResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('harga_jual')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('stok')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('diskon')
