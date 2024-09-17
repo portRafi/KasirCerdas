@@ -34,9 +34,6 @@ class ManajemenStokResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('foto')
-                    ->url(fn($record) => $record->foto ? asset('storage/app/public/product/' . $record->foto) : null)
-                    ->tooltip(fn(?string $state): string => $state ?? 'no img'),
                 Tables\Columns\TextColumn::make('kode')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama')
@@ -46,30 +43,12 @@ class ManajemenStokResource extends Resource
                 Tables\Columns\TextColumn::make('stok')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('harga_beli')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('harga_jual')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('stok')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('diskon')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('tipe_barang')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('satuan')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('berat')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('letak_rak')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('keterangan')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('harga_beli')
+                        ->numeric()
+                        ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -84,6 +63,7 @@ class ManajemenStokResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

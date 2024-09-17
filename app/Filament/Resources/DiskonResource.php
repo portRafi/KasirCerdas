@@ -20,22 +20,23 @@ class DiskonResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-percent-badge';
     protected static ?string $activeNavigationIcon = 'heroicon-m-percent-badge';
     protected static ?string $navigationGroup = 'Database';
-    // protected static ?string $navigationLabel = 'Diskon';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('tipe_diskon')
-                ->options([
-                    'draft' => 'Aktif',
-                    'nonaktif' => 'Nonaktif',
-                    
-                ]),
+                    ->placeholder('Tipe Diskon')
+                    ->options([
+                        'persen' => 'Persen (%)',
+                        'rupiah' => 'Rupiah (Rp)',
+                    ]),
                 Forms\Components\TextInput::make('nama_diskon')
+                    ->placeholder('Nama Diskon')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('jumlah_diskon')
+                    ->placeholder('Jumlah Diskon')
                     ->required()
                     ->numeric(),
             ]);
@@ -46,7 +47,7 @@ class DiskonResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('tipe_diskon')
-                 ->searchable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('nama_diskon')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('jumlah_diskon')
@@ -66,6 +67,7 @@ class DiskonResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

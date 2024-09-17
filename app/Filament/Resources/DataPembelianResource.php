@@ -50,9 +50,11 @@ class DataPembelianResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('total_tagihan')
+                    ->prefix('Rp')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('yang_dibayarkan')
+                    ->prefix('Rp')
                     ->required()
                     ->numeric(),
             ]);
@@ -132,7 +134,7 @@ class DataPembelianResource extends Resource
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
