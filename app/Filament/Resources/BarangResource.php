@@ -58,11 +58,9 @@ class BarangResource extends Resource
                     ->placeholder('Stok Barang')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('diskon')
-                    ->placeholder('Diskon')
-                    ->options([
-                        //data from other resource will be showing here
-                    ]),
+                   Forms\Components\Select::make('diskon')
+                    ->relationship('diskon', 'nama_diskon')
+                    ->preload(),
                 Forms\Components\TextInput::make('tipe_barang')
                     ->placeholder('Tipe Barang')
                     ->required()
