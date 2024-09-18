@@ -20,6 +20,10 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\View\LegacyComponents\Widget;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
+use Filament\Navigation\MenuItem;
+use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
+use App\Livewire\CustomProfileComponent;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -55,6 +59,31 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->plugins([
+                FilamentEditProfilePlugin::make()
+                   ->slug('my-profile')
+                   ->setTitle('My Profile')
+                   ->setNavigationLabel('My Profile')
+                   ->setNavigationGroup('Group Profile')
+                   ->setIcon('heroicon-o-user')
+                   ->setSort(10)
+                   ->canAccess(fn () => auth()->user()->id === 1)
+                   ->shouldRegisterNavigation(false)
+                   ->shouldShowDeleteAccountForm(false)
+                   ->shouldShowSanctumTokens()
+                   ->shouldShowBrowserSessionsForm()
+                   ->shouldShowAvatarForm()
+                   ->customProfileComponents([
+                       \App\Livewire\CustomProfileComponent::class,
+                   ])
+
+                   ])
+                   ->userMenuItems([
+                    'profile' => MenuItem::make()
+                        ->label(fn() => auth()->user()->name)
+                        ->url(fn (): string => EditProfilePage::getUrl())
+                        ->icon('heroicon-m-user-circle'),
+                   ]);
     }
 }
