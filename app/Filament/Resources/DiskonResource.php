@@ -25,18 +25,16 @@ class DiskonResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('tipe_diskon')
-                    ->placeholder('Tipe Diskon')
-                    ->options([
-                        'persen' => 'Persen (%)',
-                        'rupiah' => 'Rupiah (Rp)',
-                    ]),
+                Forms\Components\TextInput::make('tipe_diskon')
+                    ->default('persen')
+                    ->readOnly(),
                 Forms\Components\TextInput::make('nama_diskon')
                     ->placeholder('Nama Diskon')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('jumlah_diskon')
                     ->placeholder('Jumlah Diskon')
+                    ->numeric()
                     ->required()
                     ->numeric(),
             ]);
@@ -52,6 +50,7 @@ class DiskonResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('jumlah_diskon')
                     ->numeric()
+                    ->suffix('%')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
