@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PajakResource\Pages;
-use App\Filament\Resources\PajakResource\RelationManagers;
-use App\Models\Pajak;
+use App\Filament\Resources\SatuanResource\Pages;
+use App\Filament\Resources\SatuanResource\RelationManagers;
+use App\Models\Satuan;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,26 +13,25 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class PajakResource extends Resource
+class SatuanResource extends Resource
 {
-    protected static ?string $model = Pajak::class;
+    protected static ?string $model = Satuan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-scale';
-    protected static ?string $activeNavigationIcon = 'heroicon-m-scale';
+    protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
+    protected static ?string $activeNavigationIcon = 'heroicon-c-square-3-stack-3d';
     protected static ?string $navigationGroup = 'Database';
-    protected static ?string $navigationLabel = 'Pajak';
+    protected static ?string $navigationLabel = 'Satuan';
+
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama_pajak')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('jumlah_pajak')
-                ->prefix('Rp')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\TextInput::make('nama_satuan')
+                ->label('Nama Satuan')
+                ->placeholder('Isi Nama Satuan')
+                ->required()
+                ->maxLength(255),
             ]);
     }
 
@@ -40,19 +39,14 @@ class PajakResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama_pajak')
+                Tables\Columns\TextColumn::make('nama_satuan')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('jumlah_pajak')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
                 //
@@ -77,9 +71,9 @@ class PajakResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPajaks::route('/'),
-            // 'create' => Pages\CreatePajak::route('/create'),
-            // 'edit' => Pages\EditPajak::route('/{record}/edit'),
+            'index' => Pages\ListSatuans::route('/'),
+            // 'create' => Pages\CreateSatuan::route('/create'),
+            // 'edit' => Pages\EditSatuan::route('/{record}/edit'),
         ];
     }
 }
