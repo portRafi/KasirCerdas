@@ -57,10 +57,6 @@ class BarangResource extends Resource
                     ->placeholder('Stok Barang')
                     ->required()
                     ->numeric(),
-
-                   Forms\Components\Select::make('diskon')
-                    // ->relationship('diskon', 'nama_diskon')
-                    ->preload(),
                 Forms\Components\Select::make('diskon')
                    ->options(Diskon::all()->pluck('nama_diskon', 'id')),
 

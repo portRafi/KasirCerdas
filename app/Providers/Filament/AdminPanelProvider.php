@@ -62,11 +62,26 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentEditProfilePlugin::make()
-                ->shouldShowAvatarForm(
-                    value: true,
-                    directory: 'avatars', // image will be stored in 'storage/app/public/avatars
-                    rules: 'mimes:jpeg,png|max:1024' //only accept jpeg and png files with a maximum size of 1MB
-                )
+                ->slug('my-profile')
+                ->setTitle('My Profile')
+                ->setNavigationLabel('My Profile')
+                ->setNavigationGroup('Group Profile')
+                ->setIcon('heroicon-o-user')
+                ->setSort(10)
+                ->canAccess(fn () => auth()->user()->id === 1)
+                ->shouldRegisterNavigation(false)
+                ->shouldShowDeleteAccountForm(false)
+                ->shouldShowSanctumTokens()
+                ->shouldShowBrowserSessionsForm()
+                ->shouldShowAvatarForm()
+                ->customProfileComponents([
+                    ])
+            ])
+            ->userMenuItems([
+                'profile' => MenuItem::make()
+                ->label(fn() => auth()->user()->name)
+                ->url(fn (): string => EditProfilePage::getUrl())
+                ->icon('heroicon-m-user-circle')
             ]);
               
                 
