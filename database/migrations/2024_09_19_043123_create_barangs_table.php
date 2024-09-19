@@ -11,14 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('modals', function (Blueprint $table) {
+        Schema::create('barangs', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
+            $table->string('foto')->nullable();
             $table->string('kode')->unique();
+            $table->string('nama');
             $table->string('kategori');
+            $table->decimal('harga_beli' ,10,2);
+            $table->decimal('harga_jual' ,10,2);
             $table->integer('stok');
-            $table->decimal('sisa_modal', 10, 2);
+            $table->integer('diskon');
             $table->string('tipe_barang')->default('default');
+            $table->string('satuan');
+            $table->integer('berat');
+            $table->integer('letak_rak');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('modals');
+        Schema::dropIfExists('barangs');
     }
 };

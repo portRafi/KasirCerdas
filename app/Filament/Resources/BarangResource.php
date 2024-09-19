@@ -2,16 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\BarangResource\Pages;
-use App\Filament\Resources\BarangResource\RelationManagers;
-use App\Models\Barang;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Barang;
+use App\Models\Diskon;
+use App\Models\Kategori;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\BarangResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\BarangResource\RelationManagers;
+use App\Models\Satuan;
 
 class BarangResource extends Resource
 {
@@ -28,10 +31,6 @@ class BarangResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\FileUpload::make('foto')
-                    ->image()
-                    ->directory('product')
-                    ->required(),
                 Forms\Components\TextInput::make('kode')
                     ->placeholder('Kode Barang')
                     ->required()
@@ -40,10 +39,10 @@ class BarangResource extends Resource
                     ->placeholder('Nama Barang')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('kategori')
+                Forms\Components\Select::make('kategori')
                     ->placeholder('Kategori Barang')
-                    ->required()
-                    ->maxLength(255),
+                    ->options(Kategori::all()->pluck('nama', 'id'))
+                    ->required(),
                 Forms\Components\TextInput::make('harga_beli')
                     ->placeholder('Harga Beli')
                     ->prefix('Rp')
@@ -58,18 +57,21 @@ class BarangResource extends Resource
                     ->placeholder('Stok Barang')
                     ->required()
                     ->numeric(),
+
                    Forms\Components\Select::make('diskon')
                     // ->relationship('diskon', 'nama_diskon')
                     ->preload(),
+                Forms\Components\Select::make('diskon')
+                   ->options(Diskon::all()->pluck('nama_diskon', 'id')),
+
                 Forms\Components\TextInput::make('tipe_barang')
                     ->placeholder('Tipe Barang')
                     ->required()
                     ->maxLength(255)
                     ->default('default'),
-                Forms\Components\TextInput::make('satuan')
-                    ->placeholder('Satuan')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Select::make('satuan')
+                    ->options(Satuan::all()->pluck('nama_satuan', 'id'))
+                    ->required(),
                 Forms\Components\TextInput::make('berat')
                     ->placeholder('Berat')
                     ->required()
@@ -89,9 +91,6 @@ class BarangResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('foto')
-                    ->url(fn($record) => $record->foto ? asset('storage/app/public/product/' . $record->foto) : null)
-                    ->tooltip(fn(?string $state): string => $state ?? 'no img'),
                 Tables\Columns\TextColumn::make('kode')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama')

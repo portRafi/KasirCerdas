@@ -27,7 +27,7 @@ class ManajemenStokResource extends Resource
         return $form
             ->schema([
                 //
-            ]);
+            ]); 
     }
 
     public static function table(Table $table): Table
