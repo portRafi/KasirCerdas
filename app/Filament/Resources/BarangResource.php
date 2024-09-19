@@ -41,7 +41,8 @@ class BarangResource extends Resource
                     ->maxLength(255),
                 Forms\Components\Select::make('kategori')
                     ->placeholder('Kategori Barang')
-                    ->options(Kategori::all()->pluck('nama', 'id'))
+                    ->preload()
+                    ->options(Kategori::all()->pluck('nama', 'nama'))
                     ->required(),
                 Forms\Components\TextInput::make('harga_beli')
                     ->placeholder('Harga Beli')
@@ -58,15 +59,10 @@ class BarangResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\Select::make('diskon')
-                   ->options(Diskon::all()->pluck('nama_diskon', 'id')),
-
-                Forms\Components\TextInput::make('tipe_barang')
-                    ->placeholder('Tipe Barang')
-                    ->required()
-                    ->maxLength(255)
-                    ->default('default'),
+                    ->preload()
+                    ->options(Diskon::all()->pluck('nama_diskon', 'jumlah_diskon')),
                 Forms\Components\Select::make('satuan')
-                    ->options(Satuan::all()->pluck('nama_satuan', 'id'))
+                    ->options(Satuan::all()->pluck('nama_satuan', 'nama_satuan'))
                     ->required(),
                 Forms\Components\TextInput::make('berat')
                     ->placeholder('Berat')
@@ -78,7 +74,6 @@ class BarangResource extends Resource
                     ->numeric(),
                 Forms\Components\TextInput::make('keterangan')
                     ->placeholder('Keterangan')
-                    ->required()
                     ->maxLength(255),
             ]);
     }
@@ -95,28 +90,27 @@ class BarangResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('harga_beli')
                     ->numeric()
+                    ->money('IDR')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('harga_jual')
+                    Tables\Columns\TextColumn::make('harga_jual')
                     ->numeric()
+                    ->money('IDR')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('stok')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('diskon')
                     ->numeric()
+                    ->suffix('%')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('tipe_barang')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('satuan')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('berat')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('satuan')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('letak_rak')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('keterangan')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
