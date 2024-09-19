@@ -59,7 +59,7 @@ class BarangResource extends Resource
                     ->required()
                     ->numeric(),
                    Forms\Components\Select::make('diskon')
-                    ->relationship('diskon', 'nama_diskon')
+                    // ->relationship('diskon', 'nama_diskon')
                     ->preload(),
                 Forms\Components\TextInput::make('tipe_barang')
                     ->placeholder('Tipe Barang')
