@@ -13,8 +13,8 @@ class GrafikWidget extends BaseWidget
         return [
             //todo
             Stat::make('Grafik Transaksi', DataTransaksi::count()),
+            Stat::make('Grafik Keuntungan', DataTransaksi::count()),
             Stat::make('Grafik Pendapatan', DataTransaksi::count()),
-            Stat::make('Grafik Keuntungan', DataTransaksi::count())
         ];
     }
 }
