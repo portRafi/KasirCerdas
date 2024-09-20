@@ -39,7 +39,10 @@ class MetodePembayaranResource extends Resource
                 Tables\Columns\TextColumn::make('nama_mp')
                     ->searchable(),
                 Tables\Columns\ToggleColumn::make('is_Active'),
-
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->getStateUsing(fn($record) => $record->is_Active ? 'Aktif' : 'Tidak Aktif')
+                    ->color(fn($state) => $state === 'Aktif' ? 'success' : 'warning'),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->since()
 
@@ -47,8 +50,7 @@ class MetodePembayaranResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-            ])
+            ->actions([])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
