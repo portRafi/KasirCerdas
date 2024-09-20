@@ -53,10 +53,10 @@ class User extends Authenticatable implements HasAvatar
         'id',
     ];
 
-    public function addres() : Morphone 
-    {
-        return $this->morphone(related:addres::class,name:'addresable');
-    }
+    // public function addres() : Morphone 
+    // {
+    //     return $this->morphone(related:addres::class,name:'addresable');
+    // }
 
     public function getFilamentAvatarUrl(): ?string
     {
