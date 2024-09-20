@@ -26,16 +26,57 @@ class KasirResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('no_hp')
+                    ->numeric()
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('alamat')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('email')
+                    ->required(),
+                Forms\Components\TextInput::make('password')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\Select::make('role')
+                    ->options([
+                        'admin' => 'Administrator',
+                        'kasir' => 'Kasir',
+                    ])
+
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                //
-            ])
+        ->columns([
+            Tables\Columns\TextColumn::make('name')
+            ->searchable(),
+            Tables\Columns\TextColumn::make('alamat')
+            ->searchable(),
+            Tables\Columns\TextColumn::make('no_hp')
+            ->searchable(),
+            Tables\Columns\TextColumn::make('email')
+            ->searchable(),
+            Tables\Columns\SelectColumn::make('role')
+            ->options([
+                'admin' => 'Administrator',
+                'kasir' => 'Kasir',
+            ]),
+            Tables\Columns\TextColumn::make('created_at')
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            Tables\Columns\TextColumn::make('updated_at')
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            
+        ])
             ->filters([
                 //
             ])
