@@ -10,10 +10,10 @@ class ListTransaksis extends ListRecords
 {
     protected static string $resource = TransaksiResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getHeaderWidgets(): array
     {
         return [
-            Actions\CreateAction::make(),
+            TransaksiResource\Widgets\POSWidget::class,
         ];
     }
 }
