@@ -56,9 +56,9 @@ class KasirResource extends Resource
         ->columns([
             Tables\Columns\TextColumn::make('name')
             ->searchable(),
-            Tables\Columns\TextColumn::make('alamat')
-            ->searchable(),
             Tables\Columns\TextColumn::make('no_hp')
+            ->searchable(),
+            Tables\Columns\TextColumn::make('alamat')
             ->searchable(),
             Tables\Columns\TextColumn::make('email')
             ->searchable(),

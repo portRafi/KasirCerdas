@@ -82,7 +82,7 @@ class TransaksiResource extends Resource
                             ->send();
                     })
                     ->icon('heroicon-s-plus-circle'),
-            ])
+            ])  
             ->bulkActions([
             ]);
     }
