@@ -14,16 +14,16 @@ class DatasWidget extends BaseWidget
     protected function getStats(): array
     {
         $totalBarang = Barang::count();
-        $totalAkun = User::count();
+        $totalKasir = User::where('role', 'kasir')->count();
         $totalMPAktif = MetodePembayaran::where('is_Active', true)->count();
         
         return [
             Stat::make('Jumlah Barang', $totalBarang)
-                ->description('Total Barang dalam database')
+                ->description('Total Barang di database')
                 ->descriptionIcon('heroicon-s-archive-box', IconPosition::Before)
                 ->color($totalBarang < 5 ? 'danger' : 'success'),
-            Stat::make('Jumlah Akun Kasir', $totalAkun)
-                ->description('Total Akun Kasir dalam database')
+            Stat::make('Jumlah Akun Kasir', $totalKasir)
+                ->description('Total Akun Kasir di database')
                 ->descriptionIcon('heroicon-m-user-plus', IconPosition::Before)
                 ->color('success'),
             Stat::make('Metode Pembayaran Aktif', $totalMPAktif)

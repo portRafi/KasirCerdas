@@ -23,12 +23,14 @@ class User extends Authenticatable implements HasAvatar
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'avatar_url',
-    ];
+    // protected $fillable = [
+    //     'name',
+    //     'no_hp',
+    //     'alamat',
+    //     'email',
+    //     'password',
+    //     'role',
+    // ];
 
     /**
      * The attributes that should be hidden for serialization.
