@@ -10,10 +10,9 @@ class ListTransaksis extends ListRecords
 {
     protected static string $resource = TransaksiResource::class;
 
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            TransaksiResource\Widgets\POSWidget::class,
-        ];
-    }
+    // public function getTabs(): array {
+    //     return [
+    //         'Barang'
+    //     ]
+    // }
 }
