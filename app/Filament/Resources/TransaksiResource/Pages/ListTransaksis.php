@@ -32,7 +32,7 @@ class ListTransaksis extends ListRecords
 
     protected function getTableColumns(): array
     {
-        if ($this->getActiveTab()->getLabel() === 'Barang') {
+        if ($this->getActiveTab()->getLabel() === 'List Barang') {
             return [
                 TextColumn::make('nama')
                     ->label('Nama Barang'),

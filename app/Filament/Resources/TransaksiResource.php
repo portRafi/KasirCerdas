@@ -21,8 +21,10 @@ class TransaksiResource extends Resource
 {
     protected static ?string $model = Barang::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationLabel = 'Transaksi';
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+    protected static ?string $activeNavigationIcon = 'heroicon-s-building-storefront';
+    protected static ?string $navigationLabel = 'POS / KASIR';
+    protected static ?string $title = 'Point Of Sale';
 
     public static function form(Form $form): Form
     {
