@@ -152,12 +152,7 @@ class TransaksiResource extends Resource
         ];
     }
 
-    public static function getWidgets(): array
-    {
-        return [
-            TransaksiResource\Widgets\POSWidget::class,
-        ];
-    }
+
 
     public static function getPages(): array
     {
