@@ -35,6 +35,7 @@ class DiskonResource extends Resource
                 Forms\Components\TextInput::make('jumlah_diskon')
                     ->placeholder('Jumlah Diskon')
                     ->numeric()
+                    ->suffix('%')
                     ->required()
                     ->numeric(),
             ]);
