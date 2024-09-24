@@ -22,13 +22,16 @@ class ListMetodePembayarans extends ListRecords
     }
     public function getTabs(): array {
         return [
-            'Semua' => Tab::make(),
-            'Aktif' => Tab::make()->modifyQueryUsing(function(EloquentBuilder $query){
-                $query->where('is_Active', true);
-            }),
-            'Tidak Aktif' => Tab::make()->modifyQueryUsing(function(EloquentBuilder $query){
-                $query->where('is_Active', false);
-            }),
+            Tab::make('Semua'),
+            Tab::make('Aktif')
+                ->modifyQueryUsing(function(EloquentBuilder $query) {
+                    $query->where('is_Active', true);
+                }),
+            Tab::make('Tidak Aktif')
+                ->modifyQueryUsing(function(EloquentBuilder $query) {
+                    $query->where('is_Active', false);
+                }),
         ];
     }
+    
 }

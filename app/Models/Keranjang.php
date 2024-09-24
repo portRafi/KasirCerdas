@@ -9,8 +9,6 @@ class Keranjang extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['field1', 'field2'];
-    
     protected $guarded = [
         'id',
     ];
