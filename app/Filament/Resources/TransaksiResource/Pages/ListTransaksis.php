@@ -14,27 +14,27 @@ class ListTransaksis extends ListRecords
 {
     protected static string $resource = TransaksiResource::class;
 
-    public function getTabs(): array
-    {
-        return [
-            'List Barang' => Tab::make('Barang')
-                ->modifyQueryUsing(function (EloquentBuilder $query) {
-                    return $query->from((new Barang())->getTable());
-                }),
+    // public function getTabs(): array
+    // {
+    //     return [
+    //         'List Barang' => Tab::make('Barang')
+    //             ->modifyQueryUsing(function (EloquentBuilder $query) {
+    //                 return $query->from((new Barang())->getTable());
+    //             }),
 
-            'Keranjang' => Tab::make('Keranjang')
-                ->modifyQueryUsing(function (EloquentBuilder $query) {
-                    return $query->from((new Keranjang())->getTable())->orderBy('id', 'asc');
-                }),
+    //         'Keranjang' => Tab::make('Keranjang')
+    //             ->modifyQueryUsing(function (EloquentBuilder $query) {
+    //                 return $query->from((new Keranjang())->getTable())->orderBy('id', 'asc');
+    //             }),
 
-        ];
-    }
+    //     ];
+    // }
 
     protected function getHeaderWidgets(): array
     {
         return [
             TransaksiResource\Widgets\TransaksiWidget::class,
-            TransaksiResource\Widgets\KerangjangWidget::class,
+            TransaksiResource\Widgets\KeranjangWidget::class,
         ];
     }
 }
