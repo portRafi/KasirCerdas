@@ -15,4 +15,8 @@ class MetodePembayaran extends Model
     protected $casts = [
         'is_Active' => 'boolean',
     ];
+    public function scopeActive($query)
+    {
+        return $query->where('is_Active', true);
+    }
 }

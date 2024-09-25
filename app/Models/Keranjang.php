@@ -14,9 +14,9 @@ class Keranjang extends Model
         
     ];
 
-    public function barang()
-{
-    return $this->belongsTo(Barang::class, 'barang_id');
-}
+    public function metodePembayaran()
+    {
+        return $this->belongsTo(MetodePembayaran::class, 'id');
+    }
 
 }
