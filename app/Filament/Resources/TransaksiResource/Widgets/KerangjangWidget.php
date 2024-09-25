@@ -18,7 +18,7 @@ class KerangjangWidget extends BaseWidget
                 Keranjang::query()
             )
             ->columns([
-    
+
                     Tables\Columns\TextColumn::make('kode')
                         ->label('Kode Barang'),
                     Tables\Columns\TextColumn::make('kategori')
