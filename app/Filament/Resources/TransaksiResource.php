@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\TransaksiResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransaksiResource\RelationManagers;
+use App\Filament\Resources\TransaksiResource\Widgets\TransaksiWidget;
 
 class TransaksiResource extends Resource
 {
@@ -85,14 +86,13 @@ class TransaksiResource extends Resource
                     })
                     ->icon('heroicon-s-plus-circle'),
             ])
-            ->bulkActions([
-            ]);
+            ->bulkActions([]);
     }
-
-    public static function getRelations(): array
+    
+    public static function getWidgets(): array
     {
         return [
-            //
+            TransaksiWidget::class,
         ];
     }
 
