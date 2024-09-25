@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\TransaksiResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransaksiResource\RelationManagers;
+use App\Filament\Resources\TransaksiResource\Widgets\TransaksiWidget;
 
 
 class TransaksiResource extends Resource
@@ -51,20 +52,20 @@ class TransaksiResource extends Resource
                     ->money('IDR')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('stok')
-                    ->hidden(fn ($livewire) => $livewire->activeTab === 'Keranjang')
+                    ->hidden(fn ($livewire) => $livewire->activeTab === "1")
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('diskon')
-                    ->hidden(fn ($livewire) => $livewire->activeTab === 'Keranjang')
+                ->hidden(fn ($livewire) => $livewire->activeTab === "1")
                     ->numeric()
                     ->suffix('%')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('quantity')
-                    ->hidden(fn ($livewire) => $livewire->activeTab === 'List Barang')
+                    ->hidden(fn ($livewire) => $livewire->activeTab === "0")
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_harga')
-                    ->hidden(fn ($livewire) => $livewire->activeTab === 'List Barang')
+                    ->hidden(fn ($livewire) => $livewire->activeTab === "0")
                     ->numeric()
                     ->money('IDR')
                     ->sortable(),
@@ -75,13 +76,38 @@ class TransaksiResource extends Resource
             ])
             
             ->actions([
-            
-            Action::make('addToCart')
-            ->label('Add')
-            ->button()
-            ->form([
-            TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
-          ])
+                Action::make('Edit')
+                    ->visible(fn ($livewire) => $livewire->activeTab == 1)
+                    ->label('Edit')
+                    ->icon('heroicon-m-pencil-square')
+                    ->form([
+                        TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
+                    ])
+                    ->action(function($record, $data){
+                        $keranjangs = Keranjang::with('barang')->where('barangs.id', $id)->get();
+                        if ($keranjang) {
+                            $keranjang->update([
+                                'quantity' => $data['quantity'],
+                                'total_harga' => $record->harga_jual * $data['quantity'] * (1 - $record->diskon / 100),
+                            ]);
+                        }
+                    }),
+                Action::make('Delete')
+                    ->visible(fn ($livewire) => $livewire->activeTab == 1)
+                    ->label('Hapus')
+                    ->color('danger')
+                    ->icon('heroicon-o-trash')
+                    ->form([
+                        TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
+                    ]),
+
+                Action::make('addToCart')
+                ->hidden(fn ($livewire) => $livewire->activeTab == 1)
+                    ->label('Add')
+                    ->button()
+                    ->form([
+                        TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
+                    ])
                     ->action(function ($record, $data) {
                         Keranjang::create([
                             'kode' => $record->kode,
@@ -100,9 +126,9 @@ class TransaksiResource extends Resource
                     })
                     ->icon('heroicon-s-plus-circle'),
             ])
-            ->bulkActions([
-            ]);
+            ->bulkActions([]);
     }
+
     // public static function table(Table $table): Table
     // {
     //     return $table
@@ -159,10 +185,12 @@ class TransaksiResource extends Resource
     // }
 
 
-    public static function getRelations(): array
+    
+    public static function getWidgets(): array
+
     {
         return [
-            //
+            TransaksiWidget::class,
         ];
     }
 

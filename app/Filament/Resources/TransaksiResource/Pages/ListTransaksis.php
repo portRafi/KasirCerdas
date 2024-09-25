@@ -58,4 +58,11 @@ class ListTransaksis extends ListRecords
 
         return [];
     }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            TransaksiResource\Widgets\TransaksiWidget::class,
+        ];
+    }
 }

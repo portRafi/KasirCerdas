@@ -11,5 +11,6 @@ class Barang extends Model
 
     protected $guarded = [
         'id',
+        
     ];
 }
