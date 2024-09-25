@@ -50,20 +50,20 @@ class TransaksiResource extends Resource
                     ->money('IDR')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('stok')
-                    ->hidden(fn ($livewire) => $livewire->activeTab === "1")
+                    ->hidden(fn ($livewire) => $livewire->activeTab === "Keranjang")
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('diskon')
-                    ->hidden(fn ($livewire) => $livewire->activeTab === "1")
+                    ->hidden(fn ($livewire) => $livewire->activeTab === "Keranjang")
                     ->numeric()
                     ->suffix('%')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('quantity')
-                    ->hidden(fn ($livewire) => $livewire->activeTab === "0")
+                    ->hidden(fn ($livewire) => $livewire->activeTab === "List Barang")
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_harga')
-                    ->hidden(fn ($livewire) => $livewire->activeTab === "0")
+                    ->hidden(fn ($livewire) => $livewire->activeTab === "List Barang")
                     ->numeric()
                     ->money('IDR')
                     ->sortable(),
