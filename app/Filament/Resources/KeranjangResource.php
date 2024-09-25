@@ -45,9 +45,34 @@ class KeranjangResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
+
+            ->action(function($record, $data){
+                $keranjangs = Keranjang::with('barang')->where('barangs.id', $id)->get();
+                if ($keranjang) {
+                    $keranjang->update([
+                        'quantity' => $data['quantity'],
+                        'total_harga' => $record->harga_jual * $data['quantity'] * (1 - $record->diskon / 100),
+                    ]);
+                }
+            })
+            // ->actions([
+            //     ->action(function ($record, $data) {
+            //         Keranjang::create([
+            //             'kode' => $record->kode,
+            //             'nama' => $record->nama,
+            //             'kategori' => $record->kategori,
+            //             'harga_jual' => $record->harga_jual,
+            //             'total_harga' => $record->harga_jual * $data['quantity'] * (1 - $record->diskon / 100),
+            //             'kode_barang' => $record->kode_barang,
+            //             'quantity' => $data['quantity'],
+            //         ]);
+            //         Notification::make()
+            //             ->title('Barang Dimasukkan ke Keranjang')
+            //             ->icon('heroicon-s-shopping-bag')
+            //             ->iconColor('success')
+            //             ->send();
+            //     })
+            // ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

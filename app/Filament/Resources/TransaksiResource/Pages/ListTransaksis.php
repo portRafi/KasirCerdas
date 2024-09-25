@@ -34,6 +34,7 @@ class ListTransaksis extends ListRecords
     {
         return [
             TransaksiResource\Widgets\TransaksiWidget::class,
+            TransaksiResource\Widgets\KerangjangWidget::class,
         ];
     }
 }
