@@ -17,6 +17,7 @@ use App\Filament\Resources\TransaksiResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransaksiResource\RelationManagers;
 
+
 class TransaksiResource extends Resource
 {
     protected static ?string $model = Barang::class;
@@ -72,13 +73,15 @@ class TransaksiResource extends Resource
                 //
                 //
             ])
+            
             ->actions([
-                Action::make('addToCart')
-                    ->label('Add')
-                    ->button()
-                    ->form([
-                        TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
-                    ])
+            
+            Action::make('addToCart')
+            ->label('Add')
+            ->button()
+            ->form([
+            TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
+          ])
                     ->action(function ($record, $data) {
                         Keranjang::create([
                             'kode' => $record->kode,
@@ -96,7 +99,7 @@ class TransaksiResource extends Resource
                             ->send();
                     })
                     ->icon('heroicon-s-plus-circle'),
-            ])  
+            ])
             ->bulkActions([
             ]);
     }
@@ -169,6 +172,7 @@ class TransaksiResource extends Resource
     {
         return [
             'index' => Pages\ListTransaksis::route('/'),
+            
         ];
     }
 }

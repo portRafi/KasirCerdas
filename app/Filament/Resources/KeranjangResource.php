@@ -39,7 +39,7 @@ class KeranjangResource extends Resource
                     ->label('Nama Barang'),
                 Tables\Columns\TextColumn::make('quantity')
                     ->label('Quantity'),
-                Tables\Columns\TextColumn::make('total_harga')
+                Tables\Columns\TextColumn::make('total_harga')  
                     ->label('Total Harga'),
             ])
             ->filters([
