@@ -81,7 +81,7 @@ class TransaksiResource extends Resource
             
             ->actions([
                 Action::make('Edit')
-                    ->visible(fn ($livewire) => $livewire->activeTab == 1)
+                    ->visible(fn ($livewire) => $livewire->activeTab == 'Keranjang')
                     ->label('Edit')
                     ->icon('heroicon-m-pencil-square')
                     ->form([
@@ -97,7 +97,7 @@ class TransaksiResource extends Resource
                         }
                     }),
                 Action::make('Delete')
-                    ->visible(fn ($livewire) => $livewire->activeTab == 1)
+                    ->visible(fn ($livewire) => $livewire->activeTab == 'Keranjang')
                     ->label('Hapus')
                     ->color('danger')
                     ->icon('heroicon-o-trash')
@@ -106,7 +106,7 @@ class TransaksiResource extends Resource
                     ]),
 
                 Action::make('addToCart')
-                ->hidden(fn ($livewire) => $livewire->activeTab == 1)
+                ->hidden(fn ($livewire) => $livewire->activeTab == 'Keranjang')
                     ->label('Add')
                     ->button()
                     ->form([
