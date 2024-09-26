@@ -70,14 +70,16 @@ class TransaksiResource extends Resource
                         TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
                     ])
                     ->action(function ($record, $data) {
+                        $totDiskon = $record->harga_jual * ($record->diskon / 100);
                         Keranjang::create([
                             'kode' => $record->kode,
                             'nama' => $record->nama,
                             'kategori' => $record->kategori,
                             'harga_jual' => $record->harga_jual,
-                            'total_harga' => $record->harga_jual * $data['quantity'] * (1 - $record->diskon / 100),
+                            'total_harga' => $record->harga_jual * $data['quantity'] - $totDiskon,
                             'kode_barang' => $record->kode_barang,
                             'quantity' => $data['quantity'],
+                            'diskon' => $record->diskon
                         ]);
                         Notification::make()
                             ->title('Barang Dimasukkan ke Keranjang')
