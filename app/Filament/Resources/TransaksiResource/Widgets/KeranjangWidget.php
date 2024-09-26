@@ -3,17 +3,18 @@
 namespace App\Filament\Resources\TransaksiResource\Widgets;
 
 use Filament\Tables;
+use App\Models\Pajak;
 use App\Models\Keranjang;
 use Filament\Tables\Table;
+use Filament\Support\RawJs;
 use App\Models\MetodePembayaran;
-use App\Models\Pajak;
-use Filament\Forms\Components\TagsInput;
 use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\SelectAction;
-use Filament\Widgets\TableWidget as BaseWidget;
 use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Widgets\TableWidget as BaseWidget;
 
 class KeranjangWidget extends BaseWidget
 {
@@ -22,7 +23,7 @@ class KeranjangWidget extends BaseWidget
     public function calculateTotalHargaWithPajak($totalHarga)
     {
         $jumlahPajakTotal = Pajak::sum('jumlah_pajak');
-        $jumlahTotalPajak = $totalHarga * $jumlahPajakTotal;
+        $jumlahTotalPajak = $totalHarga * ($jumlahPajakTotal / 100);
         $totalHargaDenganPajak = $totalHarga + $jumlahTotalPajak;
 
         return $totalHargaDenganPajak;
@@ -59,7 +60,38 @@ class KeranjangWidget extends BaseWidget
                     ->label('Metode Pembayaran')
                     ->color('primary')
                     ->options(MetodePembayaran::active()->pluck('nama_mp', 'id')),
-                Action::make('Checkout')
+                Action::make('checkout')
+                    ->label('Checkout')
+                    ->button()
+                    ->form([
+                        TextInput::make('total_harga_after_pajak')
+                            ->label('Total Harga Setelah Pajak')
+                            ->readOnly()
+                            ->mask(RawJs::make('$money($input)'))
+                            ->prefix('IDR')
+                            ->default(function () {
+                                $totalHarga = Keranjang::sum('total_harga') ?: 0;
+                                $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
+
+                                return $totalHargaDenganPajak;
+                            }),
+                        TextInput::make('nama_mp')
+                            ->label('Metode Pembayaran')
+                            ->default(function () {
+                                $totalHarga = Keranjang::sum('total_harga') ?: 0;
+                                $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
+
+                                return $totalHargaDenganPajak;
+                            }),
+                        
+                    ])
+                    ->action(function () {
+                        Notification::make()
+                            ->title('Checkout Processed')
+                            ->icon('heroicon-m-check-circle')
+                            ->iconColor('success')
+                            ->send();
+                    }),
             ])
             ->actions([
                 Action::make('edit')
