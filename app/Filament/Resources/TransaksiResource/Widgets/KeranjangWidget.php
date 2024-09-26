@@ -6,6 +6,8 @@ use Filament\Tables;
 use App\Models\Keranjang;
 use Filament\Tables\Table;
 use App\Models\MetodePembayaran;
+use App\Models\Pajak;
+use Filament\Forms\Components\TagsInput;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -17,9 +19,18 @@ class KeranjangWidget extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full';
 
+    public function calculateTotalHargaWithPajak($totalHarga)
+    {
+        $jumlahPajakTotal = Pajak::sum('jumlah_pajak');
+        $jumlahTotalPajak = $totalHarga * $jumlahPajakTotal;
+        $totalHargaDenganPajak = $totalHarga + $jumlahTotalPajak;
+
+        return $totalHargaDenganPajak;
+    }
+
     public function table(Table $table): Table
     {
-        
+
         return $table
             ->emptyStateHeading('Keranjang Kosong')
             ->emptyStateDescription('Barang yang dimasukkan ke keranjang akan muncul disini')->emptyStateIcon('heroicon-s-shopping-cart')
@@ -35,12 +46,15 @@ class KeranjangWidget extends BaseWidget
                     ->label('Nama Barang'),
                 Tables\Columns\TextColumn::make('quantity')
                     ->label('Quantity'),
+                Tables\Columns\TextColumn::make('diskon')
+                    ->hidden(),
                 Tables\Columns\TextColumn::make('total_harga')
                     ->label('Total Harga')
                     ->money('IDR')
-                    ->summarize(Sum::make()->money('IDR')),
+                    ->summarize(Sum::make()->money('IDR'))
             ])
             ->headerActions([
+
                 SelectAction::make('nama_mp')
                     ->label('Metode Pembayaran')
                     ->color('primary')
@@ -54,11 +68,12 @@ class KeranjangWidget extends BaseWidget
                         TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
                     ])
                     ->action(function ($record, $data) {
+                        $totDiskon = $record->harga_jual * ($record->diskon / 100);
                         $keranjang = Keranjang::find($record->id);
                         if ($keranjang) {
                             $keranjang->update([
                                 'quantity' => $data['quantity'],
-                                'total_harga' => $record->harga_jual * $data['quantity'] * (1 - $record->diskon / 100),
+                                'total_harga' => $record->harga_jual * $data['quantity'] - $totDiskon,
                             ]);
                         }
                         Notification::make()

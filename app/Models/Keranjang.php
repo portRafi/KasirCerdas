@@ -18,5 +18,11 @@ class Keranjang extends Model
     {
         return $this->belongsTo(MetodePembayaran::class, 'id');
     }
+    
+    public function Pajak()
+    {
+        return $this->belongsTo(Pajak::class, 'id');
+    }
+
 
 }
