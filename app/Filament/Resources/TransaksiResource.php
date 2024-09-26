@@ -40,6 +40,7 @@ class TransaksiResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->heading('Point Of Sales')
             ->columns([
                 Tables\Columns\TextColumn::make('kode')
                     ->searchable(),
@@ -48,30 +49,12 @@ class TransaksiResource extends Resource
                 Tables\Columns\TextColumn::make('kategori')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('harga_jual')
-                    ->numeric()
                     ->money('IDR')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('stok')
-                    ->hidden(fn ($livewire) => $livewire->activeTab === "Keranjang")
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('diskon')
-
-                ->hidden(fn ($livewire) => $livewire->activeTab === "1")
-                    ->numeric()
-                    ->hidden(fn ($livewire) => $livewire->activeTab === "Keranjang")
-
-                    ->numeric()
                     ->suffix('%')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('quantity')
-                    ->hidden(fn ($livewire) => $livewire->activeTab === "List Barang")
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('total_harga')
-                    ->hidden(fn ($livewire) => $livewire->activeTab === "List Barang")
-                    ->numeric()
-                    ->money('IDR')
                     ->sortable(),
             ])
             ->filters([
@@ -80,33 +63,7 @@ class TransaksiResource extends Resource
             ])
             
             ->actions([
-                Action::make('Edit')
-                    ->visible(fn ($livewire) => $livewire->activeTab == 'Keranjang')
-                    ->label('Edit')
-                    ->icon('heroicon-m-pencil-square')
-                    ->form([
-                        TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
-                    ])
-                    ->action(function($record, $data){
-                        $keranjangs = Keranjang::with('barang')->where('barangs.id', $id)->get();
-                        if ($keranjang) {
-                            $keranjang->update([
-                                'quantity' => $data['quantity'],
-                                'total_harga' => $record->harga_jual * $data['quantity'] * (1 - $record->diskon / 100),
-                            ]);
-                        }
-                    }),
-                Action::make('Delete')
-                    ->visible(fn ($livewire) => $livewire->activeTab == 'Keranjang')
-                    ->label('Hapus')
-                    ->color('danger')
-                    ->icon('heroicon-o-trash')
-                    ->form([
-                        TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
-                    ]),
-
                 Action::make('addToCart')
-                ->hidden(fn ($livewire) => $livewire->activeTab == 'Keranjang')
                     ->label('Add')
                     ->button()
                     ->form([

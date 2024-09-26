@@ -1,39 +1,31 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\TransaksiResource\Widgets;
 
-use Filament\Forms;
 use Filament\Tables;
-use Filament\Forms\Form;
 use App\Models\Keranjang;
 use Filament\Tables\Table;
-use Filament\Resources\Resource;
+use App\Models\MetodePembayaran;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\KeranjangResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\KeranjangResource\RelationManagers;
+use Filament\Tables\Actions\SelectAction;
+use Filament\Widgets\TableWidget as BaseWidget;
+use Filament\Tables\Columns\Summarizers\Sum;
 
-class KeranjangResource extends Resource
+class KeranjangWidget extends BaseWidget
 {
-    protected static ?string $model = Keranjang::class;
+    protected int | string | array $columnSpan = 'full';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-    public static function form(Form $form): Form
+    public function table(Table $table): Table
     {
-        return $form
-            ->schema([
-                //
-            ]);
-    }
-
-    public static function table(Table $table): Table
-    {
+        
         return $table
-            
+            ->emptyStateHeading('Keranjang Kosong')
+            ->emptyStateDescription('Barang yang dimasukkan ke keranjang akan muncul disini')->emptyStateIcon('heroicon-s-shopping-cart')
+            ->query(
+                Keranjang::query()
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('kode')
                     ->label('Kode Barang'),
@@ -43,20 +35,25 @@ class KeranjangResource extends Resource
                     ->label('Nama Barang'),
                 Tables\Columns\TextColumn::make('quantity')
                     ->label('Quantity'),
-                Tables\Columns\TextColumn::make('total_harga')  
-                    ->label('Total Harga'),
+                Tables\Columns\TextColumn::make('total_harga')
+                    ->label('Total Harga')
+                    ->money('IDR')
+                    ->summarize(Sum::make()->money('IDR')),
             ])
-            ->filters([
-                //
+            ->headerActions([
+                SelectAction::make('nama_mp')
+                    ->label('Metode Pembayaran')
+                    ->color('primary')
+                    ->options(MetodePembayaran::active()->pluck('nama_mp', 'id')),
+                Action::make('Checkout')
             ])
             ->actions([
                 Action::make('edit')
                     ->label('Edit')
-                    ->button()
                     ->form([
                         TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
                     ])
-                    ->action(function($record, $data){
+                    ->action(function ($record, $data) {
                         $keranjang = Keranjang::find($record->id);
                         if ($keranjang) {
                             $keranjang->update([
@@ -66,32 +63,17 @@ class KeranjangResource extends Resource
                         }
                         Notification::make()
                             ->title('Quantity Barang Di edit')
-                            ->icon('heroicon-s-shopping-bag')
+                            ->icon('heroicon-m-pencil-square')
                             ->iconColor('success')
                             ->send();
                     })
-                    ->icon('heroicon-s-plus-circle'),
+                    ->icon('heroicon-m-pencil-square'),
             ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListKeranjangs::route('/'),
-            'create' => Pages\CreateKeranjang::route('/create'),
-            'edit' => Pages\EditKeranjang::route('/{record}/edit'),
-        ];
     }
 }
