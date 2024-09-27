@@ -24,59 +24,38 @@ class DataTransaksiResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('id_struk')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('email_staff')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DatePicker::make('tanggal')
-                    ->required(),
-                Forms\Components\TextInput::make('metode_pembayaran')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('keuntungan')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('total_tagihan')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('yang_dibayarkan')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('label')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+            ->schema([]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id_struk')
+                Tables\Columns\TextColumn::make('kode_transaksi')
+                    ->label('Kode Transaksi')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('email_staff')
+                    ->label('Email Staff')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('tanggal')
-                    ->date()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('metode_pembayaran')
+                    ->label('Metode Pembayaran')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('total_harga')
+                    ->label('Total Harga')
+                    ->numeric()
+                    ->money('IDR')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('total_harga_after_pajak')
+                    ->label('Total Harga After Pajak')
+                    ->numeric()
+                    ->money('IDR')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('keuntungan')
+                    ->label('Keuntungan')
                     ->numeric()
+                    ->money('IDR')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('total_tagihan')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('yang_dibayarkan')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('label')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -90,7 +69,6 @@ class DataTransaksiResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -115,8 +93,6 @@ class DataTransaksiResource extends Resource
     {
         return [
             'index' => Pages\ListDataTransaksis::route('/'),
-            'create' => Pages\CreateDataTransaksi::route('/create'),
-            'edit' => Pages\EditDataTransaksi::route('/{record}/edit'),
         ];
     }
 }
