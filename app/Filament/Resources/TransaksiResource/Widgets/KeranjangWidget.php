@@ -7,6 +7,7 @@ use App\Models\Pajak;
 use App\Models\Keranjang;
 use Filament\Tables\Table;
 use Filament\Support\RawJs;
+use App\Models\DataTransaksi;
 use App\Models\MetodePembayaran;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\TagsInput;
@@ -85,7 +86,13 @@ class KeranjangWidget extends BaseWidget
                             }),
                         
                     ])
-                    ->action(function () {
+                    ->action(function ($record, $data) {
+                        $DataTransaksi = DataTransaksi::find($record->id);
+                        if ($DataTransaksi) {
+                            $DataTransaksi->update([
+                                'total_harga' => $data['total_harga'],
+                            ]);
+                        }
                         Notification::make()
                             ->title('Checkout Processed')
                             ->icon('heroicon-m-check-circle')
