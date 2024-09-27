@@ -10,6 +10,7 @@ use Filament\Support\RawJs;
 use App\Models\DataTransaksi;
 use App\Models\MetodePembayaran;
 use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -56,17 +57,12 @@ class KeranjangWidget extends BaseWidget
                     ->summarize(Sum::make()->money('IDR'))
             ])
             ->headerActions([
-
-                SelectAction::make('nama_mp')
-                    ->label('Metode Pembayaran')
-                    ->color('primary')
-                    ->options(MetodePembayaran::active()->pluck('nama_mp', 'id')),
                 Action::make('checkout')
                     ->label('Checkout')
                     ->button()
                     ->form([
                         TextInput::make('total_harga_after_pajak')
-                            ->label('Total Harga Setelah Pajak')
+                            ->label('Total Harga Setelah Pajak (readonly)')
                             ->readOnly()
                             ->mask(RawJs::make('$money($input)'))
                             ->prefix('IDR')
@@ -76,15 +72,10 @@ class KeranjangWidget extends BaseWidget
 
                                 return $totalHargaDenganPajak;
                             }),
-                        TextInput::make('nama_mp')
-                            ->label('Metode Pembayaran')
-                            ->default(function () {
-                                $totalHarga = Keranjang::sum('total_harga') ?: 0;
-                                $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
-
-                                return $totalHargaDenganPajak;
-                            }),
-                        
+                        Select::make('metode_pembayaran')
+                            ->required()
+                            ->label('Pilih Metode Pembayaran')
+                            ->options(MetodePembayaran::active()->pluck('nama_mp', 'id')),
                     ])
                     ->action(function ($record, $data) {
                         $DataTransaksi = DataTransaksi::find($record->id);
