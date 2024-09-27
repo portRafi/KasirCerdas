@@ -26,11 +26,14 @@ class PajakResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama_pajak')
+                    Forms\Components\TextInput::make('nama_pajak')
+                    ->placeholder('Nama Pajak')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('jumlah_pajak')
-                ->prefix('Rp')
+                    ->placeholder('Jumlah Pajak')
+                    ->numeric()
+                    ->suffix('%')
                     ->required()
                     ->numeric(),
             ]);
