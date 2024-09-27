@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('kategori');
+            $table->decimal('harga_beli', 10,2);
             $table->decimal('harga_jual', 10,2);
             $table->decimal('total_harga', 10,2);
             $table->string('kode');

@@ -53,6 +53,9 @@ class TransaksiResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('kategori')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('harga_beli')
+                    ->money('IDR')
+                    ->hidden(),
                 Tables\Columns\TextColumn::make('harga_jual')
                     ->money('IDR')
                     ->sortable(),
@@ -80,7 +83,8 @@ class TransaksiResource extends Resource
                             'kode' => $record->kode,
                             'nama' => $record->nama,
                             'kategori' => $record->kategori,
-                            'harga_jual' => $record->harga_jual,
+                            'harga_beli' => $record->harga_beli * $data['quantity'],
+                            'harga_jual' => $record->harga_jual * $data['quantity'],
                             'total_harga' => $record->harga_jual * $data['quantity'] - $totDiskon,
                             'kode_barang' => $record->kode_barang,
                             'quantity' => $data['quantity'],

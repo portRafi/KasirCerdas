@@ -34,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->brandName('Filament Demo')
+            ->brandName('KasirCerdas')
             ->font('Poppins')
             ->login()
             ->colors([
