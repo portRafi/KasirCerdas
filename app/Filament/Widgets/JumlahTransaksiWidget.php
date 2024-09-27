@@ -21,11 +21,11 @@ class JumlahTransaksiWidget extends BaseWidget
                 ->descriptionIcon('heroicon-s-circle-stack', IconPosition::Before)
                 ->chart([DataTransaksi::count()])
                 ->color('primary'),
-            Stat::make('Keuntungan', 'Rp.'.$totalKeuntungan)
+            Stat::make('Keuntungan', 'Rp.'.number_format($totalKeuntungan, 0, ',', '.'))
                 ->description('Data Keuntungan')
                 ->descriptionIcon('heroicon-s-circle-stack', IconPosition::Before)
                 ->color('primary'),
-            Stat::make('Pendapatan', 'Rp.'.$totalPendapatan)
+            Stat::make('Pendapatan', 'Rp.'.number_format($totalPendapatan, 0, ',', '.'))
                 ->description('Data Pendapatan')
                 ->descriptionIcon('heroicon-s-circle-stack', IconPosition::Before)
                 ->color('primary'),

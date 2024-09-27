@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\TransaksiResource\Widgets;
 
-use App\Models\BarangAfterCheckout;
 use Filament\Tables;
 use App\Models\Pajak;
 use App\Models\Keranjang;
@@ -11,7 +10,10 @@ use Filament\Support\RawJs;
 use Illuminate\Support\Str;
 use App\Models\DataTransaksi;
 use App\Models\MetodePembayaran;
+use App\Models\BarangAfterCheckout;
+use App\Models\DataPajak;
 use Filament\Tables\Actions\Action;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
@@ -43,8 +45,10 @@ class KeranjangWidget extends BaseWidget
                 Keranjang::query()
             )
             ->columns([
-                Tables\Columns\TextColumn::make('harga_beli'),
-                Tables\Columns\TextColumn::make('harga_jual'),
+                Tables\Columns\TextColumn::make('harga_beli')
+                    ->hidden(),
+                Tables\Columns\TextColumn::make('harga_jual')
+                    ->hidden(),
                 Tables\Columns\TextColumn::make('kode')
                     ->label('Kode Barang'),
                 Tables\Columns\TextColumn::make('kategori')
@@ -79,19 +83,43 @@ class KeranjangWidget extends BaseWidget
                             ->options(MetodePembayaran::active()->pluck('nama_mp', 'id')),
                     ])
                     ->action(function ($record, $data) {
-                        $randomString = Str::random(5);
-                        $keuntungan = Keranjang::all()->sum(function($item) {
-                            return ($item->harga_jual - $item->harga_beli) * $item->quantity;
+                        $randomString = 'KC_' . Str::random(5);
+                        ///////////
+                        //////////
+                        //keuntungan setan ajg ngebug sialan jam berapa ini anjay
+                        ///////////
+                        //////////
+                        $keuntungan = Keranjang::all()->sum(function ($item) {
+                            if ($item->diskon < 1) {
+                                $totalHargaJual = $item->harga_jual * $item->quantity * (1 - ($item->diskon / 100));
+                            } else {
+                                $totalHargaJual = $item->harga_jual * $item->quantity * ($item->diskon / 100);
+                            }
+                            $totalHargaBeli = $item->harga_beli * $item->quantity;
+                            return $totalHargaJual - $totalHargaBeli;
                         });
+                        ///////////
+                        //////////
+                        //keuntungan setan ajg ngebug sialan jam berapa ini anjay
+                        ///////////
+                        //////////
                         $metodePembayaran = MetodePembayaran::find($data['metode_pembayaran'])->nama_mp;
+                        $emailStaff = Auth::user()->email;
+                        $totalHarga = Keranjang::sum('total_harga');
+                        $totalHargaAfterPajak = $data['total_harga_after_pajak'];
+                        $jumlahPajak = $totalHargaAfterPajak - $totalHarga;
+
                         DataTransaksi::create([
                             'kode_transaksi' => $randomString,
-                            //todo
-                            'email_staff' => $randomString, 
+                            'email_staff' => $emailStaff,
                             'metode_pembayaran' => $metodePembayaran,
-                            'total_harga' => Keranjang::sum('total_harga'),
-                            'total_harga_after_pajak' => $data['total_harga_after_pajak'],
+                            'total_harga' => $totalHarga,
+                            'total_harga_after_pajak' => $totalHargaAfterPajak,
                             'keuntungan' => $keuntungan
+                        ]);
+                        DataPajak::create([
+                            'kode_transaksi' => $randomString,
+                            'jumlah_pajak' => $jumlahPajak
                         ]);
                         //todo
                         // BarangAfterCheckout::create([
