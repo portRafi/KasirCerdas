@@ -20,7 +20,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 class KeranjangWidget extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full';
-
+    
     public function calculateTotalHargaWithPajak($totalHarga)
     {
         $jumlahPajakTotal = Pajak::sum('jumlah_pajak');

@@ -55,6 +55,12 @@ class User extends Authenticatable implements HasAvatar
         'id',
     ];
 
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password'] = bcrypt($password);
+    }
+
+
     // public function addres() : Morphone 
     // {
     //     return $this->morphone(related:addres::class,name:'addresable');

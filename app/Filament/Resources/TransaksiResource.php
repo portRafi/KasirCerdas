@@ -36,6 +36,11 @@ class TransaksiResource extends Resource
             ]);
     }
 
+//     public static function getRecord($id): ?Model
+// {
+//     return static::getModel()::find($id);
+// }
+
 
     public static function table(Table $table): Table
     {
