@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('metode_pembayaran');
             $table->decimal('keuntungan', 10,2);            
             $table->decimal('total_tagihan', 10,2);
-            
             $table->string('label');
             $table->timestamps();
         });
