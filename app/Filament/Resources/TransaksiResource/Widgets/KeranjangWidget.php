@@ -122,6 +122,7 @@ class KeranjangWidget extends BaseWidget
                         //     'quantity' => $record->quantity,
                         //     'total_harga' => $record->total_harga,
                         // ]);
+                        //
                         Keranjang::truncate();
                         Notification::make()
                             ->title('Checkout Processed')
