@@ -84,23 +84,25 @@ class KeranjangWidget extends BaseWidget
                     ])
                     ->action(function ($record, $data) {
                         $randomString = 'KC_' . Str::random(5);
-                        
+                        ///////////
+                        //////////
+                        //keuntungan setan ajg ngebug sialan jam berapa ini anjay
+                        ///////////
+                        //////////
                         $keuntungan = Keranjang::all()->sum(function ($item) {
-                            // Perhitungan harga jual dengan diskon dalam bentuk persentase
-                            if ($item->diskon > 0 && $item->diskon <= 100) {
+                            if ($item->diskon < 1) {
                                 $totalHargaJual = $item->harga_jual * $item->quantity * (1 - ($item->diskon / 100));
                             } else {
-                                // Jika diskon tidak valid (lebih dari 100 atau kurang dari 0), gunakan harga jual tanpa diskon
-                                $totalHargaJual = $item->harga_jual * $item->quantity;
+                                $totalHargaJual = $item->harga_jual * $item->quantity * ($item->diskon / 100);
                             }
-                        
-                            // Menghitung total harga beli
                             $totalHargaBeli = $item->harga_beli * $item->quantity;
-                        
-                            // Menghitung keuntungan per item
                             return $totalHargaJual - $totalHargaBeli;
                         });
-                       
+                        ///////////
+                        //////////
+                        //keuntungan setan ajg ngebug sialan jam berapa ini anjay
+                        ///////////
+                        //////////
                         $metodePembayaran = MetodePembayaran::find($data['metode_pembayaran'])->nama_mp;
                         $emailStaff = Auth::user()->email;
                         $totalHarga = Keranjang::sum('total_harga');
@@ -143,14 +145,14 @@ class KeranjangWidget extends BaseWidget
                         TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
                     ])
                     ->action(function ($record, $data) {
-                        $totalDiskon = $record->harga_jual * ($record->diskon / 100);
+                        $totDiskon = $record->harga_jual * ($record->diskon / 100);
                         $keranjang = Keranjang::find($record->id);
                         if ($keranjang) {
                             $keranjang->update([
                                 'quantity' => $data['quantity'],
                                 'harga_beli' => $record->harga_beli * $data['quantity'],
                                 'harga_jual' => $record->harga_jual * $data['quantity'],
-                                'total_harga' => $record->harga_jual * $data['quantity'] - $totalDiskon,
+                                'total_harga' => $record->harga_jual * $data['quantity'] - $totDiskon,
                             ]);
                         }
                         Notification::make()

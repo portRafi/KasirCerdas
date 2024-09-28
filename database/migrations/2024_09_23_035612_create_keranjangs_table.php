@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('total_harga', 10,2);
             $table->string('kode');
             $table->integer('quantity');
+            $table->integer('diskon');
             $table->timestamps();
         });
     }
