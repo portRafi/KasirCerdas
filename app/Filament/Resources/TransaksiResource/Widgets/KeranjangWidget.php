@@ -86,11 +86,11 @@ class KeranjangWidget extends BaseWidget
                         $randomString = 'KC_' . Str::random(5);
                         
                         $keuntungan = Keranjang::all()->sum(function ($item) {
-                            
+                            // Perhitungan harga jual dengan diskon dalam bentuk persentase
                             if ($item->diskon > 0 && $item->diskon <= 100) {
                                 $totalHargaJual = $item->harga_jual * $item->quantity * (1 - ($item->diskon / 100));
                             } else {
-                                
+                                // Jika diskon tidak valid (lebih dari 100 atau kurang dari 0), gunakan harga jual tanpa diskon
                                 $totalHargaJual = $item->harga_jual * $item->quantity;
                             }
                         
@@ -100,7 +100,7 @@ class KeranjangWidget extends BaseWidget
                             // Menghitung keuntungan per item
                             return $totalHargaJual - $totalHargaBeli;
                         });
-                
+                       
                         $metodePembayaran = MetodePembayaran::find($data['metode_pembayaran'])->nama_mp;
                         $emailStaff = Auth::user()->email;
                         $totalHarga = Keranjang::sum('total_harga');
