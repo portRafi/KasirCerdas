@@ -45,8 +45,10 @@ class KeranjangWidget extends BaseWidget
                 Keranjang::query()
             )
             ->columns([
+                Tables\Columns\TextColumn::make('diskon')
+                ->hidden(),
                 Tables\Columns\TextColumn::make('harga_beli')
-                    ->hidden(),
+                ->hidden(),
                 Tables\Columns\TextColumn::make('harga_jual')
                     ->hidden(),
                 Tables\Columns\TextColumn::make('kode')
@@ -84,25 +86,15 @@ class KeranjangWidget extends BaseWidget
                     ])
                     ->action(function ($record, $data) {
                         $randomString = 'KC_' . Str::random(5);
-                        ///////////
-                        //////////
-                        //keuntungan setan ajg ngebug sialan jam berapa ini anjay
-                        ///////////
-                        //////////
                         $keuntungan = Keranjang::all()->sum(function ($item) {
-                            if ($item->diskon < 1) {
-                                $totalHargaJual = $item->harga_jual * $item->quantity * (1 - ($item->diskon / 100));
+                            if ($item->diskon === 0) {
+                                $totalHargaJual = $item->harga_jual * $item->quantity - ($item->harga_jual * (1 - ($item->diskon / 100)));
                             } else {
-                                $totalHargaJual = $item->harga_jual * $item->quantity * ($item->diskon / 100);
+                                $totalHargaJual = $item->harga_jual * $item->quantity - ($item->harga_jual * ($item->diskon / 100));
                             }
                             $totalHargaBeli = $item->harga_beli * $item->quantity;
                             return $totalHargaJual - $totalHargaBeli;
                         });
-                        ///////////
-                        //////////
-                        //keuntungan setan ajg ngebug sialan jam berapa ini anjay
-                        ///////////
-                        //////////
                         $metodePembayaran = MetodePembayaran::find($data['metode_pembayaran'])->nama_mp;
                         $emailStaff = Auth::user()->email;
                         $totalHarga = Keranjang::sum('total_harga');
