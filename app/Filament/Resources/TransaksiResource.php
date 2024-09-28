@@ -26,7 +26,7 @@ class TransaksiResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
     protected static ?string $activeNavigationIcon = 'heroicon-s-building-storefront';
     protected static ?string $navigationLabel = 'POS / KASIR';
-    protected static ?string $title = 'Point Of Sale';
+    protected static ?string $title = 'Point Of Sales';
 
     public static function form(Form $form): Form
     {
@@ -155,7 +155,7 @@ class TransaksiResource extends Resource
     //         ]);
     // }
 
-
+    
     
     public static function getWidgets(): array
 
@@ -165,6 +165,10 @@ class TransaksiResource extends Resource
         ];
     }
 
+    public function render()
+    {
+        return view('livewire.TransaksiResource.php');
+    }
 
 
     public static function getPages(): array
