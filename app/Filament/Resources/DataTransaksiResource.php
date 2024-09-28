@@ -25,67 +25,29 @@ class DataTransaksiResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('id_struk')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('email_staff')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DatePicker::make('tanggal')
-                    ->required(),
-                Forms\Components\TextInput::make('metode_pembayaran')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('keuntungan')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('total_tagihan')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('yang_dibayarkan')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('label')
-                    ->required()
-                    ->maxLength(255),
+                //
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('id_struk')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('email_staff')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('tanggal')
-                    ->date()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('metode_pembayaran')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('keuntungan')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('total_tagihan')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('yang_dibayarkan')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('label')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
+        ->columns([
+            Tables\Columns\TextColumn::make('kode')
+                ->label('Kode Barang'),
+            Tables\Columns\TextColumn::make('kategori')
+                ->label('Kategori'),
+            Tables\Columns\TextColumn::make('nama')
+                ->label('Nama Barang'),
+            Tables\Columns\TextColumn::make('quantity')
+                ->label('Quantity'),
+            Tables\Columns\TextColumn::make('diskon')
+                ->hidden(),
+            Tables\Columns\TextColumn::make('total_harga')
+                ->label('Total Harga')
+                ->money('IDR')
+                ->summarize(Sum::make()->money('IDR'))
+        ])
             ->filters([
                 //
             ])
@@ -106,10 +68,7 @@ class DataTransaksiResource extends Resource
         ];
     }
 
-    public static function canCreate(): bool
-    {
-        return false;
-    }
+    
 
     public static function getPages(): array
     {

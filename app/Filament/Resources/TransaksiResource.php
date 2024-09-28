@@ -32,15 +32,9 @@ class TransaksiResource extends Resource
     {
         return $form
             ->schema([
-                //
+
             ]);
     }
-
-//     public static function getRecord($id): ?Model
-// {
-//     return static::getModel()::find($id);
-// }
-
 
     public static function table(Table $table): Table
     {
@@ -75,13 +69,13 @@ class TransaksiResource extends Resource
                         TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
                     ])
                     ->action(function ($record, $data) {
-                        $totDiskon = $record->harga_jual * ($record->diskon / 100);
+                        $totalDiskon = $record->harga_jual * ($record->diskon / 100);
                         Keranjang::create([
                             'kode' => $record->kode,
                             'nama' => $record->nama,
                             'kategori' => $record->kategori,
                             'harga_jual' => $record->harga_jual,
-                            'total_harga' => $record->harga_jual * $data['quantity'] - $totDiskon,
+                            'total_harga' => $record->harga_jual * $data['quantity'] - $totalDiskon,
                             'kode_barang' => $record->kode_barang,
                             'quantity' => $data['quantity'],
                             'diskon' => $record->diskon
