@@ -11,21 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('keranjangs', function (Blueprint $table) {
+        Schema::create('barang_after_checkouts', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
+            $table->string('kode');
             $table->string('kategori');
-            $table->decimal('harga_beli', 10,2);
+            $table->string('nama');
+            $table->integer('quantity');
             $table->decimal('harga_jual', 10,2);
             $table->decimal('total_harga', 10,2);
-            $table->string('kode');
-            $table->integer('quantity');
             $table->timestamps();
         });
     }
-    
+
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::dropIfExists('keranjangs');
+        Schema::dropIfExists('barang_after_checkouts');
     }
 };
