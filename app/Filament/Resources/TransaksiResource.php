@@ -77,15 +77,9 @@ class TransaksiResource extends Resource
                             'kode' => $record->kode,
                             'nama' => $record->nama,
                             'kategori' => $record->kategori,
-
+                            'harga_beli' => $record->harga_beli,
                             'harga_jual' => $record->harga_jual,
                             'total_harga' => $record->harga_jual * $data['quantity'] - $totalDiskon,
-
-                            'harga_beli' => $record->harga_beli * $data['quantity'],
-                            'harga_jual' => $record->harga_jual * $data['quantity'],
-                            'total_harga' => $record->harga_jual * $data['quantity'] - $totalDiskon,
-
-                            'kode_barang' => $record->kode_barang,
                             'quantity' => $data['quantity'],
                             'diskon' => $record->diskon
                         ]);
