@@ -38,23 +38,6 @@ class DataTransaksiResource extends Resource
     {
         return $table
 
-        ->columns([
-            Tables\Columns\TextColumn::make('kode')
-                ->label('Kode Barang'),
-            Tables\Columns\TextColumn::make('kategori')
-                ->label('Kategori'),
-            Tables\Columns\TextColumn::make('nama')
-                ->label('Nama Barang'),
-            Tables\Columns\TextColumn::make('quantity')
-                ->label('Quantity'),
-            Tables\Columns\TextColumn::make('diskon')
-                ->hidden(),
-            Tables\Columns\TextColumn::make('total_harga')
-                ->label('Total Harga')
-                ->money('IDR')
-                ->summarize(Sum::make()->money('IDR'))
-        ])
-
             ->columns([
                 Tables\Columns\TextColumn::make('kode_transaksi')
                     ->label('Kode Transaksi')
@@ -73,6 +56,11 @@ class DataTransaksiResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_harga_after_pajak')
                     ->label('Total Harga After Pajak')
+                    ->numeric()
+                    ->money('IDR')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('selisih_pajak')
+                    ->label('Selisih Pajak')
                     ->numeric()
                     ->money('IDR')
                     ->sortable(),

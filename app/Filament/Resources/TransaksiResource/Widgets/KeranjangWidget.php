@@ -104,13 +104,13 @@ class KeranjangWidget extends BaseWidget
                             'metode_pembayaran' => $metodePembayaran,
                             'total_harga' => $totalHarga,
                             'total_harga_after_pajak' => $totalHargaAfterPajak,
+                            'selisih_pajak' => $totalHargaAfterPajak - $totalHarga,
                             'keuntungan' => $keuntungan
                         ]);
                         DataPajak::create([
                             'kode_transaksi' => $randomString,
                             'jumlah_pajak' => $jumlahPajak
                         ]);
-                        //todo
                         // BarangAfterCheckout::create([
                         //     'kode_transaksi' => $randomString,
                         //     'kode' => $record->kode,
@@ -119,7 +119,7 @@ class KeranjangWidget extends BaseWidget
                         //     'quantity' => $record->quantity,
                         //     'total_harga' => $record->total_harga,
                         // ]);
-                        //
+                        
                         Keranjang::truncate();
                         Notification::make()
                             ->title('Checkout Processed')
