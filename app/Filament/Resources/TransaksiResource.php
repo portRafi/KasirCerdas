@@ -169,7 +169,6 @@ class TransaksiResource extends Resource
     {
         return [
             'index' => Pages\ListTransaksis::route('/'),
-            
         ];
     }
 }
