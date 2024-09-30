@@ -87,11 +87,11 @@ class KeranjangWidget extends BaseWidget
                     ->action(function ($record, $data) {
                         $randomString = 'KC_' . Str::random(5);
                         $keuntungan = Keranjang::all()->groupBy('nama')->map(function ($group) {
-                                $item = $group->first();
-                                $totalHargaJual = ($item->harga_jual * $item->quantity) - ($item->harga_jual * ($item->diskon / 100));
-                                $totalHargaBeli = $item->harga_beli * $item->quantity;
-                                return $totalHargaJual - $totalHargaBeli;
-                            })->sum(); 
+                            $item = $group->first();
+                            $totalHargaJual = ($item->harga_jual * $item->quantity) - ($item->harga_jual * ($item->diskon / 100));
+                            $totalHargaBeli = $item->harga_beli * $item->quantity;
+                            return $totalHargaJual - $totalHargaBeli;
+                        })->sum();
                         $metodePembayaran = MetodePembayaran::find($data['metode_pembayaran'])->nama_mp;
                         $emailStaff = Auth::user()->email;
                         $totalHarga = Keranjang::sum('total_harga');
@@ -111,15 +111,20 @@ class KeranjangWidget extends BaseWidget
                             'kode_transaksi' => $randomString,
                             'jumlah_pajak' => $jumlahPajak
                         ]);
-                        // BarangAfterCheckout::create([
-                        //     'kode_transaksi' => $randomString,
-                        //     'kode' => $record->kode,
-                        //     'kategori' => $record->kategori,
-                        //     'nama' => $record->nama,
-                        //     'quantity' => $record->quantity,
-                        //     'total_harga' => $record->total_harga,
-                        // ]);
-                        
+                        $itemsInCart = Keranjang::all();
+                        foreach ($itemsInCart as $item) {
+                            BarangAfterCheckout::create([
+                                'kode_transaksi' => $randomString,
+                                'kode' => $item->kode,
+                                'kategori' => $item->kategori,
+                                'nama' => $item->nama,
+                                'quantity' => $item->quantity,
+                                'total_harga' => $item->total_harga,
+                                'harga_jual' => $item->harga_jual,
+                                'harga_beli' => $item->harga_beli
+                            ]);
+                        }
+
                         Keranjang::truncate();
                         Notification::make()
                             ->title('Checkout Processed')
