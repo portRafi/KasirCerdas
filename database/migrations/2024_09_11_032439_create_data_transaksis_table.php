@@ -13,17 +13,21 @@ return new class extends Migration
     {
         Schema::create('data_transaksis', function (Blueprint $table) {
             $table->id();
+<<<<<<< HEAD
 
             $table->string('nama');
             $table->integer('quantity');
             $table->string('pembayaran');
             $table->string('total');
 
+=======
+>>>>>>> 1228b616fb78aed21d991bc16d45afa94d12a9bf
             $table->string('kode_transaksi');
             $table->string('email_staff');
             $table->string('metode_pembayaran');
             $table->decimal('total_harga', 10,2);
             $table->decimal('total_harga_after_pajak', 10,2);
+            $table->decimal('selisih_pajak', 10,2);
             $table->decimal('keuntungan', 10,2);            
             $table->timestamps();
         });
