@@ -31,6 +31,7 @@ class DataPajakResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->poll('5s')
             ->columns([
                 Tables\Columns\TextColumn::make('kode_transaksi')
                 ->searchable()
@@ -54,6 +55,11 @@ class DataPajakResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
     }
 
     public static function getRelations(): array

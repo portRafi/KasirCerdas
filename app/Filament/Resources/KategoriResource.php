@@ -35,6 +35,7 @@ class KategoriResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->poll('5s')
             ->columns([
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),

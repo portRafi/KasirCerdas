@@ -23,6 +23,7 @@ use Filament\Tables\Actions\SelectAction;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Widgets\TableWidget as BaseWidget;
 
+
 class KeranjangWidget extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full';
@@ -40,6 +41,7 @@ class KeranjangWidget extends BaseWidget
     {
 
         return $table
+            ->poll('5s')
             ->emptyStateHeading('Keranjang Kosong')
             ->emptyStateDescription('Barang yang dimasukkan ke keranjang akan muncul disini')->emptyStateIcon('heroicon-s-shopping-cart')
             ->query(
@@ -64,6 +66,7 @@ class KeranjangWidget extends BaseWidget
                     ->label('Total Harga')
                     ->money('IDR')
                     ->summarize(Sum::make()->money('IDR'))
+                    
             ])
             ->headerActions([
                 Action::make('checkout')

@@ -39,6 +39,7 @@ class TransaksiResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->poll('5s')
         ->heading('Point Of Sales')
             ->columns([
                 Tables\Columns\TextColumn::make('kode')
@@ -93,63 +94,6 @@ class TransaksiResource extends Resource
             ])
             ->bulkActions([]);
     }
-
-    // public static function table(Table $table): Table
-    // {
-    //     return $table
-    //         ->columns([
-    //             Tables\Columns\TextColumn::make('kode')
-    //                 ->searchable(),
-    //             Tables\Columns\TextColumn::make('nama')
-    //                 ->searchable(),
-    //             Tables\Columns\TextColumn::make('kategori')
-    //                 ->searchable(),
-    //             Tables\Columns\TextColumn::make('harga_jual')
-    //                 ->numeric()
-    //                 ->money('IDR')
-    //                 ->sortable(),
-    //             Tables\Columns\TextColumn::make('stok')
-    //                 ->numeric()
-    //                 ->sortable(),
-    //             Tables\Columns\TextColumn::make('diskon')
-    //                 ->numeric()
-    //                 ->suffix('%')
-    //                 ->sortable(),
-    //         ])
-    //         ->filters([
-    //             //
-    //             //
-    //         ])
-    //         ->actions([
-    //             Action::make('addToCart')
-    //                 ->label('Add')
-    //                 ->button()
-    //                 ->form([
-    //                     TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
-    //                 ])
-    //                 ->action(function ($record, $data) {
-    //                     Keranjang::create([
-    //                         'kode' => $record->kode,
-    //                         'nama' => $record->nama,
-    //                         'kategori' => $record->kategori,
-    //                         'harga_jual' => $record->harga_jual,
-    //                         'total_harga' => $record->harga_jual * $data['quantity'] * (1 - $record->diskon / 100),
-    //                         'kode_barang' => $record->kode_barang,
-    //                         'quantity' => $data['quantity'],
-    //                     ]);
-    //                     Notification::make()
-    //                         ->title('Barang Dimasukkan ke Keranjang')
-    //                         ->icon('heroicon-s-shopping-bag')
-    //                         ->iconColor('success')
-    //                         ->send();
-    //                 })
-    //                 ->icon('heroicon-s-plus-circle'),
-    //         ])
-    //         ->bulkActions([
-    //         ]);
-    // }
-
-    
     
     public static function getWidgets(): array
 
@@ -158,12 +102,6 @@ class TransaksiResource extends Resource
             TransaksiWidget::class,
         ];
     }
-
-    public function render()
-    {
-        return view('livewire.TransaksiResource.php');
-    }
-
 
     public static function getPages(): array
     {

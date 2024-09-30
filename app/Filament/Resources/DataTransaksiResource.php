@@ -14,6 +14,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\Summarizers\Sum;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
+use App\Models\BarangAfterCheckout;
+
+
 
 class DataTransaksiResource extends Resource
 {
@@ -30,15 +35,12 @@ class DataTransaksiResource extends Resource
             ->schema([
                 //
             ]);
-
-           
-
     }
 
     public static function table(Table $table): Table
     {
         return $table
-
+        ->poll('5s')
             ->columns([
                 Tables\Columns\TextColumn::make('kode_transaksi')
                     ->label('Kode Transaksi')
@@ -90,21 +92,39 @@ class DataTransaksiResource extends Resource
                 ExportBulkAction::make()
             ]);
     }
+    public static function infolist(Infolist $infolist): Infolist
+{
+    $dataBarang = BarangAfterCheckout::where('kode_transaksi', $infolist->kode_transaksi)->first();
+
+    return $infolist
+        ->schema([
+            TextEntry::make('kode_transaksi')->value($dataBarang->kode_transaksi),
+            TextEntry::make('kode')->value($dataBarang->kode),
+            TextEntry::make('kategori')->value($dataBarang->kategori),
+            TextEntry::make('nama')->value($dataBarang->nama),
+            TextEntry::make('quantity')->value($dataBarang->quantity),
+            TextEntry::make('total_harga')->value($dataBarang->total_harga),
+            TextEntry::make('harga_jual')->value($dataBarang->harga_jual),
+            TextEntry::make('harga_beli')->value($dataBarang->harga_beli),
+        ]);
+}
 
     public static function getRelations(): array
     {
         return [
-            //
+            // RelationManagers\BarangRelationManager::class,
         ];
     }
 
-    
+    public static function canCreate(): bool
+    {
+        return false;
+    }    
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListDataTransaksis::route('/'),
-            
         ];
     }
 }
