@@ -4,6 +4,8 @@ namespace App\Filament\Resources\TransaksiResource\Widgets;
 
 use Filament\Tables;
 use App\Models\Pajak;
+use App\Models\Barang;
+use App\Models\DataPajak;
 use App\Models\Keranjang;
 use Filament\Tables\Table;
 use Filament\Support\RawJs;
@@ -11,7 +13,6 @@ use Illuminate\Support\Str;
 use App\Models\DataTransaksi;
 use App\Models\MetodePembayaran;
 use App\Models\BarangAfterCheckout;
-use App\Models\DataPajak;
 use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
@@ -123,6 +124,11 @@ class KeranjangWidget extends BaseWidget
                                 'harga_jual' => $item->harga_jual,
                                 'harga_beli' => $item->harga_beli
                             ]);
+                        }
+                        $barang = Barang::where('nama', $item->nama)->first();
+                        if ($barang) {
+                            $barang->stok -= $item->quantity;
+                            $barang->save();
                         }
 
                         Keranjang::truncate();
