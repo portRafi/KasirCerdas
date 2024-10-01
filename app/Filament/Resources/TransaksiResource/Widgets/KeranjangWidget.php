@@ -24,79 +24,79 @@ use Filament\Tables\Actions\SelectAction;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Filament\Tables\Columns\Summarizers\Average;
+use Filament\Tables\Columns\Summarizers\Summarizer;
 
 
 class KeranjangWidget extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full';
-
+    
     public function calculateTotalHargaWithPajak($totalHarga)
     {
         $jumlahPajakTotal = Pajak::sum('jumlah_pajak');
         $jumlahTotalPajak = $totalHarga * ($jumlahPajakTotal / 100);
         $totalHargaDenganPajak = $totalHarga + $jumlahTotalPajak;
-
+        
         return $totalHargaDenganPajak;
     }
-
+    
     public function table(Table $table): Table
     {
-
         return $table
-            ->poll('5s')
-            ->emptyStateHeading('Keranjang Kosong')
-            ->emptyStateDescription('Barang yang dimasukkan ke keranjang akan muncul disini')->emptyStateIcon('heroicon-s-shopping-cart')
-            ->query(
-                Keranjang::query()
+        ->poll('5s')
+        ->emptyStateHeading('Keranjang Kosong')
+        ->emptyStateDescription('Barang yang dimasukkan ke keranjang akan muncul disini')->emptyStateIcon('heroicon-s-shopping-cart')
+        ->query(
+            Keranjang::query()
             )
             ->columns([
                 Tables\Columns\TextColumn::make('diskon')
-                    ->hidden(),
+                ->hidden(),
                 Tables\Columns\TextColumn::make('harga_beli')
-                    ->hidden(),
+                ->hidden(),
                 Tables\Columns\TextColumn::make('harga_jual')
-                    ->hidden(),
+                ->hidden(),
                 Tables\Columns\TextColumn::make('kode')
-                    ->label('Kode Barang'),
+                ->label('Kode Barang'),
                 Tables\Columns\TextColumn::make('kategori')
-                    ->label('Kategori'),
+                ->label('Kategori'),
                 Tables\Columns\TextColumn::make('nama')
-                    ->label('Nama Barang'),
+                ->label('Nama Barang'),
                 Tables\Columns\TextColumn::make('quantity')
-                    ->label('Quantity'),
-                    Tables\Columns\TextColumn::make('total_harga')
-                    ->label('Total Harga')
+                ->label('Quantity'),
+                Tables\Columns\TextColumn::make('total_harga')
+                ->label('Total Harga')
+                ->money('IDR')
+                ->summarize([
+                    Summarizer::make()
+                    ->label('Total Harga Sesudah Pajak')
                     ->money('IDR')
-                    ->summarize([
-                        Sum::make()
-                            ->label('Total Harga After Pajak')
-                            ->money('IDR')
-                            ->using(function () {
-                                $totalHarga = Keranjang::sum('total_harga');
-                                $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
-                                return $totalHargaDenganPajak;
-                            }),
-                        Sum::make()
-                            ->label('Total Harga After Diskon')
-                            ->money('IDR')
-                            ->using(function () {
-                                $totalHarga = Keranjang::sum('total_harga') ?: 0;
-                                $totalDiskonTransaksi = DiskonTransaksi::sum('jumlah_diskon') ?: 0;
-                                $totalHargaDenganDiskonTransaksi = $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
-                                return $totalHargaDenganDiskonTransaksi;
-                            }),
-                        Sum::make()
-                            ->label('Total Harga')
-                            ->money('IDR')
-                            ])
-
-            ])
-            ->headerActions([
-                Action::make('checkout')
-                    ->label('Checkout')
-                    ->button()
-                    ->form([
-                        TextInput::make('total_harga_after_pajak')
+                    ->using(function (){
+                        $totalHarga = Keranjang::sum('total_harga');
+                        $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
+                        return $totalHargaDenganPajak;
+                    }),
+                    Summarizer::make()
+                    ->label('Total Harga After Diskon')
+                    ->money('IDR')
+                    ->using(function () {
+                        $totalHarga = Keranjang::sum('total_harga') ?: 0;
+                        $totalDiskonTransaksi = DiskonTransaksi::sum('jumlah_diskon') ?: 0;
+                        $totalHargaDenganDiskonTransaksi = $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
+                        return $totalHargaDenganDiskonTransaksi;
+                    }),
+                    Summarizer::make()
+                    ->label('Semua Total Harga')
+                    ->money('IDR')
+                    ])
+                    
+                    ])
+                    ->headerActions([
+                        Action::make('checkout')
+                        ->label('Checkout')
+                        ->button()
+                        ->form([
+                            TextInput::make('total_harga_after_pajak')
                             ->label('Total Harga Setelah Pajak (readonly)')
                             ->readOnly()
                             ->prefix('IDR')
@@ -115,99 +115,100 @@ class KeranjangWidget extends BaseWidget
                                 $totalHargaDenganDiskonTransaksi = $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
                                 return $totalHargaDenganDiskonTransaksi;
                             }),
-                        Select::make('metode_pembayaran')
+                            Select::make('metode_pembayaran')
                             ->required()
                             ->label('Pilih Metode Pembayaran')
                             ->options(MetodePembayaran::active()->pluck('nama_mp', 'id')),
-                    ])
-                    ->action(function ($record, $data) {
-                        $randomString = 'KC_' . Str::random(5);
-                        $keuntungan = Keranjang::all()->groupBy('nama')->map(function ($group) {
-                            $item = $group->first();
-                            $totalDiskonAfterTransaksi = DiskonTransaksi::all()->sum('jumlah_diskon');
-                            $totalHargaJual = ($item->harga_jual * $item->quantity) - ($item->harga_jual * ($item->diskon / 100));
-                            $totalHargaBeli = $item->harga_beli * $item->quantity;
-                            return $totalHargaJual - $totalHargaBeli - $totalDiskonAfterTransaksi;
-                        })->sum();
-                        $metodePembayaran = MetodePembayaran::find($data['metode_pembayaran'])->nama_mp;
-                        $emailStaff = Auth::user()->email;
-
-                        
-                        $totalHargaAfterPajak = $data['total_harga_after_pajak']; //25308
-                        $totalDiskonTransaksi = DiskonTransaksi::sum('jumlah_diskon'); ; //2000
-                        $totalHarga = Keranjang::sum('total_harga') - $totalDiskonTransaksi; //22800 - 2000 = 20800
-                        $jumlahPajak = $totalHargaAfterPajak - $totalHarga; //25308 - 20800 = 4508
-
-                        DataTransaksi::create([
-                            'kode_transaksi' => $randomString,
-                            'email_staff' => $emailStaff,
-                            'metode_pembayaran' => $metodePembayaran,
-                            'total_harga' => $totalHarga, // 20800
-                            'total_harga_after_pajak' => $totalHargaAfterPajak, //25308
-                            'selisih_pajak' => $jumlahPajak, //25.308 - 20.800 = 4508
-                            'keuntungan' => $keuntungan
-                        ]);
-                        DataPajak::create([
-                            'kode_transaksi' => $randomString,
-                            'jumlah_pajak' => $jumlahPajak
-                        ]);
-                        $itemsInCart = Keranjang::all();
-                        foreach ($itemsInCart as $item) {
-                            BarangAfterCheckout::create([
-                                'kode_transaksi' => $randomString,
-                                'kode' => $item->kode,
-                                'kategori' => $item->kategori,
-                                'nama' => $item->nama,
-                                'quantity' => $item->quantity,
-                                'total_harga' => $item->total_harga,
-                                'harga_jual' => $item->harga_jual,
-                                'harga_beli' => $item->harga_beli
-                            ]);
-                        }
-                        $barang = Barang::where('nama', $item->nama)->first();
-                        if ($barang) {
-                            $barang->stok -= $item->quantity;
-                            $barang->save();
-                        }
-
-                        Keranjang::truncate();
-                        Notification::make()
-                            ->title('Checkout Processed')
-                            ->icon('heroicon-m-check-circle')
-                            ->iconColor('success')
-                            ->send();
-                    }),
-            ])
-            ->actions([
-                Action::make('edit')
-                    ->label('Edit')
-                    ->form([
-                        TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
-                    ])
-                    ->action(function ($record, $data) {
-                        $totDiskon = $record->harga_jual * ($record->diskon / 100);
-                        $keranjang = Keranjang::find($record->id);
-                        if ($keranjang) {
-                            $keranjang->update([
-                                'quantity' => $data['quantity'],
-                                'harga_beli' => $record->harga_beli * $data['quantity'],
-                                'harga_jual' => $record->harga_jual * $data['quantity'],
-                                'total_harga' => $record->harga_jual * $data['quantity'] - $totDiskon,
-                            ]);
-                        }
-                        Notification::make()
-                            ->title('Quantity Barang Di edit')
-                            ->icon('heroicon-m-pencil-square')
-                            ->iconColor('success')
-                            ->send();
-                    })
-                    ->icon('heroicon-m-pencil-square'),
-            ])
-
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
-}
+                            ])
+                            ->action(function ($record, $data) {
+                                $randomString = 'KC_' . Str::random(5);
+                                $keuntungan = Keranjang::all()->groupBy('nama')->map(function ($group) {
+                                    $item = $group->first();
+                                    $totalDiskonAfterTransaksi = DiskonTransaksi::all()->sum('jumlah_diskon');
+                                    $totalHargaJual = ($item->harga_jual * $item->quantity) - ($item->harga_jual * ($item->diskon / 100));
+                                    $totalHargaBeli = $item->harga_beli * $item->quantity;
+                                    return $totalHargaJual - $totalHargaBeli - $totalDiskonAfterTransaksi;
+                                })->sum();
+                                $metodePembayaran = MetodePembayaran::find($data['metode_pembayaran'])->nama_mp;
+                                $emailStaff = Auth::user()->email;
+                                
+                                
+                                $totalHargaAfterPajak = $data['total_harga_after_pajak']; //25308
+                                $totalDiskonTransaksi = DiskonTransaksi::sum('jumlah_diskon'); ; //2000
+                                $totalHarga = Keranjang::sum('total_harga') - $totalDiskonTransaksi; //22800 - 2000 = 20800
+                                $jumlahPajak = $totalHargaAfterPajak - $totalHarga; //25308 - 20800 = 4508
+                                
+                                DataTransaksi::create([
+                                    'kode_transaksi' => $randomString,
+                                    'email_staff' => $emailStaff,
+                                    'metode_pembayaran' => $metodePembayaran,
+                                    'total_harga' => $totalHarga, // 20800
+                                    'total_harga_after_pajak' => $totalHargaAfterPajak, //25308
+                                    'selisih_pajak' => $jumlahPajak, //25.308 - 20.800 = 4508
+                                    'keuntungan' => $keuntungan
+                                ]);
+                                DataPajak::create([
+                                    'kode_transaksi' => $randomString,
+                                    'jumlah_pajak' => $jumlahPajak
+                                ]);
+                                $itemsInCart = Keranjang::all();
+                                foreach ($itemsInCart as $item) {
+                                    BarangAfterCheckout::create([
+                                        'kode_transaksi' => $randomString,
+                                        'kode' => $item->kode,
+                                        'kategori' => $item->kategori,
+                                        'nama' => $item->nama,
+                                        'quantity' => $item->quantity,
+                                        'total_harga' => $item->total_harga,
+                                        'harga_jual' => $item->harga_jual,
+                                        'harga_beli' => $item->harga_beli
+                                    ]);
+                                }
+                                $barang = Barang::where('nama', $item->nama)->first();
+                                if ($barang) {
+                                    $barang->stok -= $item->quantity;
+                                    $barang->save();
+                                }
+                                
+                                Keranjang::truncate();
+                                Notification::make()
+                                ->title('Checkout Processed')
+                                ->icon('heroicon-m-check-circle')
+                                ->iconColor('success')
+                                ->send();
+                            }),
+                            ])
+                            ->actions([
+                                Action::make('edit')
+                                ->label('Edit')
+                                ->form([
+                                    TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
+                                    ])
+                                    ->action(function ($record, $data) {
+                                        $totDiskon = $record->harga_jual * ($record->diskon / 100);
+                                        $keranjang = Keranjang::find($record->id);
+                                        if ($keranjang) {
+                                            $keranjang->update([
+                                                'quantity' => $data['quantity'],
+                                                'harga_beli' => $record->harga_beli * $data['quantity'],
+                                                'harga_jual' => $record->harga_jual * $data['quantity'],
+                                                'total_harga' => $record->harga_jual * $data['quantity'] - $totDiskon,
+                                            ]);
+                                        }
+                                        Notification::make()
+                                        ->title('Quantity Barang Di edit')
+                                        ->icon('heroicon-m-pencil-square')
+                                        ->iconColor('success')
+                                        ->send();
+                                    })
+                                    ->icon('heroicon-m-pencil-square'),
+                                    ])
+                                    
+                                    ->bulkActions([
+                                        Tables\Actions\BulkActionGroup::make([
+                                            Tables\Actions\DeleteBulkAction::make(),
+                                        ]),
+                                    ]);
+                                }
+                            }
+                            
