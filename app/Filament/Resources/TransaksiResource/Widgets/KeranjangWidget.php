@@ -86,8 +86,15 @@ class KeranjangWidget extends BaseWidget
                         return $totalHargaDenganDiskonTransaksi;
                     }),
                     Summarizer::make()
-                    ->label('Semua Total Harga')
+                    ->label('Total Harga')
                     ->money('IDR')
+                    ->using(function () {
+                        $totalHarga = Keranjang::sum('total_harga') ?: 0;
+                        $totalDiskonTransaksi = DiskonTransaksi::sum('jumlah_diskon') ?: 0;
+                        $totalHarga = Keranjang::sum('total_harga') - $totalDiskonTransaksi;
+                        return $totalHarga;
+                    })
+                    
                     ])
                     
                     ])
