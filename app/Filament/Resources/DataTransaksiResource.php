@@ -41,7 +41,7 @@ class DataTransaksiResource extends Resource
     {
         return $table
         ->poll('5s')
-            ->columns([
+        ->columns([
                 Tables\Columns\TextColumn::make('kode_transaksi')
                     ->label('Kode Transaksi')
                     ->numeric()
@@ -89,7 +89,8 @@ class DataTransaksiResource extends Resource
                 Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
-                ExportBulkAction::make()
+                ExportBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
     public static function infolist(Infolist $infolist): Infolist

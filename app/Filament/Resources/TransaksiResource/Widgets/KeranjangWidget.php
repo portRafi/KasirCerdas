@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use App\Models\DataTransaksi;
 use App\Models\MetodePembayaran;
 use App\Models\BarangAfterCheckout;
+use App\Models\DiskonTransaksi;
 use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
@@ -22,6 +23,7 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Actions\SelectAction;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Filament\Tables\Columns\Summarizers\Average;
 
 
 class KeranjangWidget extends BaseWidget
@@ -62,11 +64,32 @@ class KeranjangWidget extends BaseWidget
                     ->label('Nama Barang'),
                 Tables\Columns\TextColumn::make('quantity')
                     ->label('Quantity'),
-                Tables\Columns\TextColumn::make('total_harga')
+                    Tables\Columns\TextColumn::make('total_harga')
                     ->label('Total Harga')
                     ->money('IDR')
-                    ->summarize(Sum::make()->money('IDR'))
-                    
+                    ->summarize([
+                        Sum::make()
+                            ->label('Total Harga After Pajak')
+                            ->money('IDR')
+                            ->using(function () {
+                                $totalHarga = Keranjang::sum('total_harga');
+                                $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
+                                return $totalHargaDenganPajak;
+                            }),
+                        Sum::make()
+                            ->label('Total Harga After Diskon')
+                            ->money('IDR')
+                            ->using(function () {
+                                $totalHarga = Keranjang::sum('total_harga') ?: 0;
+                                $totalDiskonTransaksi = DiskonTransaksi::sum('jumlah_diskon') ?: 0;
+                                $totalHargaDenganDiskonTransaksi = $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
+                                return $totalHargaDenganDiskonTransaksi;
+                            }),
+                        Sum::make()
+                            ->label('Total Harga')
+                            ->money('IDR')
+                            ])
+
             ])
             ->headerActions([
                 Action::make('checkout')
@@ -80,8 +103,17 @@ class KeranjangWidget extends BaseWidget
                             ->default(function () {
                                 $totalHarga = Keranjang::sum('total_harga') ?: 0;
                                 $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
-
                                 return $totalHargaDenganPajak;
+                            }),
+                            TextInput::make('total_harga_after_diskon_transaksi')
+                            ->label('Total Harga Setelah Diskon Transaksi (readonly)')
+                            ->readOnly()
+                            ->prefix('Total')
+                            ->default(function () {
+                                $totalHarga = Keranjang::sum('total_harga') ?: 0;
+                                $totalDiskonTransaksi = DiskonTransaksi::sum('jumlah_diskon') ?: 0;
+                                $totalHargaDenganDiskonTransaksi = $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
+                                return $totalHargaDenganDiskonTransaksi;
                             }),
                         Select::make('metode_pembayaran')
                             ->required()
@@ -92,23 +124,27 @@ class KeranjangWidget extends BaseWidget
                         $randomString = 'KC_' . Str::random(5);
                         $keuntungan = Keranjang::all()->groupBy('nama')->map(function ($group) {
                             $item = $group->first();
+                            $totalDiskonAfterTransaksi = DiskonTransaksi::all()->sum('jumlah_diskon');
                             $totalHargaJual = ($item->harga_jual * $item->quantity) - ($item->harga_jual * ($item->diskon / 100));
                             $totalHargaBeli = $item->harga_beli * $item->quantity;
-                            return $totalHargaJual - $totalHargaBeli;
+                            return $totalHargaJual - $totalHargaBeli - $totalDiskonAfterTransaksi;
                         })->sum();
                         $metodePembayaran = MetodePembayaran::find($data['metode_pembayaran'])->nama_mp;
                         $emailStaff = Auth::user()->email;
-                        $totalHarga = Keranjang::sum('total_harga');
-                        $totalHargaAfterPajak = $data['total_harga_after_pajak'];
-                        $jumlahPajak = $totalHargaAfterPajak - $totalHarga;
+
+                        
+                        $totalHargaAfterPajak = $data['total_harga_after_pajak']; //25308
+                        $totalDiskonTransaksi = DiskonTransaksi::sum('jumlah_diskon'); ; //2000
+                        $totalHarga = Keranjang::sum('total_harga') - $totalDiskonTransaksi; //22800 - 2000 = 20800
+                        $jumlahPajak = $totalHargaAfterPajak - $totalHarga; //25308 - 20800 = 4508
 
                         DataTransaksi::create([
                             'kode_transaksi' => $randomString,
                             'email_staff' => $emailStaff,
                             'metode_pembayaran' => $metodePembayaran,
-                            'total_harga' => $totalHarga,
-                            'total_harga_after_pajak' => $totalHargaAfterPajak,
-                            'selisih_pajak' => $totalHargaAfterPajak - $totalHarga,
+                            'total_harga' => $totalHarga, // 20800
+                            'total_harga_after_pajak' => $totalHargaAfterPajak, //25308
+                            'selisih_pajak' => $jumlahPajak, //25.308 - 20.800 = 4508
                             'keuntungan' => $keuntungan
                         ]);
                         DataPajak::create([
