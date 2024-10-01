@@ -43,7 +43,7 @@ class KeranjangWidget extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-        ->poll('5s')
+        ->poll('6s')
         ->emptyStateHeading('Keranjang Kosong')
         ->emptyStateDescription('Barang yang dimasukkan ke keranjang akan muncul disini')->emptyStateIcon('heroicon-s-shopping-cart')
         ->query(
@@ -69,7 +69,14 @@ class KeranjangWidget extends BaseWidget
                 ->money('IDR')
                 ->summarize([
                     Summarizer::make()
-                    ->label('Total Harga Sesudah Pajak')
+                    ->label('Base Harga')
+                    ->money('IDR')
+                    ->using(function(){
+                        $totalHarga = Keranjang::sum('total_harga');
+                        return $totalHarga;
+                    }),
+                    Summarizer::make()
+                    ->label('Harga [+] include pajak')
                     ->money('IDR')
                     ->using(function (){
                         $totalHarga = Keranjang::sum('total_harga');
@@ -77,7 +84,7 @@ class KeranjangWidget extends BaseWidget
                         return $totalHargaDenganPajak;
                     }),
                     Summarizer::make()
-                    ->label('Total Harga After Diskon')
+                    ->label('Total Harga [-] potongan diskon transaksi')
                     ->money('IDR')
                     ->using(function () {
                         $totalHarga = Keranjang::sum('total_harga') ?: 0;
@@ -85,16 +92,6 @@ class KeranjangWidget extends BaseWidget
                         $totalHargaDenganDiskonTransaksi = $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
                         return $totalHargaDenganDiskonTransaksi;
                     }),
-                    Summarizer::make()
-                    ->label('Total Harga')
-                    ->money('IDR')
-                    ->using(function () {
-                        $totalHarga = Keranjang::sum('total_harga') ?: 0;
-                        $totalDiskonTransaksi = DiskonTransaksi::sum('jumlah_diskon') ?: 0;
-                        $totalHarga = Keranjang::sum('total_harga') - $totalDiskonTransaksi;
-                        return $totalHarga;
-                    })
-                    
                     ])
                     
                     ])
