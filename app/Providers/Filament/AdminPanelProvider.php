@@ -83,7 +83,12 @@ class AdminPanelProvider extends PanelProvider
                 ->shouldShowBrowserSessionsForm()
                 ->shouldShowAvatarForm()
                 ->customProfileComponents([
-                    ])
+
+                ])
+            
+            ])
+            ->plugins([
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
             ])
             ->userMenuItems([
                 'profile' => MenuItem::make()

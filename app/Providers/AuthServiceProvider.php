@@ -13,7 +13,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        //
+        'App\Models\Blog\Author' => 'App\Policies\Blog\AuthorPolicy',
+        'Ramnzys\FilamentEmailLog\Models\Email' => 'App\Policies\EmailPolicy'
     ];
 
     /**
@@ -21,6 +22,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+       //
     }
 }
