@@ -19,8 +19,9 @@ use App\Filament\Resources\KeranjangResource\RelationManagers;
 class KeranjangResource extends Resource
 {
     protected static ?string $model = Keranjang::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $activeNavigationIcon = 'heroicon-c-presentation-chart-line';
+    protected static ?string $navigationIcon = 'heroicon-c-presentation-chart-line';
+    protected static ?string $navigationGroup = 'POS';
 
     public static function form(Form $form): Form
     {
