@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\KasirResource\Pages;
 use App\Filament\Resources\KasirResource\RelationManagers;
+use App\Models\Bisnis;
+use App\Models\Cabang;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -45,8 +47,15 @@ class KasirResource extends Resource
                     ->options([
                         'admin' => 'Administrator',
                         'kasir' => 'Kasir',
-                    ])
-
+                    ]),
+                Forms\Components\Select::make('bisnis_id')
+                    ->label('Bisnis')
+                    ->options(Bisnis::all()->pluck('nama', 'id'))
+                    ->searchable(),
+                Forms\Components\Select::make('cabang_id')
+                    ->label('Cabang')
+                    ->options(Cabang::all()->pluck('nama', 'id'))
+                    ->searchable()
             ]);
     }
 
@@ -68,6 +77,10 @@ class KasirResource extends Resource
                 'admin' => 'Administrator',
                 'kasir' => 'Kasir',
             ]),
+            Tables\Columns\TextColumn::make('bisnis_id')
+            ->searchable(),
+            Tables\Columns\TextColumn::make('cabang_id')
+            ->searchable(),
             Tables\Columns\TextColumn::make('created_at')
                 ->dateTime()
                 ->sortable()
