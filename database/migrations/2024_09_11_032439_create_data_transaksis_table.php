@@ -13,10 +13,6 @@ return new class extends Migration
     {
         Schema::create('data_transaksis', function (Blueprint $table) {
             $table->id();
-            // $table->string('nama');
-            // $table->integer('quantity');
-            // $table->string('pembayaran');
-            // $table->string('total');
             $table->string('kode_transaksi');
             $table->string('email_staff');
             $table->string('metode_pembayaran');
