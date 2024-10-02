@@ -114,7 +114,7 @@ class KeranjangWidget extends BaseWidget
                             ->readOnly()
                             ->prefix('Total')
                             ->default(function () {
-                                $totalHarga = Keranjang::sum('total_harga') ?: 0;
+                                $totalHarga = Keranjang::where('userid', Auth::user()->id)->sum('total_harga') ?: 0;
                                 $totalDiskonTransaksi = DiskonTransaksi::sum('jumlah_diskon') ?: 0;
                                 $totalHargaDenganDiskonTransaksi = $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
                                 return $totalHargaDenganDiskonTransaksi;
