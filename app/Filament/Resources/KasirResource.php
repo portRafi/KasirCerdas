@@ -48,49 +48,48 @@ class KasirResource extends Resource
                         'admin' => 'Administrator',
                         'kasir' => 'Kasir',
                     ]),
-                Forms\Components\Select::make('bisnis_id')
-                    ->label('Bisnis')
-                    ->options(Bisnis::all()->pluck('nama', 'id'))
-                    ->searchable(),
-                Forms\Components\Select::make('cabang_id')
-                    ->label('Cabang')
-                    ->options(Cabang::all()->pluck('nama', 'id'))
-                    ->searchable()
+                Forms\Components\Select::make('bisnis')
+                    ->required()
+                    ->options(Bisnis::all()->pluck('nama_bisnis', 'nama_bisnis')),
+                Forms\Components\Select::make('cabang')
+                    ->required()
+                    ->options(Cabang::all()->pluck('nama_cabang', 'nama_cabang'))
+
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-        ->poll('5s')
-        ->columns([
-            Tables\Columns\TextColumn::make('name')
-            ->searchable(),
-            Tables\Columns\TextColumn::make('no_hp')
-            ->searchable(),
-            Tables\Columns\TextColumn::make('alamat')
-            ->searchable(),
-            Tables\Columns\TextColumn::make('email')
-            ->searchable(),
-            Tables\Columns\SelectColumn::make('role')
-            ->options([
-                'admin' => 'Administrator',
-                'kasir' => 'Kasir',
-            ]),
-            Tables\Columns\TextColumn::make('bisnis_id')
-            ->searchable(),
-            Tables\Columns\TextColumn::make('cabang_id')
-            ->searchable(),
-            Tables\Columns\TextColumn::make('created_at')
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-            Tables\Columns\TextColumn::make('updated_at')
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-            
-        ])
+            ->poll('5s')
+            ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('no_hp')
+                    ->searchable(),
+                // Tables\Columns\TextColumn::make('alamat')
+                //     ->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                Tables\Columns\SelectColumn::make('role')
+                    ->options([
+                        'admin' => 'Administrator',
+                        'kasir' => 'Kasir',
+                    ]),
+                Tables\Columns\SelectColumn::make('bisnis')
+                    ->options(Cabang::all()->pluck('nama_cabang', 'nama_cabang')),
+                Tables\Columns\SelectColumn::make('cabang')
+                    ->options(Cabang::all()->pluck('nama_cabang', 'nama_cabang')),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+            ])
             ->filters([
                 //
             ])

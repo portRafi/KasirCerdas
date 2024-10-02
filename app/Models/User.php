@@ -73,10 +73,10 @@ class User extends Authenticatable implements HasAvatar
 
     public function bisnis()
     {
-        return $this->belongsTo(Bisnis::class, 'id');
+        return $this->belongsTo(Bisnis::class, 'nama_bisnis');
     }
     public function cabang()
     {
-        return $this->belongsTo(Cabang::class, 'id');
+        return $this->belongsTo(Cabang::class, 'nama_cabang');
     }
 }
