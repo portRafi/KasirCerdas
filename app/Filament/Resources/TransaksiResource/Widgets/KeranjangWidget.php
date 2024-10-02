@@ -43,7 +43,7 @@ class KeranjangWidget extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-        ->poll('6s')
+        ->poll('10s')
         ->emptyStateHeading('Keranjang Kosong')
         ->emptyStateDescription('Barang yang dimasukkan ke keranjang akan muncul disini')->emptyStateIcon('heroicon-s-shopping-cart')
         ->query(
@@ -147,7 +147,7 @@ class KeranjangWidget extends BaseWidget
                                     'email_staff' => $emailStaff,
                                     'metode_pembayaran' => $metodePembayaran,
                                     'total_harga' => $totalHarga, // 20800
-                                    'total_harga_after_pajak' => $totalHargaAfterPajak, //25308
+                                    'total_harga_after_pajak' => $totalHargaAfterPajak, 
                                     'selisih_pajak' => $jumlahPajak, //25.308 - 20.800 = 4508
                                     'keuntungan' => $keuntungan
                                 ]);
