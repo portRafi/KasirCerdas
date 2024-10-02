@@ -44,10 +44,9 @@ class KasirResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('role')
-                    ->options([
-                        'admin' => 'Administrator',
-                        'kasir' => 'Kasir',
-                    ]),
+                ->live()
+                ->relationship('class', 'name'),
+            Forms\Components\Select::make('section_id'),
                 Forms\Components\Select::make('bisnis')
                     ->required()
                     ->options(Bisnis::all()->pluck('nama_bisnis', 'nama_bisnis')),
