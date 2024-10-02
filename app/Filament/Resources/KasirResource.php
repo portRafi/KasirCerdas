@@ -12,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\View\TablesRenderHook;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -50,10 +51,24 @@ class KasirResource extends Resource
                     ]),
                 Forms\Components\Select::make('bisnis')
                     ->required()
-                    ->options(Bisnis::all()->pluck('nama_bisnis', 'nama_bisnis')),
+                    ->searchable()
+                    ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")
+                    ->limit(50)
+                    ->pluck('nama_bisnis', 'nama_bisnis')
+                    ->toArray())
+                    ->getOptionLabelUsing(fn($value): ?string => Bisnis::find($value)?->nama_bisnis)
+                    ->reactive(),
                 Forms\Components\Select::make('cabang')
                     ->required()
-                    ->options(Cabang::all()->pluck('nama_cabang', 'nama_cabang'))
+                    ->options(function (callable $get) {
+                        $bisnisId = $get('bisnis');
+                        if ($bisnisId) {
+                            return Cabang::where('nama_bisnis', $bisnisId)->pluck('nama_cabang', 'nama_cabang');
+                        }
+                        return Cabang::all()->pluck('nama_cabang', 'nama_cabang'); 
+                    })
+                    ->disabled(fn(callable $get) => !$get('bisnis'))
+                    ->searchable(),
 
             ]);
     }
@@ -76,10 +91,14 @@ class KasirResource extends Resource
                         'admin' => 'Administrator',
                         'kasir' => 'Kasir',
                     ]),
-                Tables\Columns\SelectColumn::make('bisnis')
-                    ->options(Cabang::all()->pluck('nama_cabang', 'nama_cabang')),
-                Tables\Columns\SelectColumn::make('cabang')
-                    ->options(Cabang::all()->pluck('nama_cabang', 'nama_cabang')),
+                Tables\Columns\TextColumn::make('bisnis')
+                    ->badge()
+                    ->color('success')
+                    ->sortable(),
+                    Tables\Columns\TextColumn::make('cabang')
+                    ->badge()
+                    ->color('success')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

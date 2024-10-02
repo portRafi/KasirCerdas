@@ -27,21 +27,20 @@ class TransaksiResource extends Resource
     protected static ?string $activeNavigationIcon = 'heroicon-s-building-storefront';
     protected static ?string $navigationLabel = 'POS / KASIR';
     protected static ?string $navigationGroup = 'POS';
-    protected static ?string $title = 'Point Of Sales';
+
+    
 
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-
-            ]);
+            ->schema([]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-        ->poll('5s')
-        ->heading('Point Of Sales')
+            ->poll('5s')
+            ->heading('Point Of Sales')
             ->columns([
                 Tables\Columns\TextColumn::make('kode')
                     ->searchable(),
@@ -65,7 +64,7 @@ class TransaksiResource extends Resource
                 //
                 //
             ])
-            
+
             ->actions([
                 Action::make('addToCart')
                     ->label('Add')
@@ -95,7 +94,7 @@ class TransaksiResource extends Resource
             ])
             ->bulkActions([]);
     }
-    
+
     public static function getWidgets(): array
 
     {

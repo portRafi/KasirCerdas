@@ -16,4 +16,8 @@ class ListSatuans extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+    public function getTitle(): string
+    {
+        return __('Pendataan Satuan');
+    }
 }
