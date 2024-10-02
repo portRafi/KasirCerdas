@@ -37,4 +37,8 @@ class ListTransaksis extends ListRecords
             TransaksiResource\Widgets\KeranjangWidget::class,
         ];
     }
+    public function getTitle(): string
+    {
+        return __('Point Of Sales');
+    }
 }

@@ -52,7 +52,10 @@ class KasirResource extends Resource
                 Forms\Components\Select::make('bisnis')
                     ->required()
                     ->searchable()
-                    ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")->limit(50)->pluck('nama_bisnis', 'nama_bisnis')->toArray())
+                    ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")
+                    ->limit(50)
+                    ->pluck('nama_bisnis', 'nama_bisnis')
+                    ->toArray())
                     ->getOptionLabelUsing(fn($value): ?string => Bisnis::find($value)?->nama_bisnis)
                     ->reactive(),
                 Forms\Components\Select::make('cabang')
@@ -90,9 +93,11 @@ class KasirResource extends Resource
                     ]),
                 Tables\Columns\TextColumn::make('bisnis')
                     ->badge()
+                    ->color('success')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('cabang')
+                    Tables\Columns\TextColumn::make('cabang')
                     ->badge()
+                    ->color('success')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

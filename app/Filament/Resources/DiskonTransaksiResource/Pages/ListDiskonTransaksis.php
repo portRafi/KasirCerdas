@@ -16,4 +16,8 @@ class ListDiskonTransaksis extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+    public function getTitle(): string
+    {
+        return __('Data Diskon Transaksi');
+    }
 }

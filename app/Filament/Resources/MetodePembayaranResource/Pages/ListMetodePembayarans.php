@@ -33,5 +33,9 @@ class ListMetodePembayarans extends ListRecords
                 }),
         ];
     }
+    public function getTitle(): string
+    {
+        return __('Data Metode Pembayaran');
+    }
     
 }
