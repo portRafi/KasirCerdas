@@ -26,18 +26,18 @@ class CabangResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('nama_bisnis')
-                ->placeholder('Nama Bisnis')
-                ->required()
-                ->maxLength(255),
-                    Forms\Components\TextInput::make('nama_cabang')
+                    ->placeholder('Nama Bisnis')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('nama_cabang')
                     ->placeholder('Nama Cabang')
                     ->required()
                     ->maxLength(255),
-                    Forms\Components\TextInput::make('deskripsi')
+                Forms\Components\TextInput::make('deskripsi')
                     ->placeholder('Tambah Deskripsi')
                     ->required()
                     ->maxLength(255),
-                    Forms\Components\TextInput::make('alamat')
+                Forms\Components\TextInput::make('alamat')
                     ->placeholder('Tambah Alamat')
                     ->required()
                     ->maxLength(255),
@@ -48,15 +48,15 @@ class CabangResource extends Resource
     {
         return $table
             ->columns([
-                    Tables\Columns\TextColumn::make('id')
+                Tables\Columns\TextColumn::make('id')
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('nama_bisnis')
+                Tables\Columns\TextColumn::make('nama_bisnis')
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('nama_cabang')
+                Tables\Columns\TextColumn::make('nama_cabang')
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('deskripsi')
+                Tables\Columns\TextColumn::make('deskripsi')
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('alamat')
+                Tables\Columns\TextColumn::make('alamat')
                     ->searchable(),
             ])
             ->filters([

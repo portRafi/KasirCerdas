@@ -21,8 +21,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('role')->default('kasir');
-            $table->integer('cabang_id')->nullable();
-            $table->integer('bisnis_id')->nullable();
+            $table->string('bisnis')->nullable();
+            $table->string('cabang')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
