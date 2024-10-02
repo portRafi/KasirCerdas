@@ -12,4 +12,9 @@ class Cabang extends Model
     protected $guarded = [
         'id'
     ];
+
+    public function bisnis()
+    {
+        return $this->belongsTo(Bisnis::class, 'nama_bisnis');
+    }
 }
