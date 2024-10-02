@@ -47,7 +47,7 @@ class KeranjangWidget extends BaseWidget
             ->emptyStateHeading('Keranjang Kosong')
             ->emptyStateDescription('Barang yang dimasukkan ke keranjang akan muncul disini')->emptyStateIcon('heroicon-s-shopping-cart')
             ->query(
-                Keranjang::query()
+                Keranjang::where('userid', Auth::user()->id)
             )
             ->columns([
                 Tables\Columns\TextColumn::make('diskon')
@@ -72,14 +72,14 @@ class KeranjangWidget extends BaseWidget
                             ->label('Base Harga')
                             ->money('IDR')
                             ->using(function () {
-                                $totalHarga = Keranjang::sum('total_harga');
+                                $totalHarga = Keranjang::where('userid', Auth::user()->id)->sum('total_harga');
                                 return $totalHarga;
                             }),
                         Summarizer::make()
                             ->label('Harga [+] include pajak')
                             ->money('IDR')
                             ->using(function () {
-                                $totalHarga = Keranjang::sum('total_harga');
+                                $totalHarga = Keranjang::where('userid', Auth::user()->id)->sum('total_harga');
                                 $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
                                 return $totalHargaDenganPajak;
                             }),
@@ -87,7 +87,7 @@ class KeranjangWidget extends BaseWidget
                             ->label('Total Harga [-] potongan diskon transaksi')
                             ->money('IDR')
                             ->using(function () {
-                                $totalHarga = Keranjang::sum('total_harga') ?: 0;
+                                $totalHarga = Keranjang::where('userid', Auth::user()->id)->sum('total_harga') ?: 0;
                                 $totalDiskonTransaksi = DiskonTransaksi::sum('jumlah_diskon') ?: 0;
                                 $totalHargaDenganDiskonTransaksi = $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
                                 return $totalHargaDenganDiskonTransaksi;
@@ -105,7 +105,7 @@ class KeranjangWidget extends BaseWidget
                             ->readOnly()
                             ->prefix('IDR')
                             ->default(function () {
-                                $totalHarga = Keranjang::sum('total_harga') ?: 0;
+                                $totalHarga = Keranjang::where('userid', Auth::user()->id)->sum('total_harga') ?: 0;
                                 $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
                                 return $totalHargaDenganPajak;
                             }),
@@ -126,7 +126,7 @@ class KeranjangWidget extends BaseWidget
                     ])
                     ->action(function ($record, $data) {
                         $randomString = 'KC_' . Str::random(5);
-                        $keuntungan = Keranjang::all()->groupBy('nama')->map(function ($group) {
+                        $keuntungan = Keranjang::where('userid', Auth::user()->id)->get()->groupBy('nama')->map(function ($group) {
                             $item = $group->first();
                             $totalDiskonAfterTransaksi = DiskonTransaksi::all()->sum('jumlah_diskon');
                             $totalHargaJual = ($item->harga_jual * $item->quantity) - ($item->harga_jual * ($item->diskon / 100));
@@ -139,7 +139,7 @@ class KeranjangWidget extends BaseWidget
 
                         $totalHargaAfterPajak = $data['total_harga_after_pajak'];
                         $totalDiskonTransaksi = DiskonTransaksi::sum('jumlah_diskon');;
-                        $totalHarga = Keranjang::sum('total_harga') - $totalDiskonTransaksi;
+                        $totalHarga = Keranjang::where('userid', Auth::user()->id)->sum('total_harga') - $totalDiskonTransaksi;
                         $jumlahPajak = $totalHargaAfterPajak - $totalHarga; 
 
                         DataTransaksi::create([
@@ -173,8 +173,8 @@ class KeranjangWidget extends BaseWidget
                             $barang->stok -= $item->quantity;
                             $barang->save();
                         }
-
-                        Keranjang::truncate();
+                        Keranjang::where('userid', Auth::user()->id)->delete();
+                        
                         Notification::make()
                             ->title('Checkout Processed')
                             ->icon('heroicon-m-check-circle')

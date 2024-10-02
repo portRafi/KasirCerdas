@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('keranjangs', function (Blueprint $table) {
             $table->id();
+            $table->integer('userid')->unique();
             $table->string('nama');
             $table->string('kategori');
             $table->decimal('harga_beli', 10,2);
