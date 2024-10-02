@@ -10,6 +10,7 @@ use App\Models\Keranjang;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,8 +28,6 @@ class TransaksiResource extends Resource
     protected static ?string $activeNavigationIcon = 'heroicon-s-building-storefront';
     protected static ?string $navigationLabel = 'POS / KASIR';
     protected static ?string $navigationGroup = 'POS';
-
-    
 
     public static function form(Form $form): Form
     {
@@ -75,6 +74,7 @@ class TransaksiResource extends Resource
                     ->action(function ($record, $data) {
                         $totalDiskon = $record->harga_jual * ($record->diskon / 100);
                         Keranjang::create([
+                            'userid' => Auth::user()->id,
                             'kode' => $record->kode,
                             'nama' => $record->nama,
                             'kategori' => $record->kategori,
