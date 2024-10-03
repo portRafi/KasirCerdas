@@ -69,6 +69,7 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugins([
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
                 FilamentEditProfilePlugin::make()
                 ->slug('my-profile')
                 ->setTitle('My Profile')
@@ -86,9 +87,6 @@ class AdminPanelProvider extends PanelProvider
 
                 ])
             
-            ])
-            ->plugins([
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
             ])
             ->userMenuItems([
                 'profile' => MenuItem::make()

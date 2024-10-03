@@ -50,21 +50,18 @@ class KasirResource extends Resource
                 Forms\Components\TextInput::make('password')
                     ->required()
                     ->maxLength(255),
-
-                    //relasi dengan panel
-                    Select::make('role')
-                    ->label('Role')
-                    ->options(Role::all()->pluck('name', 'id'))
-                    ->searchable() 
-                    ->required()
-                    ->label('Pilih Role'),
+                Forms\Components\Select::make('role')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable(),
                 Forms\Components\Select::make('bisnis')
                     ->required()
                     ->searchable()
                     ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")
-                    ->limit(50)
-                    ->pluck('nama_bisnis', 'nama_bisnis')
-                    ->toArray())
+                        ->limit(50)
+                        ->pluck('nama_bisnis', 'nama_bisnis')
+                        ->toArray())
                     ->getOptionLabelUsing(fn($value): ?string => Bisnis::find($value)?->nama_bisnis)
                     ->reactive(),
                 Forms\Components\Select::make('cabang')
@@ -74,7 +71,7 @@ class KasirResource extends Resource
                         if ($bisnisId) {
                             return Cabang::where('nama_bisnis', $bisnisId)->pluck('nama_cabang', 'nama_cabang');
                         }
-                        return Cabang::all()->pluck('nama_cabang', 'nama_cabang'); 
+                        return Cabang::all()->pluck('nama_cabang', 'nama_cabang');
                     })
                     ->disabled(fn(callable $get) => !$get('bisnis'))
                     ->searchable(),
@@ -86,7 +83,7 @@ class KasirResource extends Resource
         return $table
             ->poll('5s')
             ->columns([
-                
+
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('no_hp')
@@ -94,12 +91,12 @@ class KasirResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\SelectColumn::make('role')
-                ->options(Role::all()->pluck('name', 'id')),
+                    ->options(Role::all()->pluck('name', 'id')),
                 Tables\Columns\TextColumn::make('bisnis')
                     ->badge()
                     ->color('success')
                     ->sortable(),
-                    Tables\Columns\TextColumn::make('cabang')
+                Tables\Columns\TextColumn::make('cabang')
                     ->badge()
                     ->color('success')
                     ->sortable(),
