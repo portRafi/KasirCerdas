@@ -50,9 +50,8 @@ class KasirResource extends Resource
                 Forms\Components\TextInput::make('password')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('role')
+                Forms\Components\Select::make('roles')
                     ->relationship('roles', 'name')
-                    ->multiple()
                     ->preload()
                     ->searchable(),
                 Forms\Components\Select::make('bisnis')
@@ -90,7 +89,7 @@ class KasirResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\SelectColumn::make('role')
+                Tables\Columns\SelectColumn::make('roles')
                     ->options(Role::all()->pluck('name', 'id')),
                 Tables\Columns\TextColumn::make('bisnis')
                     ->badge()
