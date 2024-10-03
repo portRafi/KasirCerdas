@@ -33,7 +33,7 @@ class KasirResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('cabang')
-                    ->value(Auth::user()->cabang)
+                    ->default(Auth::user()->cabang)
                     ->hidden(),
                 Forms\Components\TextInput::make('name')
                     ->required()
