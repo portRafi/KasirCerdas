@@ -88,7 +88,7 @@ class AdminPanelProvider extends PanelProvider
                 ])
             
             ])
-            
+
             ->userMenuItems([
                 'profile' => MenuItem::make()
                 ->label(fn() => auth()->user()->name)
