@@ -62,9 +62,6 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-    protected $guarded = [
-        'id',
-    ];
 
     public function setPasswordAttribute($password)
     {
@@ -91,5 +88,9 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
         return $this->belongsTo(Cabang::class, 'nama_cabang');
     }
 
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->email && $this->password;
+    }
     
 }
