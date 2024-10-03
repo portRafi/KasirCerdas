@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('barang_after_checkouts', function (Blueprint $table) {
             $table->id();
+            $table->string('bisnis');
+            $table->string('cabang');
             $table->string('kode_transaksi');
             $table->string('kode');
             $table->string('kategori');

@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('diskons', function (Blueprint $table) {
             $table->id();
+            $table->string('bisnis');
+            $table->string('cabang');
             $table->string('tipe_diskon');
             $table->string('nama_diskon');
             $table->integer('jumlah_diskon');

@@ -6,15 +6,16 @@ use Filament\Forms;
 use Filament\Tables;
 use App\Models\Barang;
 use App\Models\Diskon;
+use App\Models\Satuan;
 use App\Models\Kategori;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\BarangResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\BarangResource\RelationManagers;
-use App\Models\Satuan;
 
 class BarangResource extends Resource
 {
@@ -31,6 +32,12 @@ class BarangResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('bisnis')
+                    ->value(Auth::user()->bisnis)
+                    ->hidden(),
+                Forms\Components\TextInput::make('cabang')
+                    ->value(Auth::user()->cabang)
+                    ->hidden(),
                 Forms\Components\TextInput::make('kode')
                     ->placeholder('Kode Barang')
                     ->required()
@@ -81,7 +88,13 @@ class BarangResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->poll('5s')
+            ->query(
+                Barang::where([
+                    ['bisnis', '=', Auth::user()->bisnis],
+                    ['cabang', '=', Auth::user()->cabang]
+                ])
+            )
+            ->poll('5s')
             ->columns([
                 Tables\Columns\TextColumn::make('kode')
                     ->searchable(),
@@ -93,7 +106,7 @@ class BarangResource extends Resource
                     ->numeric()
                     ->money('IDR')
                     ->sortable(),
-                    Tables\Columns\TextColumn::make('harga_jual')
+                Tables\Columns\TextColumn::make('harga_jual')
                     ->numeric()
                     ->money('IDR')
                     ->sortable(),
@@ -140,7 +153,7 @@ class BarangResource extends Resource
         ];
     }
 
-   
+
 
     public static function getPages(): array
     {

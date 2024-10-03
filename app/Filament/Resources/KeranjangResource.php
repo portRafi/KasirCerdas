@@ -19,8 +19,8 @@ use App\Filament\Resources\KeranjangResource\RelationManagers;
 class KeranjangResource extends Resource
 {
     protected static ?string $model = Keranjang::class;
-    protected static ?string $activeNavigationIcon = 'heroicon-c-presentation-chart-line';
-    protected static ?string $navigationIcon = 'heroicon-c-presentation-chart-line';
+    protected static ?string $activeNavigationIcon = 'heroicon-m-presentation-chart-line';
+    protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-line';
     protected static ?string $navigationGroup = 'POS';
 
     public static function form(Form $form): Form
@@ -100,4 +100,4 @@ class KeranjangResource extends Resource
             'edit' => Pages\EditKeranjang::route('/{record}/edit'),
         ];
     }
-}
+}   

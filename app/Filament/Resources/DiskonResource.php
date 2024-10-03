@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DiskonResource\Pages;
-use App\Filament\Resources\DiskonResource\RelationManagers;
-use App\Models\Diskon;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Diskon;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\DiskonResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\DiskonResource\RelationManagers;
 
 class DiskonResource extends Resource
 {
@@ -25,6 +26,12 @@ class DiskonResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('bisnis')
+                    ->value(Auth::user()->bisnis)
+                    ->hidden(),
+                Forms\Components\TextInput::make('cabang')
+                    ->value(Auth::user()->cabang)
+                    ->hidden(),
                 Forms\Components\TextInput::make('tipe_diskon')
                     ->default('persen')
                     ->readOnly(),
@@ -44,6 +51,12 @@ class DiskonResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->query(
+            Diskon::where([
+                ['bisnis', '=', Auth::user()->bisnis],
+                ['cabang', '=', Auth::user()->cabang]
+            ])
+        )
         ->poll('5s')
             ->columns([
                 Tables\Columns\TextColumn::make('tipe_diskon')
