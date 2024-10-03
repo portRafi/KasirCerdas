@@ -27,12 +27,10 @@ class PajakResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('bisnis')
-                    ->default(Auth::user()->bisnis)
-                    ->hidden(),
-                Forms\Components\TextInput::make('cabang')
-                    ->default(Auth::user()->cabang)
-                    ->hidden(),
+                Forms\Components\Hidden::make('bisnis')
+                    ->default(Auth::user()->bisnis),
+                Forms\Components\Hidden::make('cabang')
+                    ->default(Auth::user()->cabang),
                 Forms\Components\TextInput::make('nama_pajak')
                     ->placeholder('Nama Pajak')
                     ->required()
