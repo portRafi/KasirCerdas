@@ -175,11 +175,24 @@ class KeranjangWidget extends BaseWidget
                         }
                         Keranjang::where('userid', Auth::user()->id)->delete();
                         
+                        $notificationBody = '**Checkout Processed Successfully with the following items:**' . PHP_EOL;
+                        foreach ($itemsInCart as $item) {
+                            $notificationBody .= "_- {$item->nama} (Quantity: **{$item->quantity}**)_" . PHP_EOL;
+                        }
+                        $notificationBody .= "Total: **IDR " . number_format($totalHargaAfterPajak, 0, ',', '.')."**". PHP_EOL;
+                        $notificationBody .= "Total Pajak: **IDR " . number_format($jumlahPajak, 0, ',', '.')."**". PHP_EOL;
+                        $notificationBody .= "Total Bersih: **IDR " . number_format($totalHarga, 0, ',', '.')."**". PHP_EOL;
+                        $notificationBody .= "Keuntungan: **IDR " . number_format($keuntungan, 0, ',', '.')."**". PHP_EOL;
+                        $notificationBody .= "Metode Pembayaran: **" . $metodePembayaran."**". PHP_EOL;
+                        $notificationBody .= "Kasir: **" . Auth::user()->email."**". PHP_EOL;
+
                         Notification::make()
                             ->title('Checkout Processed')
                             ->icon('heroicon-m-check-circle')
                             ->iconColor('success')
-                            ->send();
+                            ->send()
+                            ->body($notificationBody)
+                            ->sendToDiscord();
                     }),
             ])
             ->actions([

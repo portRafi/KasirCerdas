@@ -24,8 +24,8 @@ class KasirResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
     protected static ?string $activeNavigationIcon = 'heroicon-m-user-plus';
-    protected static ?string $navigationGroup = 'Database';
-    protected static ?string $navigationLabel = 'Akun Kasir';
+    protected static ?string $navigationGroup = 'Setting';
+    protected static ?string $navigationLabel = 'Role';
 
     public static function form(Form $form): Form
     {

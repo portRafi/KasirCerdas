@@ -11,8 +11,12 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Support\Facades\Storage;
+
 use Spatie\Permission\Traits\HasRoles;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
+
+use TomatoPHP\FilamentDiscord\Traits\InteractsWithDiscord;
+
 
 class User extends Authenticatable implements HasAvatar, FilamentUser
 {
@@ -21,6 +25,7 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
     use HasPanelShield;
     use HasFactory;
     use Notifiable;
+    use InteractsWithDiscord;
 
     /**
      * The attributes that are mass assignable.
