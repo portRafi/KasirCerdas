@@ -33,10 +33,10 @@ class BarangResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('bisnis')
-                    ->value(Auth::user()->bisnis)
+                    ->default(Auth::user()->bisnis)
                     ->hidden(),
                 Forms\Components\TextInput::make('cabang')
-                    ->value(Auth::user()->cabang)
+                    ->default(Auth::user()->cabang)
                     ->hidden(),
                 Forms\Components\TextInput::make('kode')
                     ->placeholder('Kode Barang')
