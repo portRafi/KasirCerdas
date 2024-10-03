@@ -6,7 +6,7 @@ use App\Models\PenjualanBarang;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Widgets\TableWidget as BaseWidget;
+use Filament\Widgets\TableWidget as BaseWidget; 
 
 class LaporanPenjualanBarangWidget extends BaseWidget
 {

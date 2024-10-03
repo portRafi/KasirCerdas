@@ -15,6 +15,8 @@ use Filament\Tables\Table;
 use Filament\Tables\View\TablesRenderHook;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Spatie\Permission\Models\Role; // Impor model Role dari Spatie
+use Filament\Forms\Components\Select;
 
 class KasirResource extends Resource
 {
@@ -44,11 +46,14 @@ class KasirResource extends Resource
                 Forms\Components\TextInput::make('password')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('role')
-                ->options ([
-                    'admin' => 'Administrator',
-                    'kasir' => 'Kasir',
-                ]),
+
+                    //relasi dengan panel
+                    Select::make('role')
+                    ->label('Role')
+                    ->options(Role::all()->pluck('name', 'id')) // Ambil role dari database
+                    ->searchable() // Bisa menggunakan search untuk memfilter role
+                    ->required()
+                    ->label('Pilih Role'),
                 Forms\Components\Select::make('bisnis')
                     ->required()
                     ->searchable()
@@ -69,6 +74,7 @@ class KasirResource extends Resource
                     })
                     ->disabled(fn(callable $get) => !$get('bisnis'))
                     ->searchable(),
+                    
 
             ]);
     }
@@ -87,10 +93,7 @@ class KasirResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\SelectColumn::make('role')
-                    ->options([
-                        'admin' => 'Administrator',
-                        'kasir' => 'Kasir',
-                    ]),
+                ->options(Role::all()->pluck('name', 'id')),
                 Tables\Columns\TextColumn::make('bisnis')
                     ->badge()
                     ->color('success')

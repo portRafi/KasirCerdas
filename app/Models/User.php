@@ -85,4 +85,6 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
     {
         return $this->belongsTo(Cabang::class, 'nama_cabang');
     }
+
+    
 }
