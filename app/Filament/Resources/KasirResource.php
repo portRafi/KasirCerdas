@@ -2,21 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\KasirResource\Pages;
-use App\Filament\Resources\KasirResource\RelationManagers;
+use Filament\Forms;
+use App\Models\User;
+use Filament\Tables;
 use App\Models\Bisnis;
 use App\Models\Cabang;
-use App\Models\User;
-use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\View\TablesRenderHook;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Spatie\Permission\Models\Role; // Impor model Role dari Spatie
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\View\TablesRenderHook;
+use App\Filament\Resources\KasirResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\KasirResource\RelationManagers;
+use Spatie\Permission\Models\Role; // Impor model Role dari Spatie
 
 class KasirResource extends Resource
 {
@@ -31,6 +32,9 @@ class KasirResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('cabang')
+                    ->value(Auth::user()->cabang)
+                    ->hidden(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -50,8 +54,8 @@ class KasirResource extends Resource
                     //relasi dengan panel
                     Select::make('role')
                     ->label('Role')
-                    ->options(Role::all()->pluck('name', 'id')) // Ambil role dari database
-                    ->searchable() // Bisa menggunakan search untuk memfilter role
+                    ->options(Role::all()->pluck('name', 'id'))
+                    ->searchable() 
                     ->required()
                     ->label('Pilih Role'),
                 Forms\Components\Select::make('bisnis')
@@ -74,8 +78,6 @@ class KasirResource extends Resource
                     })
                     ->disabled(fn(callable $get) => !$get('bisnis'))
                     ->searchable(),
-                    
-
             ]);
     }
 
@@ -84,12 +86,11 @@ class KasirResource extends Resource
         return $table
             ->poll('5s')
             ->columns([
+                
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('no_hp')
                     ->searchable(),
-                // Tables\Columns\TextColumn::make('alamat')
-                //     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\SelectColumn::make('role')

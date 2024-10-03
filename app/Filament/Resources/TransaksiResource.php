@@ -38,6 +38,12 @@ class TransaksiResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(
+                Barang::where([
+                    ['bisnis', '=', Auth::user()->bisnis],
+                    ['cabang', '=', Auth::user()->cabang]
+                ])
+            )
             ->poll('5s')
             ->heading('Point Of Sales')
             ->columns([
@@ -75,6 +81,8 @@ class TransaksiResource extends Resource
                         $totalDiskon = $record->harga_jual * ($record->diskon / 100);
                         Keranjang::create([
                             'userid' => Auth::user()->id,
+                            'bisnis' => Auth::user()->bisnis,
+                            'cabang' => Auth::user()->cabang,
                             'kode' => $record->kode,
                             'nama' => $record->nama,
                             'kategori' => $record->kategori,
@@ -89,7 +97,6 @@ class TransaksiResource extends Resource
                             ->icon('heroicon-s-shopping-bag')
                             ->iconColor('success')
                             ->send();
-                            
                     })
                     ->icon('heroicon-s-plus-circle'),
             ])

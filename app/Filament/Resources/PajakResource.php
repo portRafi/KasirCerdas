@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PajakResource\Pages;
-use App\Filament\Resources\PajakResource\RelationManagers;
-use App\Models\Pajak;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Pajak;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\PajakResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\PajakResource\RelationManagers;
 
 class PajakResource extends Resource
 {
@@ -26,7 +27,13 @@ class PajakResource extends Resource
     {
         return $form
             ->schema([
-                    Forms\Components\TextInput::make('nama_pajak')
+                Forms\Components\TextInput::make('bisnis')
+                    ->value(Auth::user()->bisnis)
+                    ->hidden(),
+                Forms\Components\TextInput::make('cabang')
+                    ->value(Auth::user()->cabang)
+                    ->hidden(),
+                Forms\Components\TextInput::make('nama_pajak')
                     ->placeholder('Nama Pajak')
                     ->required()
                     ->maxLength(255),
@@ -42,7 +49,13 @@ class PajakResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->poll('5s')
+            ->query(
+                Pajak::where([
+                    ['bisnis', '=', Auth::user()->bisnis],
+                    ['cabang', '=', Auth::user()->cabang]
+                ])
+            )
+            ->poll('5s')
             ->columns([
                 Tables\Columns\TextColumn::make('nama_pajak')
                     ->searchable(),

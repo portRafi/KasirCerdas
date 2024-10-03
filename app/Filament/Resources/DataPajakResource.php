@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DataPajakResource\Pages;
-use App\Filament\Resources\DataPajakResource\RelationManagers;
-use App\Models\DataPajak;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\DataPajak;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\DataPajakResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\DataPajakResource\RelationManagers;
 
 class DataPajakResource extends Resource
 {
@@ -31,6 +32,12 @@ class DataPajakResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->query(
+            DataPajak::where([
+                ['bisnis', '=', Auth::user()->bisnis],
+                ['cabang', '=', Auth::user()->cabang]
+            ])
+        )
         ->poll('5s')
             ->columns([
                 Tables\Columns\TextColumn::make('kode_transaksi')

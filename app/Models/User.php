@@ -12,11 +12,11 @@ use Filament\Panel;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Support\Facades\Storage;
 
+
 use Spatie\Permission\Traits\HasRoles;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 
 use TomatoPHP\FilamentDiscord\Traits\InteractsWithDiscord;
-
 
 class User extends Authenticatable implements HasAvatar, FilamentUser
 {

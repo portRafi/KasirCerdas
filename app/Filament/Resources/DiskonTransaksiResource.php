@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DiskonTransaksiResource\Pages;
-use App\Filament\Resources\DiskonTransaksiResource\RelationManagers;
-use App\Models\DiskonTransaksi;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\DiskonTransaksi;
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\DiskonTransaksiResource\Pages;
+use App\Filament\Resources\DiskonTransaksiResource\RelationManagers;
 
 class DiskonTransaksiResource extends Resource
 {
@@ -26,6 +27,12 @@ class DiskonTransaksiResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('bisnis')
+                    ->value(Auth::user()->bisnis)
+                    ->hidden(),
+                Forms\Components\TextInput::make('cabang')
+                    ->value(Auth::user()->cabang)
+                    ->hidden(),
                 Forms\Components\TextInput::make('tipe_diskon')
                     ->default('price')
                     ->readOnly(),
@@ -45,6 +52,12 @@ class DiskonTransaksiResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->query(
+            DiskonTransaksi::where([
+                ['bisnis', '=', Auth::user()->bisnis],
+                ['cabang', '=', Auth::user()->cabang]
+            ])
+        )
         ->poll('5s')
             ->columns([
                 Tables\Columns\TextColumn::make('tipe_diskon')

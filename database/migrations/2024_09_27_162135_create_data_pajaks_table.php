@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('data_pajaks', function (Blueprint $table) {
             $table->id();
+            $table->string('bisnis');
+            $table->string('cabang');
             $table->string('kode_transaksi');
             $table->decimal('jumlah_pajak');
             $table->timestamps();

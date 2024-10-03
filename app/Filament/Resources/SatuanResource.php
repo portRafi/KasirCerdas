@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\SatuanResource\Pages;
-use App\Filament\Resources\SatuanResource\RelationManagers;
-use App\Models\Satuan;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Satuan;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\SatuanResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\SatuanResource\RelationManagers;
 
 class SatuanResource extends Resource
 {
@@ -27,17 +28,29 @@ class SatuanResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('bisnis')
+                    ->value(Auth::user()->bisnis)
+                    ->hidden(),
+                Forms\Components\TextInput::make('cabang')
+                    ->value(Auth::user()->cabang)
+                    ->hidden(),
                 Forms\Components\TextInput::make('nama_satuan')
-                ->label('Nama Satuan')
-                ->placeholder('Isi Nama Satuan')
-                ->required()
-                ->maxLength(255),
+                    ->label('Nama Satuan')
+                    ->placeholder('Isi Nama Satuan')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->query(
+                Satuan::where([
+                    ['bisnis', '=', Auth::user()->bisnis],
+                    ['cabang', '=', Auth::user()->cabang]
+                ])
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('nama_satuan')
                     ->searchable(),

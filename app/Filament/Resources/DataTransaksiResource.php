@@ -2,21 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DataTransaksiResource\Pages;
-use App\Filament\Resources\DataTransaksiResource\RelationManagers;
-use App\Models\DataTransaksi;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Tables\Columns\Summarizers\Sum;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-use Filament\Infolists\Components\TextEntry;
+use App\Models\DataTransaksi;
 use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
 use App\Models\BarangAfterCheckout;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\DataTransaksiResource\Pages;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\DataTransaksiResource\RelationManagers;
 
 
 
@@ -40,8 +41,14 @@ class DataTransaksiResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->poll('5s')
-        ->columns([
+            ->query(
+                DataTransaksi::where([
+                    ['bisnis', '=', Auth::user()->bisnis],
+                    ['cabang', '=', Auth::user()->cabang]
+                ])
+            )
+            ->poll('5s')
+            ->columns([
                 Tables\Columns\TextColumn::make('kode_transaksi')
                     ->label('Kode Transaksi')
                     ->numeric()
@@ -93,22 +100,22 @@ class DataTransaksiResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    public static function infolist(Infolist $infolist): Infolist
-{
-    $dataBarang = BarangAfterCheckout::where('kode_transaksi', $infolist->kode_transaksi)->first();
+    // public static function infolist(Infolist $infolist): Infolist
+    // {
+    //     $dataBarang = BarangAfterCheckout::where('kode_transaksi', $infolist->kode_transaksi)->first();
 
-    return $infolist
-        ->schema([
-            TextEntry::make('kode_transaksi')->value($dataBarang->kode_transaksi),
-            TextEntry::make('kode')->value($dataBarang->kode),
-            TextEntry::make('kategori')->value($dataBarang->kategori),
-            TextEntry::make('nama')->value($dataBarang->nama),
-            TextEntry::make('quantity')->value($dataBarang->quantity),
-            TextEntry::make('total_harga')->value($dataBarang->total_harga),
-            TextEntry::make('harga_jual')->value($dataBarang->harga_jual),
-            TextEntry::make('harga_beli')->value($dataBarang->harga_beli),
-        ]);
-}
+    //     return $infolist
+    //         ->schema([
+    //             TextEntry::make('kode_transaksi')->value($dataBarang->kode_transaksi),
+    //             TextEntry::make('kode')->value($dataBarang->kode),
+    //             TextEntry::make('kategori')->value($dataBarang->kategori),
+    //             TextEntry::make('nama')->value($dataBarang->nama),
+    //             TextEntry::make('quantity')->value($dataBarang->quantity),
+    //             TextEntry::make('total_harga')->value($dataBarang->total_harga),
+    //             TextEntry::make('harga_jual')->value($dataBarang->harga_jual),
+    //             TextEntry::make('harga_beli')->value($dataBarang->harga_beli),
+    //         ]);
+    // }
 
     public static function getRelations(): array
     {
@@ -120,7 +127,7 @@ class DataTransaksiResource extends Resource
     public static function canCreate(): bool
     {
         return false;
-    }    
+    }
 
     public static function getPages(): array
     {

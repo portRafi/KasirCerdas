@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('metode_pembayarans', function (Blueprint $table) {
             $table->id();
+            $table->string('bisnis');
+            $table->string('cabang');
             $table->string('nama_mp');
             $table->boolean('is_Active')->default(0);
             $table->timestamps();
