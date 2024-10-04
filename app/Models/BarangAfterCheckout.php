@@ -11,4 +11,12 @@ class BarangAfterCheckout extends Model
     protected $guarded = [
         'id',
     ];
+    public function bisnis()
+    {
+        return $this->belongsTo(Bisnis::class);
+    }
+    public function cabang()
+    {
+        return $this->belongsTo(Cabang::class);
+    }
 }

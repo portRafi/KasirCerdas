@@ -12,9 +12,13 @@ class Cabang extends Model
     protected $guarded = [
         'id'
     ];
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 
     public function bisnis()
     {
-        return $this->belongsTo(Bisnis::class, 'nama_bisnis');
+        return $this->belongsTo(Bisnis::class);
     }
 }
