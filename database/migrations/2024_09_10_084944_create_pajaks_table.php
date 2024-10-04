@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('pajaks', function (Blueprint $table) {
             $table->id();
-            $table->string('bisnis');
-            $table->string('cabang');
+            $table->foreignId('bisnis_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('cabangs_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('nama_pajak');
             $table->integer('jumlah_pajak');
             $table->timestamps();

@@ -88,7 +88,7 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
     }
     public function cabang()
     {
-        return $this->belongsTo(Cabang::class);
+        return $this->belongsTo(Cabang::class, 'cabangs_id');
     }
 
     public function canAccessPanel(Panel $panel): bool

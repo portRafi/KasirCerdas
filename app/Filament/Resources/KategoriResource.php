@@ -29,9 +29,9 @@ class KategoriResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Hidden::make('bisnis_id')
-                    ->default(Auth::user()->bisnis_id),
+                    ->default(Auth::user()->bisnis_id_id),
                 Forms\Components\Hidden::make('cabangs_id')
-                    ->default(Auth::user()->cabangs_id),    
+                    ->default(Auth::user()->cabangs_ids_id),    
                 Forms\Components\TextInput::make('nama')
                     ->required()
                     ->maxLength(255),
@@ -43,8 +43,8 @@ class KategoriResource extends Resource
             ->poll('5s')
             ->query(
                 Kategori::where([
-                    ['bisnis_id', '=', Auth::user()->bisnis_id],
-                    ['cabangs_id', '=', Auth::user()->cabangs_id]
+                    ['bisnis_id', '=', Auth::user()->bisnis_id_id],
+                    ['cabangs_id', '=', Auth::user()->cabangs_ids_id]
                 ])
             )
             ->columns([

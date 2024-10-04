@@ -19,7 +19,7 @@ class BisnisResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-m-building-library';
     protected static ?string $navigationGroup = 'Master Data';
     protected static ?string $activeNavigationIcon = 'heroicon-m-building-library';
-    protected static ?string $navigationLabel = 'Bisnis';
+    protected static ?string $navigationLabel = 'bisnis_id';
 
     public static function form(Form $form): Form
     {
