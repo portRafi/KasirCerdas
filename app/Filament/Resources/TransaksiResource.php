@@ -42,7 +42,8 @@ class TransaksiResource extends Resource
             ->query(
                 Barang::where([
                     ['bisnis_id', '=', Auth::user()->bisnis_id],
-                    ['cabangs_id', '=', Auth::user()->cabangs_id]
+                    ['cabangs_id', '=', Auth::user()->cabangs_id],
+                    ['stok', '>', 0],
                 ])
             )
             ->heading('Point Of Sales')

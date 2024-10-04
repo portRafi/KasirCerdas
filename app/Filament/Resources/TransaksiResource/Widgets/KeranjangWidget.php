@@ -189,7 +189,7 @@ class KeranjangWidget extends BaseWidget
                             ['cabangs_id', '=', Auth::user()->cabangs_id]
                         ])->sum('total_harga') - $totalDiskonTransaksi;
                         $jumlahPajak = $totalHargaAfterPajak - $totalHarga;
-
+                            
                         DataTransaksi::create([
                             'bisnis_id' => Auth::user()->bisnis_id,
                             'cabangs_id' => Auth::user()->cabangs_id,
