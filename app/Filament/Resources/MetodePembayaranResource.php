@@ -27,10 +27,10 @@ class MetodePembayaranResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Hidden::make('bisnis')
-                    ->default(Auth::user()->bisnis),
-                Forms\Components\Hidden::make('cabang')
-                    ->default(Auth::user()->cabang),
+                Forms\Components\Hidden::make('bisnis_id')
+                    ->default(Auth::user()->bisnis_id),
+                Forms\Components\Hidden::make('cabangs_id')
+                    ->default(Auth::user()->cabangs_id),
                 Forms\Components\TextInput::make('nama_mp')
                     ->placeholder('Masukkan Metode Pembayaran'),
                 Forms\Components\Toggle::make('is_Active')
@@ -42,8 +42,8 @@ class MetodePembayaranResource extends Resource
         return $table
             ->query(
                 MetodePembayaran::where([
-                    ['bisnis', '=', Auth::user()->bisnis],
-                    ['cabang', '=', Auth::user()->cabang]
+                    ['bisnis_id', '=', Auth::user()->bisnis_id],
+                    ['cabangs_id', '=', Auth::user()->cabangs_id]
                 ])
             )
             ->columns([

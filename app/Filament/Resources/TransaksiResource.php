@@ -40,8 +40,8 @@ class TransaksiResource extends Resource
         return $table
             ->query(
                 Barang::where([
-                    ['bisnis', '=', Auth::user()->bisnis],
-                    ['cabang', '=', Auth::user()->cabang]
+                    ['bisnis_id', '=', Auth::user()->bisnis_id],
+                    ['cabangs_id', '=', Auth::user()->cabangs_id]
                 ])
             )
             ->poll('5s')
@@ -81,8 +81,8 @@ class TransaksiResource extends Resource
                         $totalDiskon = $record->harga_jual * ($record->diskon / 100);
                         Keranjang::create([
                             'userid' => Auth::user()->id,
-                            'bisnis' => Auth::user()->bisnis,
-                            'cabang' => Auth::user()->cabang,
+                            'bisnis_id' => Auth::user()->bisnis_id,
+                            'cabangs_id' => Auth::user()->cabangs_id,
                             'kode' => $record->kode,
                             'nama' => $record->nama,
                             'kategori' => $record->kategori,

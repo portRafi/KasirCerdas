@@ -33,8 +33,8 @@ class KasirResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('cabang')
-                    ->default(Auth::user()->cabang)
+                Forms\Components\Select::make('cabangs_id')
+                    ->default(Auth::user()->cabangs_id)
                     ->hidden(),
                 Forms\Components\TextInput::make('name')
                     ->required()
@@ -57,7 +57,7 @@ class KasirResource extends Resource
                     ->preload()
                     ->searchable(),
                 Forms\Components\Select::make('bisnis_id')
-                    ->label('Bisnis')
+                    ->label('bisnis_id')
                     ->required()
                     ->searchable()
                     ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")
@@ -67,7 +67,7 @@ class KasirResource extends Resource
                     ->getOptionLabelUsing(fn($value): ?string => Bisnis::find($value)?->nama_bisnis)
                     ->reactive(),
                 Forms\Components\Select::make('cabangs_id')
-                    ->label('Cabang')
+                    ->label('cabangs_id')
                     ->required()
                     ->options(function (callable $get) {
                         $bisnisId = $get('bisnis_id');

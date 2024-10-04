@@ -43,8 +43,8 @@ class DataTransaksiResource extends Resource
         return $table
             ->query(
                 DataTransaksi::where([
-                    ['bisnis', '=', Auth::user()->bisnis],
-                    ['cabang', '=', Auth::user()->cabang]
+                    ['bisnis_id', '=', Auth::user()->bisnis_id],
+                    ['cabangs_id', '=', Auth::user()->cabangs_id]
                 ])
             )
             ->poll('5s')
