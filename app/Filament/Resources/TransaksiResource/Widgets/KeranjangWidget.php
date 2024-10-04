@@ -224,7 +224,7 @@ class KeranjangWidget extends BaseWidget
                                 'harga_beli' => $item->harga_beli
                             ]);
                         }
-                        
+
                         Keranjang::where('userid', Auth::user()->id)->delete();
 
                         $notificationBody = '**Checkout Processed Successfully with the following items:**' . PHP_EOL;

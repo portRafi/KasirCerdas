@@ -2,21 +2,31 @@
 
 namespace App\Filament\Resources\TransaksiResource\Widgets;
 
+use Carbon\Carbon;
 use App\Models\DataTransaksi;
 use App\Models\PenjualanBarang;
+use Illuminate\Support\Facades\Auth;
 use Filament\Support\Enums\IconPosition;
-use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Carbon\Carbon;
+use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 class TransaksiWidget extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full'; 
+    protected int | string | array $columnSpan = 'full';
     protected function getStats(): array
     {
-        $totalTransaksiToday = DataTransaksi::count();
-        $totalUangMasukToday = DataTransaksi::whereDate('created_at', Carbon::today())->sum('total_harga');
-        $totalKeuntunganToday = DataTransaksi::whereDate('created_at', Carbon::today())->sum('keuntungan');
+        $totalTransaksiToday = DataTransaksi::where([
+            ['bisnis_id', '=', Auth::user()->bisnis_id],
+            ['cabangs_id', '=', Auth::user()->cabangs_id],
+        ])->count();
+        $totalUangMasukToday = DataTransaksi::where([
+            ['bisnis_id', '=', Auth::user()->bisnis_id],
+            ['cabangs_id', '=', Auth::user()->cabangs_id],
+        ])->whereDate('created_at', Carbon::today())->sum('total_harga');
+        $totalKeuntunganToday = DataTransaksi::where([
+            ['bisnis_id', '=', Auth::user()->bisnis_id],
+            ['cabangs_id', '=', Auth::user()->cabangs_id],
+        ])->whereDate('created_at', Carbon::today())->sum('keuntungan');
 
         return [
             Stat::make('Total Transaksi Hari Ini', $totalTransaksiToday)
