@@ -3,9 +3,10 @@
 namespace App\Filament\Widgets;
 
 use App\Models\User;
-use Filament\Support\Enums\IconPosition;
 use App\Models\Barang;
 use App\Models\MetodePembayaran;
+use Illuminate\Support\Facades\Auth;
+use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
@@ -13,10 +14,21 @@ class DatasWidget extends BaseWidget
 {
     protected function getStats(): array
     {
-        $totalBarang = Barang::count();
-        $totalKasir = User::where('role', 'kasir')->count();
-        $totalMPAktif = MetodePembayaran::where('is_Active', true)->count();
-        
+        $totalBarang = Barang::where([
+            ['bisnis_id', '=', Auth::user()->bisnis_id],
+            ['cabangs_id', '=', Auth::user()->cabangs_id],
+        ])->count();
+        $totalKasir = User::where([
+            ['bisnis_id', '=', Auth::user()->bisnis_id],
+            ['cabangs_id', '=', Auth::user()->cabangs_id],
+            ['role', '=', 'kasir'],
+        ])->count();
+        $totalMPAktif = MetodePembayaran::where([
+            ['bisnis_id', '=', Auth::user()->bisnis_id],
+            ['cabangs_id', '=', Auth::user()->cabangs_id],
+            ['is_Active', '=', true],
+        ])->count();
+
         return [
             Stat::make('Jumlah Barang', $totalBarang)
                 ->description('Total Barang di database')
