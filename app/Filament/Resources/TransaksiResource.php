@@ -44,7 +44,6 @@ class TransaksiResource extends Resource
                     ['cabangs_id', '=', Auth::user()->cabangs_id]
                 ])
             )
-            ->poll('5s')
             ->heading('Point Of Sales')
             ->columns([
                 Tables\Columns\TextColumn::make('kode')
