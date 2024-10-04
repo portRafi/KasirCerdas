@@ -20,7 +20,7 @@ class CabangResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-m-building-storefront';
     protected static ?string $navigationGroup = 'Master Data';
     protected static ?string $activeNavigationIcon = 'heroicon-m-building-storefront';
-    protected static ?string $navigationLabel = 'cabangs_id';
+    protected static ?string $navigationLabel = 'cabang';
 
     public static function form(Form $form): Form
     {
