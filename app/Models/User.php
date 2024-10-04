@@ -81,11 +81,11 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
 
     public function bisnis()
     {
-        return $this->belongsTo(Bisnis::class, 'nama_bisnis');
+        return $this->belongsTo(Bisnis::class);
     }
     public function cabang()
     {
-        return $this->belongsTo(Cabang::class, 'nama_cabang');
+        return $this->belongsTo(Cabang::class);
     }
 
     public function canAccessPanel(Panel $panel): bool

@@ -17,6 +17,7 @@ use Filament\Tables\View\TablesRenderHook;
 use App\Filament\Resources\KasirResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\KasirResource\RelationManagers;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role; // Impor model Role dari Spatie
 
 class KasirResource extends Resource
@@ -47,9 +48,10 @@ class KasirResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->required(),
-                Forms\Components\TextInput::make('password')
-                    ->required()
-                    ->maxLength(255),
+                    Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                    ->dehydrated(fn ($state) => filled($state)),
                 Forms\Components\Select::make('roles')
                     ->relationship('roles', 'name')
                     ->preload()
@@ -59,7 +61,7 @@ class KasirResource extends Resource
                     ->searchable()
                     ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")
                         ->limit(50)
-                        ->pluck('nama_bisnis', 'nama_bisnis')
+                        ->pluck('nama_bisnis', 'id')
                         ->toArray())
                     ->getOptionLabelUsing(fn($value): ?string => Bisnis::find($value)?->nama_bisnis)
                     ->reactive(),
@@ -68,9 +70,9 @@ class KasirResource extends Resource
                     ->options(function (callable $get) {
                         $bisnisId = $get('bisnis');
                         if ($bisnisId) {
-                            return Cabang::where('nama_bisnis', $bisnisId)->pluck('nama_cabang', 'nama_cabang');
+                            return Cabang::where('nama_bisnis', $bisnisId)->pluck('nama_cabang', 'id');
                         }
-                        return Cabang::all()->pluck('nama_cabang', 'nama_cabang');
+                        return Cabang::all()->pluck('nama_cabang', 'id');
                     })
                     ->disabled(fn(callable $get) => !$get('bisnis'))
                     ->searchable(),
