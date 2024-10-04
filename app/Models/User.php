@@ -32,17 +32,19 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'no_hp',
-        'alamat',
-        'email',
-        'password',
-        'role',
-        'cabang',
-        'bisnis',
-    ];
-
+    // protected $fillable = [
+    //     'name',
+    //     'no_hp',
+    //     'alamat',
+    //     'email',
+    //     'password',
+    //     'role',
+    //     'cabangs_id',
+    //     'bisnis_id',
+    // ];
+     protected $guarded = [
+        'id'
+     ];
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -85,7 +87,7 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
     }
     public function cabang()
     {
-        return $this->belongsTo(Cabang::class);
+        return $this->belongsTo(Cabang::class, 'cabangs_id');
     }
 
     public function canAccessPanel(Panel $panel): bool

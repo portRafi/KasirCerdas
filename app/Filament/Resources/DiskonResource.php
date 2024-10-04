@@ -26,10 +26,10 @@ class DiskonResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Hidden::make('bisnis')
-                    ->default(Auth::user()->bisnis),
-                Forms\Components\Hidden::make('cabang')
-                    ->default(Auth::user()->cabang),
+                Forms\Components\Hidden::make('bisnis_id')
+                    ->default(Auth::user()->bisnis_id),
+                Forms\Components\Hidden::make('cabangs_id')
+                    ->default(Auth::user()->cabangs_id),
                 Forms\Components\TextInput::make('tipe_diskon')
                     ->default('persen')
                     ->readOnly(),
@@ -51,8 +51,8 @@ class DiskonResource extends Resource
         return $table
         ->query(
             Diskon::where([
-                ['bisnis', '=', Auth::user()->bisnis],
-                ['cabang', '=', Auth::user()->cabang]
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id]
             ])
         )
         ->poll('5s')
@@ -62,7 +62,7 @@ class DiskonResource extends Resource
                 Tables\Columns\TextColumn::make('nama_diskon')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('jumlah_diskon')
-                    ->numeric()
+                    ->numeric() 
                     ->suffix('%')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

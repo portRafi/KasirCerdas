@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('keranjangs', function (Blueprint $table) {
             $table->id();
-            $table->integer('userid')->unique();
-            $table->string('bisnis');
-            $table->string('cabang');
+            $table->integer('userid');
+            $table->foreignId('bisnis_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('cabangs_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('nama');
             $table->string('kategori');
             $table->decimal('harga_beli', 10,2);

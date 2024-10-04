@@ -33,8 +33,8 @@ class KasirResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('cabang')
-                    ->default(Auth::user()->cabang)
+                Forms\Components\Select::make('cabangs_id')
+                    ->default(Auth::user()->cabangs_id)
                     ->hidden(),
                 Forms\Components\TextInput::make('name')
                     ->required()
@@ -48,15 +48,16 @@ class KasirResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->required(),
-                    Forms\Components\TextInput::make('password')
+                Forms\Components\TextInput::make('password')
                     ->password()
-                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                    ->dehydrated(fn ($state) => filled($state)),
+                    ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                    ->dehydrated(fn($state) => filled($state)),
                 Forms\Components\Select::make('roles')
                     ->relationship('roles', 'name')
                     ->preload()
                     ->searchable(),
-                Forms\Components\Select::make('bisnis')
+                Forms\Components\Select::make('bisnis_id')
+                    ->label('bisnis_id')
                     ->required()
                     ->searchable()
                     ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")
@@ -65,16 +66,18 @@ class KasirResource extends Resource
                         ->toArray())
                     ->getOptionLabelUsing(fn($value): ?string => Bisnis::find($value)?->nama_bisnis)
                     ->reactive(),
-                Forms\Components\Select::make('cabang')
+                Forms\Components\Select::make('cabangs_id')
+                    ->label('cabangs_id')
                     ->required()
                     ->options(function (callable $get) {
-                        $bisnisId = $get('bisnis');
+                        $bisnisId = $get('bisnis_id');
                         if ($bisnisId) {
-                            return Cabang::where('nama_bisnis', $bisnisId)->pluck('nama_cabang', 'id');
+                            return Cabang::where('bisnis_id', $bisnisId)
+                                ->pluck('nama_cabang', 'id');
                         }
                         return Cabang::all()->pluck('nama_cabang', 'id');
                     })
-                    ->disabled(fn(callable $get) => !$get('bisnis'))
+                    ->disabled(fn(callable $get) => !$get('bisnis_id'))
                     ->searchable(),
             ]);
     }
@@ -93,11 +96,11 @@ class KasirResource extends Resource
                     ->searchable(),
                 Tables\Columns\SelectColumn::make('roles')
                     ->options(Role::all()->pluck('name', 'id')),
-                Tables\Columns\TextColumn::make('bisnis')
+                Tables\Columns\TextColumn::make('bisnis.nama_bisnis')
                     ->badge()
                     ->color('success')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('cabang')
+                Tables\Columns\TextColumn::make('cabang.nama_cabang')
                     ->badge()
                     ->color('success')
                     ->sortable(),

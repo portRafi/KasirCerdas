@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('data_transaksis', function (Blueprint $table) {
             $table->id();
-            $table->string('bisnis');
-            $table->string('cabang');
+            $table->foreignId('bisnis_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('cabangs_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('kode_transaksi');
             $table->string('email_staff');
             $table->string('metode_pembayaran');

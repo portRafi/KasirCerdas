@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CabangResource\Pages;
-use App\Filament\Resources\CabangResource\RelationManagers;
-use App\Models\Cabang;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Bisnis;
+use App\Models\Cabang;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\CabangResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\CabangResource\RelationManagers;
 
 class CabangResource extends Resource
 {
@@ -19,16 +20,22 @@ class CabangResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-m-building-storefront';
     protected static ?string $navigationGroup = 'Master Data';
     protected static ?string $activeNavigationIcon = 'heroicon-m-building-storefront';
-    protected static ?string $navigationLabel = 'Cabang';
+    protected static ?string $navigationLabel = 'cabangs_id';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama_bisnis')
-                    ->placeholder('Nama Bisnis')
+                Forms\Components\Select::make('bisnis_id')
+                    ->label('Nama Bisnis')
                     ->required()
-                    ->maxLength(255),
+                    ->searchable()
+                    ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")
+                        ->limit(50)
+                        ->pluck('nama_bisnis', 'id')
+                        ->toArray())
+                    ->getOptionLabelUsing(fn($value): ?string => Bisnis::find($value)?->nama_bisnis)
+                    ->reactive(),
                 Forms\Components\TextInput::make('nama_cabang')
                     ->placeholder('Nama Cabang')
                     ->required()

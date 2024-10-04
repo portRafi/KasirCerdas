@@ -38,13 +38,13 @@ class TransaksiResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->poll('10s')
             ->query(
                 Barang::where([
-                    ['bisnis', '=', Auth::user()->bisnis],
-                    ['cabang', '=', Auth::user()->cabang]
+                    ['bisnis_id', '=', Auth::user()->bisnis_id],
+                    ['cabangs_id', '=', Auth::user()->cabangs_id]
                 ])
             )
-            ->poll('5s')
             ->heading('Point Of Sales')
             ->columns([
                 Tables\Columns\TextColumn::make('kode')
@@ -81,8 +81,8 @@ class TransaksiResource extends Resource
                         $totalDiskon = $record->harga_jual * ($record->diskon / 100);
                         Keranjang::create([
                             'userid' => Auth::user()->id,
-                            'bisnis' => Auth::user()->bisnis,
-                            'cabang' => Auth::user()->cabang,
+                            'bisnis_id' => Auth::user()->bisnis_id,
+                            'cabangs_id' => Auth::user()->cabangs_id,
                             'kode' => $record->kode,
                             'nama' => $record->nama,
                             'kategori' => $record->kategori,

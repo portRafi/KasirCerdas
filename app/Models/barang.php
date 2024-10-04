@@ -13,4 +13,12 @@ class Barang extends Model
         'id',
         
     ];
+    public function bisnis()
+    {
+        return $this->belongsTo(Bisnis::class);
+    }
+    public function cabang()
+    {
+        return $this->belongsTo(Cabang::class);
+    }
 }
