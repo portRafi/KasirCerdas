@@ -63,7 +63,7 @@ class TransaksiResource extends Resource
                 Tables\Columns\TextColumn::make('stok')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('diskon')
-                    ->suffix('%')
+                    ->formatStateUsing(fn ($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.'))
                     ->sortable(),
             ])
             ->filters([
