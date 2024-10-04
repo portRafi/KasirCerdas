@@ -38,7 +38,7 @@ class TransaksiResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->poll('10s')
+            ->poll('15s')
             ->query(
                 Barang::where([
                     ['bisnis_id', '=', Auth::user()->bisnis_id],
@@ -78,7 +78,7 @@ class TransaksiResource extends Resource
                         TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
                     ])
                     ->action(function ($record, $data) {
-                        $totalDiskon = $record->harga_jual * ($record->diskon / 100);
+                        $totalDiskon = ($record->diskon <= 100) ? $record->harga_jual * ($record->diskon / 100) : $record->diskon;
                         Keranjang::create([
                             'userid' => Auth::user()->id,
                             'bisnis_id' => Auth::user()->bisnis_id,
