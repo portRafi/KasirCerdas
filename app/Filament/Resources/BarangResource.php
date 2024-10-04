@@ -65,9 +65,15 @@ class BarangResource extends Resource
                     ->numeric(),
                 Forms\Components\Select::make('diskon')
                     ->preload()
-                    ->options(Diskon::all()->pluck('nama_diskon', 'jumlah_diskon')),
+                    ->options(Diskon::where([
+                        ['bisnis_id', Auth::user()->bisnis_id],
+                        ['cabangs_id', Auth::user()->cabangs_id],
+                    ])->pluck('nama_diskon', 'jumlah_diskon')),
                 Forms\Components\Select::make('satuan')
-                    ->options(Satuan::all()->pluck('nama_satuan', 'nama_satuan'))
+                    ->options(Satuan::where([
+                        ['bisnis_id', Auth::user()->bisnis_id],
+                        ['cabangs_id', Auth::user()->cabangs_id],
+                    ])->pluck('nama_satuan', 'nama_satuan'))
                     ->required(),
                 Forms\Components\TextInput::make('berat')
                     ->placeholder('Berat')

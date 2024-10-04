@@ -224,11 +224,7 @@ class KeranjangWidget extends BaseWidget
                                 'harga_beli' => $item->harga_beli
                             ]);
                         }
-                        $barang = Barang::where('kode', $item->kode)->first();
-                        if ($barang) {
-                            $barang->stok -= $item->quantity;
-                            $barang->save();
-                        }
+                        
                         Keranjang::where('userid', Auth::user()->id)->delete();
 
                         $notificationBody = '**Checkout Processed Successfully with the following items:**' . PHP_EOL;
