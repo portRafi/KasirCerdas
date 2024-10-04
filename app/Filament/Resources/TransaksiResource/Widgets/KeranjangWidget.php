@@ -176,10 +176,7 @@ class KeranjangWidget extends BaseWidget
                             $totalHargaBeli = $item->harga_beli * $item->quantity;
                             return $totalHargaJual - $totalHargaBeli - $totalDiskonAfterTransaksi;
                         })->sum();
-                        $metodePembayaran = MetodePembayaran::where([
-                            ['bisnis_id', '=', Auth::user()->bisnis_id],
-                            ['cabangs_id', '=', Auth::user()->cabangs_id]
-                        ])->get($data['metode_pembayaran'])->nama_mp;
+                        $metodePembayaran = MetodePembayaran::all()->get($data['metode_pembayaran'])->nama_mp;
                         $emailStaff = Auth::user()->email;
 
 
@@ -212,11 +209,7 @@ class KeranjangWidget extends BaseWidget
                             'kode_transaksi' => $randomString,
                             'jumlah_pajak' => $jumlahPajak
                         ]);
-                        $itemsInCart = Keranjang::where([
-                            ['userid', '=', Auth::user()->id],
-                            ['bisnis_id', '=', Auth::user()->bisnis_id],
-                            ['cabangs_id', '=', Auth::user()->cabangs_id],
-                        ]);
+                        $itemsInCart = Keranjang::where('userid', Auth::user()->id)->get();
                         foreach ($itemsInCart as $item) {
                             BarangAfterCheckout::create([
                                 'bisnis_id' => Auth::user()->bisnis_id,
@@ -231,20 +224,12 @@ class KeranjangWidget extends BaseWidget
                                 'harga_beli' => $item->harga_beli
                             ]);
                         }
-                        $barang = Barang::where([
-                            ['nama', '=', $item->nama],
-                            ['bisnis_id', '=', Auth::user()->bisnis_id],
-                            ['cabangs_id', '=', Auth::user()->cabangs_id],
-                        ])->get();
+                        $barang = Barang::where('kode', $item->kode)->first();
                         if ($barang) {
                             $barang->stok -= $item->quantity;
                             $barang->save();
                         }
-                        Keranjang::where([
-                            ['userid', '=', Auth::user()->id],
-                            ['bisnis_id', '=', Auth::user()->bisnis_id],
-                            ['cabangs_id', '=', Auth::user()->cabangs_id],
-                        ])->delete();
+                        Keranjang::where('userid', Auth::user()->id)->delete();
 
                         $notificationBody = '**Checkout Processed Successfully with the following items:**' . PHP_EOL;
                         foreach ($itemsInCart as $item) {
