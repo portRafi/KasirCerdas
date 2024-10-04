@@ -19,4 +19,12 @@ class MetodePembayaran extends Model
     {
         return $query->where('is_Active', true);
     }
+    public function bisnis()
+    {
+        return $this->belongsTo(Bisnis::class);
+    }
+    public function cabang()
+    {
+        return $this->belongsTo(Cabang::class);
+    }
 }
