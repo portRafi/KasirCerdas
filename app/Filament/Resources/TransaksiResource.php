@@ -87,6 +87,12 @@ class TransaksiResource extends Resource
                                 ->icon('heroicon-s-exclamation-circle')
                                 ->iconColor('danger')
                                 ->send();
+                        } elseif($data['quantity'] > $record->stok) {
+                            Notification::make()
+                                ->title('Quantity melebihi stok yang tersedia')
+                                ->icon('heroicon-s-exclamation-circle')
+                                ->iconColor('danger')
+                                ->send();
                         } else {
                             $totalDiskon = ($record->diskon <= 100) ? $record->harga_jual * ($record->diskon / 100) : $record->diskon;
                             Keranjang::create([
