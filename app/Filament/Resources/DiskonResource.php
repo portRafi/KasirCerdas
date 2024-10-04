@@ -62,7 +62,7 @@ class DiskonResource extends Resource
                 Tables\Columns\TextColumn::make('nama_diskon')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('jumlah_diskon')
-                    ->numeric()
+                    ->numeric() 
                     ->suffix('%')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

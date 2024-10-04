@@ -38,6 +38,7 @@ class TransaksiResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->poll('10s')
             ->query(
                 Barang::where([
                     ['bisnis_id', '=', Auth::user()->bisnis_id],
