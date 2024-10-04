@@ -78,11 +78,7 @@ class TransaksiResource extends Resource
                         TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
                     ])
                     ->action(function ($record, $data) {
-                        if ($record->diskon <= 100) {
-                            $totalDiskon = $record->harga_jual * ($record->diskon / 100);
-                        } else {
-                            $totalDiskon = $record->diskon;
-                        }
+                        $totalDiskon = ($record->diskon <= 100) ? $record->harga_jual * ($record->diskon / 100) : $record->diskon;
                         Keranjang::create([
                             'userid' => Auth::user()->id,
                             'bisnis_id' => Auth::user()->bisnis_id,

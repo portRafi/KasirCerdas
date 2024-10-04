@@ -178,8 +178,6 @@ class KeranjangWidget extends BaseWidget
                         })->sum();
                         $metodePembayaran = MetodePembayaran::all()->get($data['metode_pembayaran'])->nama_mp;
                         $emailStaff = Auth::user()->email;
-
-
                         $totalHargaAfterPajak = $data['total_harga_after_pajak'];
                         $totalDiskonTransaksi = DiskonTransaksi::where([
                             ['bisnis_id', '=', Auth::user()->bisnis_id],
