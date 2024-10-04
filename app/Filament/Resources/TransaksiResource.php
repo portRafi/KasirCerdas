@@ -78,27 +78,46 @@ class TransaksiResource extends Resource
                         TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
                     ])
                     ->action(function ($record, $data) {
-                        $totalDiskon = ($record->diskon <= 100) ? $record->harga_jual * ($record->diskon / 100) : $record->diskon;
-                        Keranjang::create([
-                            'userid' => Auth::user()->id,
-                            'bisnis_id' => Auth::user()->bisnis_id,
-                            'cabangs_id' => Auth::user()->cabangs_id,
-                            'kode' => $record->kode,
-                            'nama' => $record->nama,
-                            'kategori' => $record->kategori,
-                            'harga_beli' => $record->harga_beli,
-                            'harga_jual' => $record->harga_jual,
-                            'total_harga' => $record->harga_jual * $data['quantity'] - $totalDiskon,
-                            'quantity' => $data['quantity'],
-                            'diskon' => $record->diskon
-                        ]);
-                        Notification::make()
-                            ->title('Barang Dimasukkan ke Keranjang')
-                            ->icon('heroicon-s-shopping-bag')
-                            ->iconColor('success')
-                            ->send();
+                        $itemAlreadyAdd = Keranjang::where('userid', Auth::user()->id)
+                            ->where('kode', $record->kode)
+                            ->first();
+                        if ($itemAlreadyAdd) {
+                            Notification::make()
+                                ->title('Barang sudah ada di keranjang')
+                                ->icon('heroicon-s-exclamation-circle')
+                                ->iconColor('danger')
+                                ->send();
+                        } elseif($data['quantity'] > $record->stok) {
+                            Notification::make()
+                                ->title('Quantity melebihi stok yang tersedia')
+                                ->icon('heroicon-s-exclamation-circle')
+                                ->iconColor('danger')
+                                ->send();
+                        } else {
+                            $totalDiskon = ($record->diskon <= 100) ? $record->harga_jual * ($record->diskon / 100) : $record->diskon;
+                            Keranjang::create([
+                                'userid' => Auth::user()->id,
+                                'bisnis_id' => Auth::user()->bisnis_id,
+                                'cabangs_id' => Auth::user()->cabangs_id,
+                                'kode' => $record->kode,
+                                'nama' => $record->nama,
+                                'kategori' => $record->kategori,
+                                'harga_beli' => $record->harga_beli,
+                                'harga_jual' => $record->harga_jual,
+                                'total_harga' => $record->harga_jual * $data['quantity'] - $totalDiskon,
+                                'quantity' => $data['quantity'],
+                                'diskon' => $record->diskon
+                            ]);
+
+                            Notification::make()
+                                ->title('Barang dimasukkan ke keranjang')
+                                ->icon('heroicon-s-shopping-bag')
+                                ->iconColor('success')
+                                ->send();
+                        }
                     })
                     ->icon('heroicon-s-plus-circle'),
+
             ])
             ->bulkActions([]);
     }
