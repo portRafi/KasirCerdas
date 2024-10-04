@@ -119,7 +119,7 @@ class BarangResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('diskon')
                     ->numeric()
-                    ->suffix('%')
+                    ->formatStateUsing(fn ($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('berat')
                     ->numeric()
