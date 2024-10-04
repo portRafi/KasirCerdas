@@ -22,7 +22,7 @@ use App\Filament\Resources\TransaksiResource\Widgets\TransaksiWidget;
 
 class TransaksiResource extends Resource
 {
-    protected static ?string $model = Barang::class;
+    protected static ?string $model = Keranjang::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
     protected static ?string $activeNavigationIcon = 'heroicon-s-building-storefront';
