@@ -138,7 +138,7 @@ class KeranjangWidget extends BaseWidget
                         TextInput::make('total_harga_after_diskon_transaksi')
                             ->label('Total Harga Setelah Diskon Transaksi (readonly)')
                             ->readOnly()
-                            ->prefix('Total')
+                            ->prefix('Totala')
                             ->default(function () {
                                 $totalHarga = Keranjang::where([
                                     ['userid', '=', Auth::user()->id],
