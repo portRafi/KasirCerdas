@@ -172,14 +172,12 @@ class KeranjangWidget extends BaseWidget
                                 ['bisnis_id', '=', Auth::user()->bisnis_id],
                                 ['cabangs_id', '=', Auth::user()->cabangs_id]
                             ])->sum('jumlah_diskon');
-                            $totalHargaJual = ($item->harga_jual * $item->quantity) - ($item->harga_jual * ($item->diskon / 100));
+                            $totalHargaJual = ($item->diskon <= 100) ? ($item->harga_jual * $item->quantity) - ($item->harga_jual * ($item->diskon / 100)) : ($item->harga_jual * $item->quantity) - $item->diskon;
                             $totalHargaBeli = $item->harga_beli * $item->quantity;
                             return $totalHargaJual - $totalHargaBeli - $totalDiskonAfterTransaksi;
                         })->sum();
                         $metodePembayaran = MetodePembayaran::all()->get($data['metode_pembayaran'])->nama_mp;  
                         $emailStaff = Auth::user()->email;
-
-
                         $totalHargaAfterPajak = $data['total_harga_after_pajak'];
                         $totalDiskonTransaksi = DiskonTransaksi::where([
                             ['bisnis_id', '=', Auth::user()->bisnis_id],
@@ -191,7 +189,7 @@ class KeranjangWidget extends BaseWidget
                             ['cabangs_id', '=', Auth::user()->cabangs_id]
                         ])->sum('total_harga') - $totalDiskonTransaksi;
                         $jumlahPajak = $totalHargaAfterPajak - $totalHarga;
-
+                            
                         DataTransaksi::create([
                             'bisnis_id' => Auth::user()->bisnis_id,
                             'cabangs_id' => Auth::user()->cabangs_id,

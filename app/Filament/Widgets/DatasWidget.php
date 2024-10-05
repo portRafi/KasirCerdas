@@ -33,7 +33,7 @@ class DatasWidget extends BaseWidget
             Stat::make('Jumlah Barang', $totalBarang)
                 ->description('Total Barang di database')
                 ->descriptionIcon('heroicon-s-archive-box', IconPosition::Before)
-                ->color($totalBarang < 5 ? 'danger' : 'success'),
+                ->color($totalBarang < 5 ? 'danger' : ($totalBarang <= 10 ? 'warning' : 'success')),
             Stat::make('Jumlah Akun Kasir', $totalKasir)
                 ->description('Total Akun Kasir di database')
                 ->descriptionIcon('heroicon-m-user-plus', IconPosition::Before)

@@ -30,8 +30,11 @@ class DiskonResource extends Resource
                     ->default(Auth::user()->bisnis_id),
                 Forms\Components\Hidden::make('cabangs_id')
                     ->default(Auth::user()->cabangs_id),
-                Forms\Components\TextInput::make('tipe_diskon')
-                    ->default('persen')
+                Forms\Components\Select::make('tipe_diskon')
+                    ->options([
+                        'Persentase' => 'persen',
+                        'Diskon Tetap' => 'fixed',
+                    ])
                     ->readOnly(),
                 Forms\Components\TextInput::make('nama_diskon')
                     ->placeholder('Nama Diskon')
@@ -40,7 +43,6 @@ class DiskonResource extends Resource
                 Forms\Components\TextInput::make('jumlah_diskon')
                     ->placeholder('Jumlah Diskon')
                     ->numeric()
-                    ->suffix('%')
                     ->required()
                     ->numeric(),
             ]);
@@ -63,7 +65,7 @@ class DiskonResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('jumlah_diskon')
                     ->numeric() 
-                    ->suffix('%')
+                    ->formatStateUsing(fn ($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
