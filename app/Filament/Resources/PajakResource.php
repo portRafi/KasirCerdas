@@ -27,6 +27,7 @@ class PajakResource extends Resource
     {
         return $form
             ->schema([
+                forms\Components\Hidden::make('nama_user'),
                 Forms\Components\Hidden::make('bisnis_id')
                     ->default(Auth::user()->bisnis_id),
                 Forms\Components\Hidden::make('cabangs_id')
@@ -35,6 +36,7 @@ class PajakResource extends Resource
                     ->placeholder('Nama Pajak')
                     ->required()
                     ->maxLength(255),
+                    forms\Components\Hidden::make('nama_user'),
                 Forms\Components\TextInput::make('jumlah_pajak')
                     ->placeholder('Jumlah Pajak')
                     ->numeric()
@@ -57,6 +59,7 @@ class PajakResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nama_pajak')
                     ->searchable(),
+                    forms\Components\Hidden::make('nama_user'),
                 Tables\Columns\TextColumn::make('jumlah_pajak')
                     ->numeric()
                     ->sortable(),
