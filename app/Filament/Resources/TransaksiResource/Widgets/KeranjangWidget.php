@@ -152,6 +152,8 @@ class KeranjangWidget extends BaseWidget
                                 $totalHargaDenganDiskonTransaksi = $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
                                 return $totalHargaDenganDiskonTransaksi;
                             }),
+                            //
+                            
                         Select::make('metode_pembayaran')
                             ->required()
                             ->label('Pilih Metode Pembayaran')

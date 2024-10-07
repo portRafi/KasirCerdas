@@ -18,6 +18,9 @@ class Keranjang extends Model
     {
         return $this->belongsTo(MetodePembayaran::class, 'id');
     }
+
+    
+
     public function bisnis()
     {
         return $this->belongsTo(Bisnis::class);

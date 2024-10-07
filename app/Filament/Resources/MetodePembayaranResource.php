@@ -61,7 +61,9 @@ class MetodePembayaranResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([])
+            ->actions([
+                
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

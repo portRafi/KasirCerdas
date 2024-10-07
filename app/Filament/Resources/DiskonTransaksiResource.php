@@ -44,6 +44,7 @@ class DiskonTransaksiResource extends Resource
                     ->prefix('IDR')
                     ->required()
                     ->numeric(),
+                Forms\Components\Toggle::make('is_Active')
             ]);
     }
 
@@ -65,6 +66,11 @@ class DiskonTransaksiResource extends Resource
                 Tables\Columns\TextColumn::make('jumlah_diskon')
                     ->money('IDR')
                     ->sortable(),
+                Tables\Columns\ToggleColumn::make('is_Active'),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->getStateUsing(fn($record) => $record->is_Active ? 'Aktif' : 'Tidak Aktif')
+                    ->color(fn($state) => $state === 'Aktif' ? 'success' : 'warning'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
