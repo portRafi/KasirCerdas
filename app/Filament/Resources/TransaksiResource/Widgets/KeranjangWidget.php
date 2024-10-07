@@ -196,7 +196,7 @@ class KeranjangWidget extends BaseWidget
                             $totalDiskonAfterTransaksi = DiskonTransaksi::where([
                                 ['bisnis_id', '=', Auth::user()->bisnis_id],
                                 ['cabangs_id', '=', Auth::user()->cabangs_id]
-                            ])->sum('jumlah_diskon');
+                            ])->sum('jumlah_diskon'); //
                             $totalHargaJual = ($item->diskon <= 100) ? ($item->harga_jual * $item->quantity) - ($item->harga_jual * ($item->diskon / 100)) : ($item->harga_jual * $item->quantity) - $item->diskon;
                             $totalHargaBeli = $item->harga_beli * $item->quantity;
                             return $totalHargaJual - $totalHargaBeli - $totalDiskonAfterTransaksi;
