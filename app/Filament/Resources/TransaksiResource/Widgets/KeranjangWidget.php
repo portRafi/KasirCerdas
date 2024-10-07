@@ -98,22 +98,28 @@ class KeranjangWidget extends BaseWidget
                                 $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
                                 return $totalHargaDenganPajak;
                             }),
-                        Summarizer::make()
+                            Summarizer::make()
                             ->label('Total Harga [-] potongan diskon transaksi')
                             ->money('IDR')
                             ->using(function () {
+                                
                                 $totalHarga = Keranjang::where([
                                     ['userid', '=', Auth::user()->id],
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
                                 ])->sum('total_harga') ?: 0;
+                        
+                                
                                 $totalDiskonTransaksi = DiskonTransaksi::where([
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
-                                    ['cabangs_id', '=', Auth::user()->cabangs_id]
+                                    ['cabangs_id', '=', Auth::user()->cabangs_id],
+                                    ['is_Active', '=', true], // kondisi untuk mengambil diskon aktif
                                 ])->sum('jumlah_diskon') ?: 0;
-                                $totalHargaDenganDiskonTransaksi = $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
+                        
+                                $totalHargaDenganDiskonTransaksi = ($totalDiskonTransaksi <= 100) ? $this->calculateTotalHargaWithPajak($totalHarga) - ($this->calculateTotalHargaWithPajak($totalHarga) * ($totalDiskonTransaksi / 100)) : $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
                                 return $totalHargaDenganDiskonTransaksi;
                             }),
+                        
                     ])
 
             ])
@@ -135,7 +141,7 @@ class KeranjangWidget extends BaseWidget
                                 $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
                                 return $totalHargaDenganPajak;
                             }),
-                        TextInput::make('total_harga_after_diskon_transaksi')
+                            TextInput::make('total_harga_after_diskon_transaksi')
                             ->label('Total Harga Setelah Diskon Transaksi (readonly)')
                             ->readOnly()
                             ->prefix('Total')
@@ -144,16 +150,33 @@ class KeranjangWidget extends BaseWidget
                                     ['userid', '=', Auth::user()->id],
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
-                                ])->sum('total_harga') ?: 0;
-                                $totalDiskonTransaksi = DiskonTransaksi::where([
+                            ])->sum('total_harga') ?: 0;
+                        
+                                $diskonTransaksi = DiskonTransaksi::where([
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id]
-                                ])->sum('jumlah_diskon') ?: 0;
+                                ])->first();
+                        
+                                // Inisialisasi total diskon
+                                $totalDiskonTransaksi = 0;
+                        
+                                // Cek apakah diskon ada
+                                if ($diskonTransaksi) {
+                                    if ($diskonTransaksi->jumlah_diskon <= 100) {
+                                        // Jika diskon persen
+                                        $totalDiskonTransaksi = $totalHarga * ($diskonTransaksi->jumlah_diskon / 100);
+                                    } elseif ($diskonTransaksi->jumlah_diskon >= 1000) {
+                                        // Jika fixed price
+                                        $totalDiskonTransaksi = $diskonTransaksi->jumlah_diskon;
+                                    }
+                                }
+                        
+                                // Hitung total harga setelah pajak dan diskon
                                 $totalHargaDenganDiskonTransaksi = $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
+                                
                                 return $totalHargaDenganDiskonTransaksi;
                             }),
-                            //
-                            
+
                         Select::make('metode_pembayaran')
                             ->required()
                             ->label('Pilih Metode Pembayaran')

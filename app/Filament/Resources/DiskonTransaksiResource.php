@@ -32,7 +32,7 @@ class DiskonTransaksiResource extends Resource
                 Forms\Components\Hidden::make('cabangs_id')
                     ->default(Auth::user()->cabangs_id),
                 Forms\Components\TextInput::make('tipe_diskon')
-                    ->default('price')
+                    ->default('Diskon IDR - 100 Diskon persen')
                     ->readOnly(),
                 Forms\Components\TextInput::make('nama_diskon')
                     ->placeholder('Nama Diskon')
@@ -41,13 +41,22 @@ class DiskonTransaksiResource extends Resource
                 Forms\Components\TextInput::make('jumlah_diskon')
                     ->placeholder('Jumlah Diskon')
                     ->numeric()
-                    ->prefix('IDR')
                     ->required()
-                    ->numeric(),
-                Forms\Components\Toggle::make('is_Active')
+                    ->reactive() 
+                    ->prefix(fn($state) => $state < 100 ? '%' : 'IDR') 
+                    ->suffix(fn($state) => $state < 100 ? 'Diskon persen' : 'Diskon IDR') 
+                    ->afterStateUpdated(function (callable $set, $state) {
+                        // Mengubah tipe diskon berdasarkan input
+                        if ($state < 100) {
+                            $set('tipe_diskon', 'Diskon persen');
+                        } else {
+                            $set('tipe_diskon', 'Diskon IDR');
+                        }
+                    }),
+                Forms\Components\Toggle::make('is_Active'),
             ]);
     }
-
+    
     public static function table(Table $table): Table
     {
         return $table
@@ -64,7 +73,7 @@ class DiskonTransaksiResource extends Resource
                 Tables\Columns\TextColumn::make('nama_diskon')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('jumlah_diskon')
-                    ->money('IDR')
+                    ->formatStateUsing(fn ($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.')) 
                     ->sortable(),
                 Tables\Columns\ToggleColumn::make('is_Active'),
                 Tables\Columns\TextColumn::make('status')
@@ -79,20 +88,22 @@ class DiskonTransaksiResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+
+                    ])
+                    ->filters([
+                        //
+                    ])
+                    ->actions([
+                        Tables\Actions\EditAction::make(),
+                        Tables\Actions\DeleteAction::make(),
+                    ])
+                    ->bulkActions([
+                        Tables\Actions\BulkActionGroup::make([
+                        Tables\Actions\DeleteBulkAction::make(),
+                        ]),
+                    ]);
     }
+    
 
     public static function getRelations(): array
     {
