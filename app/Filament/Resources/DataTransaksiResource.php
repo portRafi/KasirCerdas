@@ -34,7 +34,7 @@ class DataTransaksiResource extends Resource
         return $form
 
             ->schema([
-                //
+                
             ]);
     }
 
@@ -88,35 +88,24 @@ class DataTransaksiResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-            ])
-            ->bulkActions([
-                ExportBulkAction::make(),
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\Action::make('view')
+                    ->label('View')
+                    ->icon('heroicon-o-eye')
+                    ->modalHeading('Detail Transaksi')
+                    ->modalSubheading('Detail lengkap dari transaksi yang dipilih.')
+                    ->modalContent(function ($record) {
+                        return view('filament.tables.modals.view-transaction', ['record' => $record]);
+                    })
+                    ->requiresConfirmation()
+                    ->color('primary'),
             ]);
     }
-    // public static function infolist(Infolist $infolist): Infolist
-    // {
-    //     $dataBarang = BarangAfterCheckout::where('kode_transaksi', $infolist->kode_transaksi)->first();
-
-    //     return $infolist
-    //         ->schema([
-    //             TextEntry::make('kode_transaksi')->value($dataBarang->kode_transaksi),
-    //             TextEntry::make('kode')->value($dataBarang->kode),
-    //             TextEntry::make('kategori')->value($dataBarang->kategori),
-    //             TextEntry::make('nama')->value($dataBarang->nama),
-    //             TextEntry::make('quantity')->value($dataBarang->quantity),
-    //             TextEntry::make('total_harga')->value($dataBarang->total_harga),
-    //             TextEntry::make('harga_jual')->value($dataBarang->harga_jual),
-    //             TextEntry::make('harga_beli')->value($dataBarang->harga_beli),
-    //         ]);
-    // }
-
+    
+    
     public static function getRelations(): array
     {
         return [
