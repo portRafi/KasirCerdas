@@ -183,7 +183,7 @@ class KeranjangWidget extends BaseWidget
                             ->options(MetodePembayaran::where([
                                 ['bisnis_id', '=', Auth::user()->bisnis_id],
                                 ['cabangs_id', '=', Auth::user()->cabangs_id]
-                            ])->active()->pluck('nama_mp', 'id')),
+                            ])->active()->pluck('nama_mp', 'nama_mp')),
                     ])
                     ->action(function ($record, $data) {
                         $randomString = 'KC_' . Str::random(5);
@@ -201,7 +201,8 @@ class KeranjangWidget extends BaseWidget
                             $totalHargaBeli = $item->harga_beli * $item->quantity;
                             return $totalHargaJual - $totalHargaBeli - $totalDiskonAfterTransaksi;
                         })->sum();
-                        $metodePembayaran = MetodePembayaran::all()->get($data['metode_pembayaran'])->nama_mp;  
+                        // $metodePembayaran = MetodePembayaran::all()->get($data['metode_pembayaran']);
+                        $metodePembayaran = ($data['metode_pembayaran']);
                         $emailStaff = Auth::user()->email;
                         $totalHargaAfterPajak = $data['total_harga_after_pajak'];
                         $totalDiskonTransaksi = DiskonTransaksi::where([
@@ -220,7 +221,7 @@ class KeranjangWidget extends BaseWidget
                             'cabangs_id' => Auth::user()->cabangs_id,
                             'kode_transaksi' => $randomString,
                             'email_staff' => $emailStaff,
-                            'metode_pembayaran' => $metodePembayaran,
+                            'metode_pembayaran' => $metodePembayaran->nama_mp,
                             'total_harga' => $totalHarga,
                             'total_harga_after_pajak' => $totalHargaAfterPajak,
                             'selisih_pajak' => $jumlahPajak,
