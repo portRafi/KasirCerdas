@@ -96,11 +96,9 @@ class DataTransaksiResource extends Resource
                     ->label('View')
                     ->icon('heroicon-o-eye')
                     ->modalHeading('Detail Transaksi')
-                    ->modalSubheading('Detail lengkap dari transaksi yang dipilih.')
                     ->modalContent(function ($record) {
                         return view('filament.tables.modals.view-transaction', ['record' => $record]);
                     })
-                    ->requiresConfirmation()
                     ->color('primary'),
             ]);
     }
