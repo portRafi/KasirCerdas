@@ -27,7 +27,7 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
     protected static ?string $activeNavigationIcon = 'heroicon-m-user-plus';
     protected static ?string $navigationGroup = 'Setting';
-    protected static ?string $navigationLabel = 'Role';
+    protected static ?string $navigationLabel = 'Role Kasir';
 
     public static function form(Form $form): Form
     {
@@ -53,20 +53,10 @@ class UserResource extends Resource
                     ->relationship('roles', 'name')
                     ->preload()
                     ->searchable(),
-                Forms\Components\Select::make('bisnis_id')
-                    ->label('bisnis_id')
-                    ->required()
-                    ->searchable()
-                    ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")
-                        ->where('id', Auth::user()->bisnis_id)
-                        ->limit(50)
-                        ->pluck('nama_bisnis', 'id')
-                        ->toArray())
-                    ->getOptionLabelUsing(fn($value): ?string => Bisnis::find($value)?->nama_bisnis)
-                    ->reactive(),
+                    Forms\Components\Hidden::make('bisnis_id')
+                    ->default(Auth::user()->bisnis_id),
                 Forms\Components\Select::make('cabangs_id')
                     ->label('cabangs_id')
-                    ->required()
                     ->options(function (callable $get) {
                         $bisnisId = $get('bisnis_id');
                         if ($bisnisId) {
@@ -76,7 +66,8 @@ class UserResource extends Resource
                         return Cabang::all()->pluck('nama_cabang', 'id');
                     })
                     ->disabled(fn(callable $get) => !$get('bisnis_id'))
-                    ->searchable(),
+                    ->searchable()
+                    ->required(),
             ]);
     }
 
