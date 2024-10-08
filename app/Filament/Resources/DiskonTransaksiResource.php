@@ -17,7 +17,6 @@ use App\Filament\Resources\DiskonTransaksiResource\RelationManagers;
 class DiskonTransaksiResource extends Resource
 {
     protected static ?string $model = DiskonTransaksi::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-percent-badge';
     protected static ?string $activeNavigationIcon = 'heroicon-m-percent-badge';
     protected static ?string $navigationGroup = 'Database';
