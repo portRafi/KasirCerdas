@@ -221,7 +221,7 @@ class KeranjangWidget extends BaseWidget
                             'cabangs_id' => Auth::user()->cabangs_id,
                             'kode_transaksi' => $randomString,
                             'email_staff' => $emailStaff,
-                            'metode_pembayaran' => $metodePembayaran->nama_mp,
+                            'metode_pembayaran' => $metodePembayaran,
                             'total_harga' => $totalHarga,
                             'total_harga_after_pajak' => $totalHargaAfterPajak,
                             'selisih_pajak' => $jumlahPajak,
