@@ -18,7 +18,7 @@ use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role; 
+use Spatie\Permission\Models\Role; // Impor model Role dari Spatie
 
 class UserResource extends Resource
 {
@@ -58,7 +58,6 @@ class UserResource extends Resource
                     ->required()
                     ->searchable()
                     ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")
-                        ->where('id', Auth::user()->bisnis_id)
                         ->limit(50)
                         ->pluck('nama_bisnis', 'id')
                         ->toArray())
@@ -83,11 +82,9 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(User::where([
-                ['bisnis_id', '=', Auth::user()->bisnis_id]
-            ]))
             ->poll('5s')
             ->columns([
+
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('no_hp')
