@@ -100,6 +100,11 @@ class DataTransaksiResource extends Resource
                         return view('filament.tables.modals.view-transaction', ['record' => $record]);
                     })
                     ->color('primary'),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
     

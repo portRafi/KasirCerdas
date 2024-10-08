@@ -35,7 +35,6 @@ class PajakResource extends Resource
                     ->placeholder('Nama Pajak')
                     ->required()
                     ->maxLength(255),
-                    forms\Components\Hidden::make('nama_user'),
                 Forms\Components\TextInput::make('jumlah_pajak')
                     ->placeholder('Jumlah Pajak')
                     ->numeric()
