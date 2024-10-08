@@ -102,6 +102,11 @@ class DataTransaksiResource extends Resource
                     })
                     ->requiresConfirmation()
                     ->color('primary'),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
     
