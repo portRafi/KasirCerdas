@@ -20,4 +20,11 @@ class DiskonTransaksi extends Model
     {
         return $this->belongsTo(Cabang::class);
     }
+    protected $casts = [
+        'is_Active' => 'boolean',
+    ];
+    public function scopeActive($query)
+    {
+        return $query->where('is_Active', true);
+    }
 }
