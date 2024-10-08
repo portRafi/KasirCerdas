@@ -13,6 +13,8 @@ return [
         'cluster' => null,
     ],
 
+    
+
     'auth_provider_model' => [
         'fqcn' => 'App\\Models\\User',
     ],

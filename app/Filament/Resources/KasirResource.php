@@ -52,8 +52,13 @@ class UserResource extends Resource
                 Forms\Components\Select::make('roles')
                     ->relationship('roles', 'name')
                     ->preload()
+
                     ->searchable(),
                     Forms\Components\Hidden::make('bisnis_id')
+
+                    ->required()
+                    ->searchable(),
+                Forms\Components\Hidden::make('bisnis_id')
                     ->default(Auth::user()->bisnis_id),
                 Forms\Components\Select::make('cabangs_id')
                     ->label('cabangs_id')
