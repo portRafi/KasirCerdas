@@ -90,7 +90,7 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
     {
         return $this->belongsTo(Cabang::class, 'cabangs_id');
     }
-
+    
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->email && $this->password;
