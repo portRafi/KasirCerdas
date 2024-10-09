@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
-use App\Models\Bisnis;
 use App\Models\Cabang;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -14,20 +13,20 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\View\TablesRenderHook;
-use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\KasirResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role; 
 
-class UserResource extends Resource
+class KasirResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
     protected static ?string $activeNavigationIcon = 'heroicon-m-user-plus';
     protected static ?string $navigationGroup = 'Setting';
-    protected static ?string $navigationLabel = 'Role';
+    protected static ?string $navigationLabel = 'Pendataan Kasir';
 
     public static function form(Form $form): Form
     {
@@ -58,15 +57,10 @@ class UserResource extends Resource
                     ->default(Auth::user()->bisnis_id),
                 Forms\Components\Select::make('cabangs_id')
                     ->label('cabangs_id')
-                    ->options(function (callable $get) {
-                        $bisnisId = $get('bisnis_id');
-                        if ($bisnisId) {
-                            return Cabang::where('bisnis_id', $bisnisId)
-                                ->pluck('nama_cabang', 'id');
-                        }
-                        return Cabang::all()->pluck('nama_cabang', 'id');
+                    ->options(function () {
+                        return Cabang::where('bisnis_id', Auth::user()->bisnis_id)
+                        ->pluck('nama_cabang', 'id');
                     })
-                    ->disabled(fn(callable $get) => !$get('bisnis_id'))
                     ->searchable()
                     ->required(),
             ]);

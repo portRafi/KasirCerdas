@@ -27,7 +27,7 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
     protected static ?string $activeNavigationIcon = 'heroicon-m-user-plus';
     protected static ?string $navigationGroup = 'Setting';
-    protected static ?string $navigationLabel = 'Role';
+    protected static ?string $navigationLabel = 'Pendaataan User';
 
     public static function form(Form $form): Form
     {
@@ -134,9 +134,9 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListKasirs::route('/'),
-            'create' => Pages\CreateKasir::route('/create'),
-            'edit' => Pages\EditKasir::route('/{record}/edit'),
+            'index' => Pages\ListUsers::route('/'),
+            'create' => Pages\CreateUser::route('/create'),
+            'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 }
