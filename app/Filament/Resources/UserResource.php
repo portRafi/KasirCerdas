@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
+use App\Models\Bisnis;
 use App\Models\Cabang;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -13,20 +14,20 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\View\TablesRenderHook;
-use App\Filament\Resources\KasirResource\Pages;
+use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role; 
+use Spatie\Permission\Models\Role; // Impor model Role dari Spatie
 
-class KasirResource extends Resource
+class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
     protected static ?string $activeNavigationIcon = 'heroicon-m-user-plus';
     protected static ?string $navigationGroup = 'Setting';
-    protected static ?string $navigationLabel = 'Pendataan Kasir';
+    protected static ?string $navigationLabel = 'Pendaataan User';
 
     public static function form(Form $form): Form
     {
@@ -51,29 +52,39 @@ class KasirResource extends Resource
                 Forms\Components\Select::make('roles')
                     ->relationship('roles', 'name')
                     ->preload()
-                    ->required()
                     ->searchable(),
-                Forms\Components\Hidden::make('bisnis_id')
-                    ->default(Auth::user()->bisnis_id),
+                Forms\Components\Select::make('bisnis_id')
+                    ->label('bisnis_id')
+                    ->required()
+                    ->searchable()
+                    ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")
+                        ->limit(50)
+                        ->pluck('nama_bisnis', 'id')
+                        ->toArray())
+                    ->getOptionLabelUsing(fn($value): ?string => Bisnis::find($value)?->nama_bisnis)
+                    ->reactive(),
                 Forms\Components\Select::make('cabangs_id')
                     ->label('cabangs_id')
-                    ->options(function () {
-                        return Cabang::where('bisnis_id', Auth::user()->bisnis_id)
-                        ->pluck('nama_cabang', 'id');
+                    ->required()
+                    ->options(function (callable $get) {
+                        $bisnisId = $get('bisnis_id');
+                        if ($bisnisId) {
+                            return Cabang::where('bisnis_id', $bisnisId)
+                                ->pluck('nama_cabang', 'id');
+                        }
+                        return Cabang::all()->pluck('nama_cabang', 'id');
                     })
-                    ->searchable()
-                    ->required(),
+                    ->disabled(fn(callable $get) => !$get('bisnis_id'))
+                    ->searchable(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->query(User::where([
-                ['bisnis_id', '=', Auth::user()->bisnis_id]
-            ]))
             ->poll('5s')
             ->columns([
+
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('no_hp')
@@ -123,9 +134,9 @@ class KasirResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListKasirs::route('/'),
-            'create' => Pages\CreateKasir::route('/create'),
-            'edit' => Pages\EditKasir::route('/{record}/edit'),
+            'index' => Pages\ListUsers::route('/'),
+            'create' => Pages\CreateUser::route('/create'),
+            'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 }

@@ -9,6 +9,7 @@ use App\Models\Cabang;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\CabangResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -54,6 +55,9 @@ class CabangResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Cabang::where([
+                ['cabangs_id', '=', Auth::user()->cabangs_id]
+            ]))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->searchable(),
