@@ -52,13 +52,9 @@ class UserResource extends Resource
                 Forms\Components\Select::make('roles')
                     ->relationship('roles', 'name')
                     ->preload()
-
                     ->searchable(),
-                    Forms\Components\Hidden::make('bisnis_id')
-
-                    ->required()
-                    ->searchable(),
-                Forms\Components\Hidden::make('bisnis_id')
+                    
+                Forms\Components\Select::make('bisnis_id')
                     ->default(Auth::user()->bisnis_id),
                 Forms\Components\Select::make('cabangs_id')
                     ->label('cabangs_id')
@@ -70,7 +66,6 @@ class UserResource extends Resource
                         }
                         return Cabang::all()->pluck('nama_cabang', 'id');
                     })
-                    ->disabled(fn(callable $get) => !$get('bisnis_id'))
                     ->searchable()
                     ->required(),
             ]);
@@ -129,6 +124,8 @@ class UserResource extends Resource
             //
         ];
     }
+
+
 
     public static function getPages(): array
     {
