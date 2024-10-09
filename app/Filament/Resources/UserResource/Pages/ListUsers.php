@@ -6,7 +6,7 @@ use App\Filament\Resources\UserResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
-class ListKasirs extends ListRecords
+class ListUsers extends ListRecords
 {
     protected static string $resource = UserResource::class;
 

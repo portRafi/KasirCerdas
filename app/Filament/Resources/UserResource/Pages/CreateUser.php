@@ -6,7 +6,7 @@ use App\Filament\Resources\UserResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreateKasir extends CreateRecord
+class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
 }

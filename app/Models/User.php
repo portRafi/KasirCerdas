@@ -66,10 +66,10 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
         'password' => 'hashed',
     ];
 
-    public function setPasswordAttribute($password)
-    {
-        $this->attributes['password'] = bcrypt($password);
-    }
+    // public function setPasswordAttribute($password)
+    // {
+    //     $this->attributes['password'] = bcrypt($password);
+    // }
 
 
     // public function addres() : Morphone 

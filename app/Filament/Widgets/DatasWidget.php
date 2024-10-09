@@ -21,7 +21,7 @@ class DatasWidget extends BaseWidget
         $totalKasir = User::where([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
             ['cabangs_id', '=', Auth::user()->cabangs_id],
-            ['role', '=', 'kasir'],
+            // ['role', '=', 'kasir'],
         ])->count();
         $totalMPAktif = MetodePembayaran::where([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
