@@ -56,7 +56,9 @@ class CabangResource extends Resource
     {
         return $table
             ->query(Cabang::where([
-                ['cabangs_id', '=', Auth::user()->cabangs_id],
+
+                // ['cabangs_id', '=', Auth::user()->cabangs_id],
+                ['id', '=', Auth::user()->cabangs_id]
             ]))
             ->columns([
                 Tables\Columns\TextColumn::make('id')

@@ -46,7 +46,7 @@ class BisnisResource extends Resource
     {
         return $table
             ->query(Bisnis::where([
-                ['bisnis_id', '=', Auth::user()->bisnis_id]
+                ['id', '=', Auth::user()->bisnis_id]
             ]))
             ->columns([
                 Tables\Columns\TextColumn::make('id')

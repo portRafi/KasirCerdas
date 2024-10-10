@@ -140,4 +140,13 @@ class UserResource extends Resource
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        if(!auth()->user()->hasRole('super_admin')) {
+            return false;   
+        }
+
+        return true;
+    }
 }
