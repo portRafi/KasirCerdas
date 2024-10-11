@@ -15,11 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\DataTransaksiResource\Pages;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\DataTransaksiResource\RelationManagers;
-
-
 
 class DataTransaksiResource extends Resource
 {
