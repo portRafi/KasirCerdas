@@ -93,13 +93,6 @@ class DataTransaksiResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\Action::make('export')
-            ->label('Export to Excel')
-            ->action(function () {
-                return Excel::download(new UsersExport, 'users.xlsx');
-            })
-            ->icon('heroicon-o-document-arrow-down')
-            ->button(),
                 Tables\Actions\Action::make('view')
                     ->label('View')
                     ->icon('heroicon-o-eye')
