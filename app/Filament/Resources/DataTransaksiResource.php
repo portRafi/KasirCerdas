@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
@@ -19,6 +18,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DataTransaksiResource\Pages;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\DataTransaksiResource\RelationManagers;
+use App\Exports\UsersExport;
+use Filament\Pages\Actions;
+use Filament\Resources\Pages\ListRecords;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class DataTransaksiResource extends Resource
@@ -103,6 +106,7 @@ class DataTransaksiResource extends Resource
                     ->color('primary'),
             ])
             ->bulkActions([
+                ExportBulkAction::make(),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
