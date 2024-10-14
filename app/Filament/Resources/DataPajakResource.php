@@ -18,7 +18,8 @@ class DataPajakResource extends Resource
 {
     protected static ?string $model = DataPajak::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
+    protected static ?string $activeNavigationIcon = 'heroicon-s-tag';
     protected static ?string $navigationGroup = 'laporan';
     protected static ?string $navigationLabel = 'Data Pajak';
 

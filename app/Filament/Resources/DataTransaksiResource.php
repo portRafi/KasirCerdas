@@ -15,13 +15,21 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\DataTransaksiResource\Pages;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\DataTransaksiResource\RelationManagers;
+use App\Exports\UsersExport;
+use Filament\Pages\Actions;
+use Filament\Resources\Pages\ListRecords;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class DataTransaksiResource extends Resource
 {
     protected static ?string $model = DataTransaksi::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static ?string $activeNavigationIcon = 'heroicon-s-clipboard-document-list';
     protected static ?string $navigationGroup = 'laporan';
     protected static ?string $navigationLabel = 'Data Transaksi';
 
@@ -88,6 +96,13 @@ class DataTransaksiResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('export')
+            ->label('Export to Excel')
+            ->action(function () {
+                return Excel::download(new UsersExport, 'data-transaksi.xlsx');
+            })
+            ->icon('heroicon-o-document-arrow-down')
+            ->button(),
                 Tables\Actions\Action::make('view')
                     ->label('View')
                     ->icon('heroicon-o-eye')
