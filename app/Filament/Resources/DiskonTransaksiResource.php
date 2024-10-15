@@ -30,9 +30,11 @@ class DiskonTransaksiResource extends Resource
                     ->default(Auth::user()->bisnis_id),
                 Forms\Components\Hidden::make('cabangs_id')
                     ->default(Auth::user()->cabangs_id),
-                Forms\Components\TextInput::make('tipe_diskon')
-                    ->default('Diskon IDR - 100 Diskon persen')
-                    ->readOnly(),
+                Forms\Components\Select::make('tipe_diskon')
+                    ->options([
+                        'Persentase' => 'persen',
+                        'Diskon Tetap' => 'fixed',
+                    ]),
                 Forms\Components\TextInput::make('nama_diskon')
                     ->placeholder('Nama Diskon')
                     ->required()
@@ -40,17 +42,7 @@ class DiskonTransaksiResource extends Resource
                 Forms\Components\TextInput::make('jumlah_diskon')
                     ->placeholder('Jumlah Diskon')
                     ->numeric()
-                    ->required()
-                    ->reactive() 
-                    ->prefix(fn($state) => $state < 100 ? '%' : 'IDR') 
-                    ->suffix(fn($state) => $state < 100 ? 'Diskon persen' : 'Diskon IDR') 
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        if ($state < 100) {
-                            $set('tipe_diskon', 'Diskon persen');
-                        } else {
-                            $set('tipe_diskon', 'Diskon IDR');
-                        }
-                    }),
+                    ->required(),
                 Forms\Components\TextInput::make('minimum_pembelian')
                     ->placeholder('Minimum Pembelian')
                     ->prefix('IDR')
