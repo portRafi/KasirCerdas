@@ -115,7 +115,7 @@ class KeranjangWidget extends BaseWidget
                                 $totalDiskonTransaksi = DiskonTransaksi::where([
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
-                                    // ['minimum_pembelian', '>=', $totalHargaDenganPajaks],
+                                    ['minimum_pembelian', '<=', $totalHargaDenganPajaks],
                                     ['is_Active', '=', true],
                                 ])->sum('jumlah_diskon') ?: 0;
 
