@@ -110,9 +110,12 @@ class KeranjangWidget extends BaseWidget
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
                                 ])->sum('total_harga') ?: 0;
 
+                                $totalHargaDenganPajaks = $this->calculateTotalHargaWithPajak($totalHarga);
+
                                 $totalDiskonTransaksi = DiskonTransaksi::where([
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
+                                    // ['minimum_pembelian', '>=', $totalHargaDenganPajaks],
                                     ['is_Active', '=', true],
                                 ])->sum('jumlah_diskon') ?: 0;
 
@@ -149,10 +152,13 @@ class KeranjangWidget extends BaseWidget
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
                                 ])->sum('total_harga') ?: 0;
+                                
+                                $totalHargaDenganPajak2 = $this->calculateTotalHargaWithPajak($totalHarga);
 
                                 $totalDiskonTransaksi = DiskonTransaksi::where([
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
+                                    ['minimum_pembelian', '>=', $totalHargaDenganPajak2],
                                     ['is_Active', '=', true],
                                 ])->sum('jumlah_diskon') ?: 0;
 
@@ -176,8 +182,15 @@ class KeranjangWidget extends BaseWidget
                             ['cabangs_id', '=', Auth::user()->cabangs_id]
                         ])->get()->groupBy('nama')->map(function ($group) {
                             $item = $group->first();
+                            $totalHarga = Keranjang::where([
+                                ['userid', '=', Auth::user()->id],
+                                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                            ])->sum('total_harga') ?: 0;
+                            $totalHargaDenganPajakss = $this->calculateTotalHargaWithPajak($totalHarga);
                             $totalDiskonAfterTransaksi = DiskonTransaksi::where([
                                 ['bisnis_id', '=', Auth::user()->bisnis_id],
+                                ['minimum_pembelian', '>=', $totalHargaDenganPajakss],
                                 ['cabangs_id', '=', Auth::user()->cabangs_id]
                             ])->sum('jumlah_diskon');
                             $totalHargaJual = ($item->diskon <= 100) ? ($item->harga_jual * $item->quantity) - ($item->harga_jual * ($item->diskon / 100)) : ($item->harga_jual * $item->quantity) - $item->diskon;
@@ -227,17 +240,18 @@ class KeranjangWidget extends BaseWidget
                                 'quantity' => $item->quantity,
                                 'harga_beli' => $item->harga_beli,
                                 'harga_jual' => $item->harga_jual,
+                                'keuntungan' => $keuntungan,
                                 'total_harga' => $item->total_harga,
                             ]);
-                            // $diskons = Diskon::where([
-                            //     ['bisnis_id', '=', Auth::user()->bisnis_id],
-                            //     ['cabangs_id', '=', Auth::user()->cabangs_id],
-                            // ])->get();
+                            $diskons = Diskon::where([
+                                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                            ])->get();
 
-                            // foreach ($diskons as $diskon) {
-                            //     $diskon->stok_diskon -= 1;
-                            //     $diskon->save();
-                            // }
+                            foreach ($diskons as $diskon) {
+                                $diskon->stok_diskon -= 1;
+                                $diskon->save();
+                            }
                         }
 
                         Keranjang::where('userid', Auth::user()->id)->delete();

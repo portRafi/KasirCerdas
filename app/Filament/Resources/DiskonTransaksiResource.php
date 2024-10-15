@@ -43,6 +43,10 @@ class DiskonTransaksiResource extends Resource
                     ->placeholder('Jumlah Diskon')
                     ->numeric()
                     ->required(),
+                Forms\Components\TextInput::make('minimum_pembelian')
+                    ->placeholder('Minimal Pembelian')
+                    ->numeric()
+                    ->required(),
                 Forms\Components\Toggle::make('is_Active'),
             ]);
     }
