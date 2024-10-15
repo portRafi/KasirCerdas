@@ -45,13 +45,17 @@ class DiskonTransaksiResource extends Resource
                     ->prefix(fn($state) => $state < 100 ? '%' : 'IDR') 
                     ->suffix(fn($state) => $state < 100 ? 'Diskon persen' : 'Diskon IDR') 
                     ->afterStateUpdated(function (callable $set, $state) {
-                        // Mengubah tipe diskon berdasarkan input
                         if ($state < 100) {
                             $set('tipe_diskon', 'Diskon persen');
                         } else {
                             $set('tipe_diskon', 'Diskon IDR');
                         }
                     }),
+                Forms\Components\TextInput::make('minimum_pembelian')
+                    ->placeholder('Minimum Pembelian')
+                    ->prefix('IDR')
+                    ->numeric()
+                    ->required(),
                 Forms\Components\Toggle::make('is_Active'),
             ]);
     }

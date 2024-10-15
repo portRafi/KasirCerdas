@@ -5,15 +5,16 @@ namespace App\Filament\Resources\TransaksiResource\Widgets;
 use Filament\Tables;
 use App\Models\Pajak;
 use App\Models\Barang;
+use App\Models\Diskon;
 use App\Models\DataPajak;
 use App\Models\Keranjang;
 use Filament\Tables\Table;
 use Filament\Support\RawJs;
 use Illuminate\Support\Str;
 use App\Models\DataTransaksi;
+use App\Models\DiskonTransaksi;
 use App\Models\MetodePembayaran;
 use App\Models\BarangAfterCheckout;
-use App\Models\DiskonTransaksi;
 use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
@@ -102,16 +103,19 @@ class KeranjangWidget extends BaseWidget
                             ->label('Total Harga [-] potongan diskon transaksi')
                             ->money('IDR')
                             ->using(function () {
-                                
                                 $totalHarga = Keranjang::where([
                                     ['userid', '=', Auth::user()->id],
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
                                 ])->sum('total_harga') ?: 0;
+
+                                $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
+                                return $totalHargaDenganPajak;
                                     
                                 $totalDiskonTransaksi = DiskonTransaksi::where([
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
+                                    ['minimum_pembelian', '>', $totalHargaDenganPajak],
                                     ['is_Active', '=', true],
                                 ])->sum('jumlah_diskon') ?: 0;
                         
@@ -232,6 +236,14 @@ class KeranjangWidget extends BaseWidget
                                 'harga_jual' => $item->harga_jual,
                                 'harga_beli' => $item->harga_beli
                             ]);
+                            $diskons = Diskon::where([
+                                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                            ])->get();
+                            foreach ($diskons as $diskon) {
+                                $diskon->stok_diskon -= 1;
+                                $diskon->save();
+                            }
                         }
 
                         Keranjang::where('userid', Auth::user()->id)->delete();
