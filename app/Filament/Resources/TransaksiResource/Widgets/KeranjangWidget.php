@@ -108,21 +108,19 @@ class KeranjangWidget extends BaseWidget
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
                                 ])->sum('total_harga') ?: 0;
-
                                 $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
                                 return $totalHargaDenganPajak;  
-                                    
+                        
                                 $totalDiskonTransaksi = DiskonTransaksi::where([
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
-                                    ['minimum_pembelian', '>', $totalHargaDenganPajak],
+                                    ['minimum_pembelian', '>=', $this->calculateTotalHargaWithPajak($totalHarga)],
                                     ['is_Active', '=', true],
                                 ])->sum('jumlah_diskon') ?: 0;
                         
                                 $totalHargaDenganDiskonTransaksi = ($totalDiskonTransaksi <= 100) ? $this->calculateTotalHargaWithPajak($totalHarga) - ($this->calculateTotalHargaWithPajak($totalHarga) * ($totalDiskonTransaksi / 100)) : $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
                                 return $totalHargaDenganDiskonTransaksi;
                             }),
-                        
                     ])
 
             ])
@@ -157,13 +155,13 @@ class KeranjangWidget extends BaseWidget
                         
                                 $diskonTransaksi = DiskonTransaksi::where([
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
+                                    ['minimum_pembelian', '>=', $this->calculateTotalHargaWithPajak($totalHarga)],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id]
                                 ])->first();
                                 
                                 $totalDiskonTransaksi = ($diskonTransaksi <= 100) ? $totalHarga * ($diskonTransaksi->jumlah_diskon / 100) : $diskonTransaksi->jumlah_diskon;
                         
                                 $totalHargaDenganDiskonTransaksi = $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
-                                
                                 return $totalHargaDenganDiskonTransaksi;
                             }),
 
