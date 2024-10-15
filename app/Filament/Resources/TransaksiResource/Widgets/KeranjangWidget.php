@@ -103,16 +103,19 @@ class KeranjangWidget extends BaseWidget
                             ->label('Total Harga [-] potongan diskon transaksi')
                             ->money('IDR')
                             ->using(function () {
-                                
                                 $totalHarga = Keranjang::where([
                                     ['userid', '=', Auth::user()->id],
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
                                 ])->sum('total_harga') ?: 0;
+
+                                $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
+                                return $totalHargaDenganPajak;
                                     
                                 $totalDiskonTransaksi = DiskonTransaksi::where([
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
+                                    ['minimum_pembelian', '>', $totalHargaDenganPajak],
                                     ['is_Active', '=', true],
                                 ])->sum('jumlah_diskon') ?: 0;
                         
