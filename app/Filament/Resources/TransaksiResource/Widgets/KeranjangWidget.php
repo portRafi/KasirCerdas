@@ -110,7 +110,7 @@ class KeranjangWidget extends BaseWidget
                                 ])->sum('total_harga') ?: 0;
 
                                 $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
-                                return $totalHargaDenganPajak;
+                                return $totalHargaDenganPajak;  
                                     
                                 $totalDiskonTransaksi = DiskonTransaksi::where([
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
