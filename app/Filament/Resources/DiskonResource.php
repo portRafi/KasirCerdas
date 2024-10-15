@@ -34,8 +34,7 @@ class DiskonResource extends Resource
                     ->options([
                         'Persentase' => 'persen',
                         'Diskon Tetap' => 'fixed',
-                    ])
-                    ->readOnly(),
+                    ]),
                 Forms\Components\TextInput::make('nama_diskon')
                     ->placeholder('Nama Diskon')
                     ->required()
@@ -45,6 +44,8 @@ class DiskonResource extends Resource
                     ->numeric()
                     ->required()
                     ->numeric(),
+                Forms\Components\TextInput::make('stok_diskon')
+                    ->placeholder('Stok Diskon')
             ]);
     }
 
@@ -66,6 +67,8 @@ class DiskonResource extends Resource
                 Tables\Columns\TextColumn::make('jumlah_diskon')
                     ->numeric() 
                     ->formatStateUsing(fn ($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.'))
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('stok_diskon')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

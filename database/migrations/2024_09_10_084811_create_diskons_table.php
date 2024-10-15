@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('tipe_diskon');
             $table->string('nama_diskon');
             $table->integer('jumlah_diskon');
+            $table->integer('stok_diskon');
             $table->timestamps();
         });
     }
