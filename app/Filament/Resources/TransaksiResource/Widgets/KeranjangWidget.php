@@ -116,25 +116,17 @@ class KeranjangWidget extends BaseWidget
 
                                 $totalHargaDenganPajaks = $this->calculateTotalHargaWithPajak($totalHarga);
                                 
-                                $totalDiskonTransaksi = 0;
-
-                                if ($totalHargaDenganPajaks > 100000) {
-                                    $totalDiskonTransaksi = 10000; // Diskon 10.000 untuk harga lebih dari 100.000
-                                } elseif ($totalHargaDenganPajaks < 10000) {
-                                    $totalDiskonTransaksi = 1000; // Diskon 1.000 untuk harga di bawah 10.000
-                                } else {
-                                    $totalDiskonTransaksi = DiskonTransaksi::where([
-                                        ['bisnis_id', '=', Auth::user()->bisnis_id],
-                                        ['cabangs_id', '=', Auth::user()->cabangs_id],
-                                        ['minimum_pembelian', '>=', $totalHargaDenganPajaks],
-                                        ['is_Active', '=', true],
-                                    ])->sum('jumlah_diskon') ?: 0;
-                                }
+                                $totalDiskonTransaksi = DiskonTransaksi::where([
+                                    ['bisnis_id', '=', Auth::user()->bisnis_id],
+                                    ['cabangs_id', '=', Auth::user()->cabangs_id],
+                                    ['minimum_pembelian', '<=', $totalHargaDenganPajaks],
+                                    ['is_Active', '=', true],
+                                ])->sum('jumlah_diskon') ?: 0;
 
                                 $totalHargaDenganDiskonTransaksi = ($totalDiskonTransaksi <= 100) ? $this->calculateTotalHargaWithPajak($totalHarga) - ($this->calculateTotalHargaWithPajak($totalHarga) * ($totalDiskonTransaksi / 100)) : $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
                                 return $totalHargaDenganDiskonTransaksi;
                             }),
-                    ])
+                    ])//
             ])
             ->headerActions([
                 Action::make('checkout')
@@ -170,7 +162,7 @@ class KeranjangWidget extends BaseWidget
                                 $totalDiskonTransaksi = DiskonTransaksi::where([
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
-                                    ['minimum_pembelian', '>=', $totalHargaDenganPajak2],
+                                    ['minimum_pembelian', '<=', $totalHargaDenganPajak2],
                                     ['is_Active', '=', true],
                                 ])->sum('jumlah_diskon') ?: 0;
 
