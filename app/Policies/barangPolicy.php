@@ -15,7 +15,7 @@ class BarangPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_transaksi');
+        return $user->can('view_any_manajemen::stok');
     }
 
     /**
@@ -23,7 +23,7 @@ class BarangPolicy
      */
     public function view(User $user, Barang $barang): bool
     {
-        return $user->can('view_transaksi');
+        return $user->can('view_manajemen::stok');
     }
 
     /**
@@ -31,7 +31,7 @@ class BarangPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_transaksi');
+        return $user->can('create_manajemen::stok');
     }
 
     /**
@@ -39,7 +39,7 @@ class BarangPolicy
      */
     public function update(User $user, Barang $barang): bool
     {
-        return $user->can('update_transaksi');
+        return $user->can('update_manajemen::stok');
     }
 
     /**
@@ -47,7 +47,7 @@ class BarangPolicy
      */
     public function delete(User $user, Barang $barang): bool
     {
-        return $user->can('delete_transaksi');
+        return $user->can('delete_manajemen::stok');
     }
 
     /**
@@ -55,7 +55,7 @@ class BarangPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_transaksi');
+        return $user->can('delete_any_manajemen::stok');
     }
 
     /**
@@ -63,7 +63,7 @@ class BarangPolicy
      */
     public function forceDelete(User $user, Barang $barang): bool
     {
-        return $user->can('force_delete_transaksi');
+        return $user->can('force_delete_manajemen::stok');
     }
 
     /**
@@ -71,7 +71,7 @@ class BarangPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_transaksi');
+        return $user->can('force_delete_any_manajemen::stok');
     }
 
     /**
@@ -79,7 +79,7 @@ class BarangPolicy
      */
     public function restore(User $user, Barang $barang): bool
     {
-        return $user->can('restore_transaksi');
+        return $user->can('restore_manajemen::stok');
     }
 
     /**
@@ -87,7 +87,7 @@ class BarangPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_transaksi');
+        return $user->can('restore_any_manajemen::stok');
     }
 
     /**
@@ -95,7 +95,7 @@ class BarangPolicy
      */
     public function replicate(User $user, Barang $barang): bool
     {
-        return $user->can('replicate_transaksi');
+        return $user->can('replicate_manajemen::stok');
     }
 
     /**
@@ -103,6 +103,6 @@ class BarangPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_transaksi');
+        return $user->can('reorder_manajemen::stok');
     }
 }
