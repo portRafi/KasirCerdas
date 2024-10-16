@@ -126,7 +126,7 @@ class KeranjangWidget extends BaseWidget
                                 $totalHargaDenganDiskonTransaksi = ($totalDiskonTransaksi <= 100) ? $this->calculateTotalHargaWithPajak($totalHarga) - ($this->calculateTotalHargaWithPajak($totalHarga) * ($totalDiskonTransaksi / 100)) : $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
                                 return $totalHargaDenganDiskonTransaksi;
                             }),
-                    ])
+                    ])//
             ])
             ->headerActions([
                 Action::make('checkout')
