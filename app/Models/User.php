@@ -16,7 +16,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 use TomatoPHP\FilamentDiscord\Traits\InteractsWithDiscord;
 
-class User extends Authenticatable implements HasAvatar, FilamentUser
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens;
     use HasRoles;

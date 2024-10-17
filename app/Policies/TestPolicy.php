@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Barang;
+use App\Models\Test;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class BarangPolicy
+class TestPolicy
 {
     use HandlesAuthorization;
 
@@ -15,15 +15,15 @@ class BarangPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_manajemen::stok');
+        return $user->can('view_any_test');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Barang $barang): bool
+    public function view(User $user, Test $test): bool
     {
-        return $user->can('view_manajemen::stok');
+        return $user->can('view_test');
     }
 
     /**
@@ -31,23 +31,23 @@ class BarangPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_manajemen::stok');
+        return $user->can('create_test');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Barang $barang): bool
+    public function update(User $user, Test $test): bool
     {
-        return $user->can('update_manajemen::stok');
+        return $user->can('update_test');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Barang $barang): bool
+    public function delete(User $user, Test $test): bool
     {
-        return $user->can('delete_manajemen::stok');
+        return $user->can('delete_test');
     }
 
     /**
@@ -55,15 +55,15 @@ class BarangPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_manajemen::stok');
+        return $user->can('delete_any_test');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, Barang $barang): bool
+    public function forceDelete(User $user, Test $test): bool
     {
-        return $user->can('force_delete_manajemen::stok');
+        return $user->can('force_delete_test');
     }
 
     /**
@@ -71,15 +71,15 @@ class BarangPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_manajemen::stok');
+        return $user->can('force_delete_any_test');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, Barang $barang): bool
+    public function restore(User $user, Test $test): bool
     {
-        return $user->can('restore_manajemen::stok');
+        return $user->can('restore_test');
     }
 
     /**
@@ -87,15 +87,15 @@ class BarangPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_manajemen::stok');
+        return $user->can('restore_any_test');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, Barang $barang): bool
+    public function replicate(User $user, Test $test): bool
     {
-        return $user->can('replicate_manajemen::stok');
+        return $user->can('replicate_test');
     }
 
     /**
@@ -103,6 +103,6 @@ class BarangPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_manajemen::stok');
+        return $user->can('reorder_test');
     }
 }
