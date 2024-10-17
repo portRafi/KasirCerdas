@@ -45,7 +45,7 @@ class AdminPanelProvider extends PanelProvider
                 'success' => Color::Emerald,
                 'warning' => Color::Orange,
             ])
-            // ->themeMode(ThemeMode::Dark)
+            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
             ])
@@ -69,31 +69,7 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugins([
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
-                FilamentEditProfilePlugin::make()
-                ->slug('my-profile')
-                ->setTitle('My Profile')
-                ->setNavigationLabel('My Profile')
-                ->setNavigationGroup('Group Profile')
-                ->setIcon('heroicon-o-user')
-                ->setSort(10)
-                ->canAccess(fn () => auth()->user()->id === 1)
-                ->shouldRegisterNavigation(false)
-                ->shouldShowDeleteAccountForm(false)
-                ->shouldShowSanctumTokens()
-                ->shouldShowBrowserSessionsForm()
-                ->shouldShowAvatarForm()
-                ->customProfileComponents([
-
-                ])
-            
-            ])
-
-            ->userMenuItems([
-                'profile' => MenuItem::make()
-                ->label(fn() => auth()->user()->name)
-                ->url(fn (): string => EditProfilePage::getUrl())
-                ->icon('heroicon-m-user-circle')
-            ]);    
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+            ]);
     }
 }

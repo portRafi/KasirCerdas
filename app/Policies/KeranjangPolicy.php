@@ -15,7 +15,7 @@ class KeranjangPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_keranjang');
+        return $user->can('view_any_transaksi');
     }
 
     /**
@@ -23,7 +23,7 @@ class KeranjangPolicy
      */
     public function view(User $user, Keranjang $keranjang): bool
     {
-        return $user->can('view_keranjang');
+        return $user->can('view_transaksi');
     }
 
     /**
@@ -31,7 +31,7 @@ class KeranjangPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_keranjang');
+        return $user->can('create_transaksi');
     }
 
     /**
@@ -39,7 +39,7 @@ class KeranjangPolicy
      */
     public function update(User $user, Keranjang $keranjang): bool
     {
-        return $user->can('update_keranjang');
+        return $user->can('update_transaksi');
     }
 
     /**
@@ -47,7 +47,7 @@ class KeranjangPolicy
      */
     public function delete(User $user, Keranjang $keranjang): bool
     {
-        return $user->can('delete_keranjang');
+        return $user->can('delete_transaksi');
     }
 
     /**
@@ -55,7 +55,7 @@ class KeranjangPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_keranjang');
+        return $user->can('delete_any_transaksi');
     }
 
     /**
@@ -63,7 +63,7 @@ class KeranjangPolicy
      */
     public function forceDelete(User $user, Keranjang $keranjang): bool
     {
-        return $user->can('force_delete_keranjang');
+        return $user->can('force_delete_transaksi');
     }
 
     /**
@@ -71,7 +71,7 @@ class KeranjangPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_keranjang');
+        return $user->can('force_delete_any_transaksi');
     }
 
     /**
@@ -79,7 +79,7 @@ class KeranjangPolicy
      */
     public function restore(User $user, Keranjang $keranjang): bool
     {
-        return $user->can('restore_keranjang');
+        return $user->can('restore_transaksi');
     }
 
     /**
@@ -87,7 +87,7 @@ class KeranjangPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_keranjang');
+        return $user->can('restore_any_transaksi');
     }
 
     /**
@@ -95,7 +95,7 @@ class KeranjangPolicy
      */
     public function replicate(User $user, Keranjang $keranjang): bool
     {
-        return $user->can('replicate_keranjang');
+        return $user->can('replicate_transaksi');
     }
 
     /**
@@ -103,6 +103,6 @@ class KeranjangPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_keranjang');
+        return $user->can('reorder_transaksi');
     }
 }
