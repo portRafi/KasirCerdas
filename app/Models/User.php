@@ -19,8 +19,8 @@ use TomatoPHP\FilamentDiscord\Traits\InteractsWithDiscord;
 class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens;
-    // use HasRoles;
-    // use HasPanelShield;
+    use HasRoles;
+    use HasPanelShield;
     use HasFactory;
     use Notifiable;
     use InteractsWithDiscord;
