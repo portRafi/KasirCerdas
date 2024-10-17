@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\Gate;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
     protected static ?string $activeNavigationIcon = 'heroicon-m-user-plus';
     protected static ?string $navigationGroup = 'Setting';
@@ -110,7 +109,6 @@ class UserResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-
             ])
             ->filters([
                 //
@@ -141,11 +139,11 @@ class UserResource extends Resource
         ];
     }
 
-    // public static function shouldRegisterNavigation(): bool
-    // {
-    //     if(!auth()->user()->hasRole('super_admin')) {
-    //         return false;   
-    //     }
-    //     return true;
-    // }
+    public static function shouldRegisterNavigation(): bool
+    {
+        if(!auth()->user()->hasRole('super_admin')) {
+            return false;   
+        }
+        return true;
+    }
 }
