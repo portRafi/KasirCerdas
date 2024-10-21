@@ -77,14 +77,18 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->plugins([
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+            ])
             ->plugin(
+                
                 \Hasnayeen\Themes\ThemesPlugin::make()
                     // ->registerTheme(
                     //     [
                     //         MyCustomTheme::class,
                     //         \Hasnayeen\Themes\Themes\Sunset::class,
                     //     ],
-                    //     override: true,
+                //     override: true,
                     // )
             );
     

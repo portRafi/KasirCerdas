@@ -4,6 +4,7 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -13,7 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        'App\Models\Model' => 'App\Policies\ModelPolicy',
+        'Spatie\Permission\Models\Role' => 'App\Policies\RolePolicy',
     ];
 
     /**
