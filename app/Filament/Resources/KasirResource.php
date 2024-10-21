@@ -52,7 +52,6 @@ class KasirResource extends Resource
                     ->relationship('roles', 'name')
                     ->preload()
                     ->searchable(),
-                    
                 Forms\Components\Select::make('bisnis_id')
                     ->default(Auth::user()->bisnis_id),
                 Forms\Components\Select::make('cabangs_id')
