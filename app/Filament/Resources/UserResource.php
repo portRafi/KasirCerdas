@@ -37,7 +37,6 @@ class UserResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('no_hp')
-                    ->numeric()
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('alamat')
