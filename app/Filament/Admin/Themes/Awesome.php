@@ -21,8 +21,6 @@ class Awesome implements CanModifyPanelConfig, Theme
     public function getThemeColor(): array
     {
         return [
-            'primary' => '#000',
-            'secondary' => '#ffffff',
             'primary' => '#ffffff',
         ];
     }
@@ -30,10 +28,6 @@ class Awesome implements CanModifyPanelConfig, Theme
     public function modifyPanelConfig(Panel $panel): Panel
     {
         return $panel
-            ->viteTheme($this->getPath())
-            ->topNavigation();
-
+            ->viteTheme($this->getPath());
     }
-
-    
 }

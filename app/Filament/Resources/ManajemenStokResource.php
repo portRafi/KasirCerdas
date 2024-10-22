@@ -53,16 +53,13 @@ class ManajemenStokResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('kategori')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('stok')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('harga_beli')
                     ->money('IDR')
                     ->hidden(),
                 Tables\Columns\TextColumn::make('harga_jual')
                     ->money('IDR')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('stok')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('diskon')
-                    ->formatStateUsing(fn ($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.'))
                     ->sortable(),
             ])
             ->filters([

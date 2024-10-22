@@ -2,7 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Widgets\TanggalPicker;   
+use App\Filament\Widgets\TanggalPicker;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
@@ -37,10 +37,6 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('KasirCerdas')
             ->font('Poppins')
             ->login()
-            ->plugin(
-                \Hasnayeen\Themes\ThemesPlugin::make()
-            )
-            
             ->colors([
                 'danger' => Color::Rose,
                 'gray' => Color::Gray,
@@ -78,19 +74,8 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugins([
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
-            ])
-            ->plugin(
-                
-                \Hasnayeen\Themes\ThemesPlugin::make()
-                    // ->registerTheme(
-                    //     [
-                    //         MyCustomTheme::class,
-                    //         \Hasnayeen\Themes\Themes\Sunset::class,
-                    //     ],
-                //     override: true,
-                    // )
-            );
-    
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                \Hasnayeen\Themes\ThemesPlugin::make(),
+            ]);
     }
 }

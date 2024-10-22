@@ -14,7 +14,6 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use TomatoPHP\FilamentDiscord\Traits\InteractsWithDiscord;
-use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class User extends Authenticatable implements FilamentUser
 {
