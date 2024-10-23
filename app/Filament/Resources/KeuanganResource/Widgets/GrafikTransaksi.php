@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Resources\KeuanganResource\Widgets;
 
+use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use App\Models\DataTransaksi;
-use App\Models\PenjualanBarang;
 use Flowframe\Trend\TrendValue;
-use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Auth;
 
 class GrafikTransaksi extends ChartWidget

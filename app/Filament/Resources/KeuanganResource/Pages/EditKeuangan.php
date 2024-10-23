@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\KeunganResource\Pages;
+namespace App\Filament\Resources\KeuanganResource\Pages;
 
-use App\Filament\Resources\KeunganResource;
+use App\Filament\Resources\KeuanganResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditKeungan extends EditRecord
+class EditKeuangan extends EditRecord
 {
-    protected static string $resource = KeunganResource::class;
+    protected static string $resource = KeuanganResource::class;
 
     protected function getHeaderActions(): array
     {

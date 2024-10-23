@@ -56,7 +56,7 @@ class TransaksiResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('harga_beli')
                     ->money('IDR')
-                    ->hidden(),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('harga_jual')
                     ->money('IDR')
                     ->sortable(),
