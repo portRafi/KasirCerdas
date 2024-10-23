@@ -8,13 +8,13 @@ use App\Models\PenjualanBarang;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
-class PostsChart extends ChartWidget
+class GrafikTransaksi extends ChartWidget
 {   
     protected static string $color = 'info';
-    protected static ?string $heading = 'Grafik keuntungan';
+    protected static ?string $heading = 'Grafik Transaksi';
     protected function getData(): array 
     {
-        $data = Trend::model(Datatransaksi::class)
+        $data = Trend::model(DataTransaksi::class)
         ->between(
             start: now()->startOfYear(),
             end: now()->endOfYear(),
@@ -25,13 +25,13 @@ class PostsChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Blog posts created',
-                    'data' => [0, 10, 5, 2, 21, 32, 45, 74, 65, 45, 77, 89],
+                    'label' => 'Jumlah Transaksi',
+                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                     'backgroundColor' => '#36A2EB',
                     'borderColor' => '#9BD0F5',
                 ],
             ],
-           'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         ];
     }
 
