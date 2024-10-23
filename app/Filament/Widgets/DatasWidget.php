@@ -33,15 +33,18 @@ class DatasWidget extends BaseWidget
             Stat::make('Jumlah Barang', $totalBarang)
                 ->description('Total Barang di database')
                 ->descriptionIcon('heroicon-s-archive-box', IconPosition::Before)
-                ->color($totalBarang < 5 ? 'danger' : ($totalBarang <= 10 ? 'warning' : 'success')),
-            Stat::make('Jumlah Akun Kasir', $totalKasir)
+                ->color($totalBarang < 5 ? 'danger' : ($totalBarang <= 10 ? 'warning' : 'success'))
+                ->chart([7, 2, 10, 3, 15, 4, 17]),
+                Stat::make('Jumlah Akun Kasir', $totalKasir)
                 ->description('Total Akun Kasir di database')
                 ->descriptionIcon('heroicon-m-user-plus', IconPosition::Before)
-                ->color('success'),
-            Stat::make('Metode Pembayaran Aktif', $totalMPAktif)
+                ->color('success')
+                ->chart([7, 2, 10, 3, 15, 4, 17]),
+                Stat::make('Metode Pembayaran Aktif', $totalMPAktif)
                 ->description('Metode Pembayaran Aktif')
                 ->descriptionIcon('heroicon-m-banknotes', IconPosition::Before)
-                ->color($totalMPAktif > 0 ? 'success' : 'danger'),
+                ->color($totalMPAktif > 0 ? 'success' : 'danger')
+                ->chart([7, 2, 10, 3, 15, 4, 17]),
         ];
     }
 }
