@@ -11,7 +11,7 @@ use Flowframe\Trend\TrendValue;
 class PostsChart extends ChartWidget
 {   
     protected static string $color = 'info';
-    protected static ?string $heading = 'Grafik keuntungan';
+    protected static ?string $heading = 'Order Per Month';
     protected function getData(): array 
     {
         $data = Trend::model(Datatransaksi::class)

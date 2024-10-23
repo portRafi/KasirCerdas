@@ -13,7 +13,7 @@ class LaporanPenjualanBarangWidget extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->query(
+            ->query( 
                 PenjualanBarang::query()
             )
             ->columns([
