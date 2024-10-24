@@ -1,4 +1,4 @@
-
+<!-- 
 
 <!DOCTYPE html>
 <html>
@@ -17,9 +17,9 @@
 
 </div>
 </body>
-</html>
+</html> -->
 
-<style>
+<!-- <style>
     .item strong {
         font-weight: 600;
         color: #cecece;
@@ -43,4 +43,97 @@
         width: 93%;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-</style>
+</style> -->
+
+
+<div class="transaksi-container">
+        <div class="transaksi-header">
+            <h2>Transaksi</h2>  
+        </div>
+        <div class="transaksi-details">
+        <p>Kode Transaksi: {{ $invoice->kode_transaksi }}</p>
+            <p>Total Harga: ${{ number_format($invoice->total_harga) }}</p>
+            <p>Metode Pembayaran: {{ ucfirst($invoice->metode_pembayaran) }}</p>
+            <p>Email Staff: {{ ucfirst($invoice->email_staff) }}</p>
+            <table style="width: 100%; margin-bottom: 30px">
+                <!-- <thead>
+                    <tr>
+                        <th>Kode Transaksi.</th>
+                        <th>Total Harga</th>
+                        <th>Metode Pembayaran</th>
+                        <th>Email Staff</th>
+                    </tr>
+                </thead> -->
+            </table>
+        </div>
+    </div>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+
+        .transaksi-container {
+            max-width: 100%;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .transaksi-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .transaksi-details label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .transaksi-details span {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px; /* Adjust padding for better spacing */
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .total-row {
+            font-weight: bold;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .transaksi-container {
+                box-shadow: none;
+                border: none;
+            }
+
+            .transaksi-details label {
+                display: inline-block;
+                width: 120px;
+            }
+        }
+    </style>
