@@ -12,15 +12,15 @@ $items = BarangAfterCheckout::where('kode_transaksi', $record->kode_transaksi)->
 </head>
 <body>
 <div class="viewd">
+    @foreach ($items as $item)
         <div class="item">
-            @foreach ($items as $item)
             <h1>Invoice #{{ $invoice->invoice_number }}</h1>
             <p>Kode Transaksi: {{ $item->kode_transaksi }}</p>
             <p>Total Harga: ${{ number_format($item->total_harga) }}</p>
             {{-- <p>Metode Pembayaran: {{ ucfirst($item->metode_pembayaran) }}</p> --}}
             {{-- <p>Email Staff: {{ ucfirst($item->email_staff) }}</p> --}}
-            @endforeach
         </div>
+        @endforeach
 
 </div>
 </body>
