@@ -22,6 +22,8 @@ use App\Exports\UsersExport;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Maatwebsite\Excel\Facades\Excel;
+use Filament\Tables\Actions\Action;
+use PDF; 
 
 
 class DataTransaksiResource extends Resource
@@ -95,14 +97,35 @@ class DataTransaksiResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\Action::make('view')
-                    ->label('View')
+                Tables\Actions\Action::make('Detail')
+                    ->label('Detail')
                     ->icon('heroicon-o-eye')
                     ->modalHeading('Detail Transaksi')
                     ->modalContent(function ($record) {
                         return view('filament.tables.modals.view-transaction', ['record' => $record]);
                     })
                     ->color('primary'),
+                
+                // Tables\Actions\Action::make('View Invoice')
+                //     ->label('View Invoice')
+                //     ->icon('heroicon-o-eye')
+                //     ->modalHeading('Detail Invoice')
+                //     ->modalContent(function ($record) {
+                //         return view('filament.views-invoice.view-invoice', ['record' => $record]);
+                //     })
+                //     ->color('primary'),
+
+                Tables\Actions\Action::make('downloadInvoice')
+                ->label('Download Invoice')
+                ->action(function ($record) {
+                    // Load view invoice.pdf dengan data record yang akan dicetak
+                    $pdf = PDF::loadView('invoices.pdf', ['invoice' => $record]);
+                    
+                    // Stream atau download file PDF
+                    return response()->streamDownload(fn () => print($pdf->stream()), "invoice_{$record->invoice_number}.pdf");
+                })
+                
+
             ])
             ->bulkActions([
                 ExportBulkAction::make(),

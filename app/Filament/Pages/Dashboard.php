@@ -11,11 +11,11 @@ class Dashboard extends \Filament\Pages\Dashboard
 {
     use HasFiltersForm;
 
-    public function filtersForm(Form $form): Form
-    {
-        return $form->schema([
-            DatePicker::make('Dari Tanggal'),
-            DatePicker::make('Sampai Tanggal')
-        ]);
-    }
+    // public function filtersForm(Form $form): Form
+    // {
+    //     return $form->schema([
+    //         DatePicker::make('Dari Tanggal'),
+    //         DatePicker::make('Sampai Tanggal')
+    //     ]);
+    // }
 }
