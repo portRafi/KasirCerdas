@@ -120,10 +120,7 @@ class DataTransaksiResource extends Resource
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('primary')
                 ->action(function ($record) {
-                    // Load view invoice.pdf dengan data record yang akan dicetak
                     $pdf = PDF::loadView('invoices.pdf', ['invoice' => $record]);
-                    
-                    // Stream atau download file PDF
                     return response()->streamDownload(fn () => print($pdf->stream()), "invoice_{$record->invoice_number}.pdf");
                 })
                 
