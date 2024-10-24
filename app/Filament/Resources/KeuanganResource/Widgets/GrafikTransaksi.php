@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Resources\KeuanganResource\Widgets;
 
+use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use App\Models\DataTransaksi;
-use App\Models\PenjualanBarang;
 use Flowframe\Trend\TrendValue;
-use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Auth;
 
 class GrafikTransaksi extends ChartWidget
 {   
     protected static string $color = 'info';
-    protected static ?string $heading = 'Order Per Bulan';
+    protected static ?string $heading = 'Grafik Transaksi';
     protected function getData(): array 
     {
         $data = Trend::query(
@@ -31,7 +30,6 @@ class GrafikTransaksi extends ChartWidget
         return [
             'datasets' => [
                 [
-
                     'label' => 'Jumlah Transaksi',
                     'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                     'backgroundColor' => '#36A2EB',

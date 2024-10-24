@@ -15,7 +15,7 @@ class KeuanganPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_keungan');
+        return $user->can('view_any_keuangan');
     }
 
     /**
@@ -23,7 +23,7 @@ class KeuanganPolicy
      */
     public function view(User $user, Keuangan $keuangan): bool
     {
-        return $user->can('view_keungan');
+        return $user->can('view_keuangan');
     }
 
     /**
@@ -31,7 +31,7 @@ class KeuanganPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_keungan');
+        return $user->can('create_keuangan');
     }
 
     /**
@@ -39,7 +39,7 @@ class KeuanganPolicy
      */
     public function update(User $user, Keuangan $keuangan): bool
     {
-        return $user->can('update_keungan');
+        return $user->can('update_keuangan');
     }
 
     /**
@@ -47,7 +47,7 @@ class KeuanganPolicy
      */
     public function delete(User $user, Keuangan $keuangan): bool
     {
-        return $user->can('delete_keungan');
+        return $user->can('delete_keuangan');
     }
 
     /**
@@ -55,7 +55,7 @@ class KeuanganPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_keungan');
+        return $user->can('delete_any_keuangan');
     }
 
     /**
@@ -63,7 +63,7 @@ class KeuanganPolicy
      */
     public function forceDelete(User $user, Keuangan $keuangan): bool
     {
-        return $user->can('force_delete_keungan');
+        return $user->can('force_delete_keuangan');
     }
 
     /**
@@ -71,7 +71,7 @@ class KeuanganPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_keungan');
+        return $user->can('force_delete_any_keuangan');
     }
 
     /**
@@ -79,7 +79,7 @@ class KeuanganPolicy
      */
     public function restore(User $user, Keuangan $keuangan): bool
     {
-        return $user->can('restore_keungan');
+        return $user->can('restore_keuangan');
     }
 
     /**
@@ -87,7 +87,7 @@ class KeuanganPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_keungan');
+        return $user->can('restore_any_keuangan');
     }
 
     /**
@@ -95,7 +95,7 @@ class KeuanganPolicy
      */
     public function replicate(User $user, Keuangan $keuangan): bool
     {
-        return $user->can('replicate_keungan');
+        return $user->can('replicate_keuangan');
     }
 
     /**
@@ -103,6 +103,6 @@ class KeuanganPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_keungan');
+        return $user->can('reorder_keuangan');
     }
 }

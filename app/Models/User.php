@@ -9,6 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Filament\Panel;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Support\Facades\Storage;
+
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -33,21 +34,6 @@ class User extends Authenticatable implements FilamentUser
     protected $guarded = [
         'id',
     ];
-    // protected $fillable = [
-    //     'name',
-    //     'no_hp',
-    //     'alamat',
-    //     'email',
-    //     'password',
-    //     'role',
-    //     'cabangs_id',
-    //     'bisnis_id',
-    // ];
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
