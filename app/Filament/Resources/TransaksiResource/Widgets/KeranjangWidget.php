@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TransaksiResource\Widgets;
 
 use Filament\Tables;
+use Illuminate\Support\Facades\DB;
 use App\Models\Pajak;
 use App\Models\Barang;
 use App\Models\Diskon;
@@ -15,6 +16,9 @@ use App\Models\DataTransaksi;
 use App\Models\DiskonTransaksi;
 use App\Models\MetodePembayaran;
 use App\Models\BarangAfterCheckout;
+use App\Models\JumlahTotalHargaKotor;
+use App\Models\JumlahTotalKeuntungan;
+use App\Models\JumlahTotalPajak;
 use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
@@ -110,6 +114,10 @@ class KeranjangWidget extends BaseWidget
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
                                 ])->sum('total_harga') ?: 0;
 
+                                $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
+
+                                return $totalHargaDenganPajak;
+
                                 $totalHargaDenganPajaks = $this->calculateTotalHargaWithPajak($totalHarga);
 
                                 $totalDiskonTransaksi = DiskonTransaksi::where([
@@ -122,7 +130,7 @@ class KeranjangWidget extends BaseWidget
                                 $totalHargaDenganDiskonTransaksi = ($totalDiskonTransaksi <= 100) ? $this->calculateTotalHargaWithPajak($totalHarga) - ($this->calculateTotalHargaWithPajak($totalHarga) * ($totalDiskonTransaksi / 100)) : $this->calculateTotalHargaWithPajak($totalHarga) - $totalDiskonTransaksi;
                                 return $totalHargaDenganDiskonTransaksi;
                             }),
-                    ])//
+                    ]) //
             ])
             ->headerActions([
                 Action::make('checkout')
@@ -152,13 +160,13 @@ class KeranjangWidget extends BaseWidget
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
                                 ])->sum('total_harga') ?: 0;
-                                
+
                                 $totalHargaDenganPajak2 = $this->calculateTotalHargaWithPajak($totalHarga);
 
                                 $totalDiskonTransaksi = DiskonTransaksi::where([
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
-                                    ['minimum_pembelian', '>=', $totalHargaDenganPajak2],
+                                    ['minimum_pembelian', '<=', $totalHargaDenganPajak2],
                                     ['is_Active', '=', true],
                                 ])->sum('jumlah_diskon') ?: 0;
 
@@ -228,6 +236,34 @@ class KeranjangWidget extends BaseWidget
                             'kode_transaksi' => $randomString,
                             'jumlah_pajak' => $jumlahPajak
                         ]);
+                        JumlahTotalPajak::updateOrCreate([
+                            'bisnis_id' => Auth::user()->bisnis_id,
+                            'cabangs_id' => Auth::user()->cabangs_id,
+                        ], [
+                            'total_pajak' => JumlahTotalPajak::where([
+                                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                            ])->sum('total_pajak') + $jumlahPajak
+                        ]);
+                        JumlahTotalKeuntungan::updateOrCreate([
+                            'bisnis_id' => Auth::user()->bisnis_id,
+                            'cabangs_id' => Auth::user()->cabangs_id,
+                        ], [
+                            'total_keuntungan' => JumlahTotalKeuntungan::where([
+                                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                            ])->sum('total_keuntungan') + $keuntungan
+                        ]);
+                        JumlahTotalHargaKotor::updateOrCreate([
+                            'bisnis_id' => Auth::user()->bisnis_id,
+                            'cabangs_id' => Auth::user()->cabangs_id,
+                        ], [
+                            'total_harga_kotor' => JumlahTotalHargaKotor::where([
+                                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                            ])->sum('total_harga_kotor') + $totalHarga
+                        ]);
+
                         $itemsInCart = Keranjang::where('userid', Auth::user()->id)->get();
                         foreach ($itemsInCart as $item) {
                             BarangAfterCheckout::create([

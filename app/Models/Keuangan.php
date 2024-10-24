@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Keuangan extends Model
 {
     use HasFactory;
-    
     protected $guarded = [
-        'id',
+        'id'
     ];
 }

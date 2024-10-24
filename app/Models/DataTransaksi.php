@@ -18,6 +18,6 @@ class DataTransaksi extends Model
     }
     public function cabang()
     {
-        return $this->belongsTo(Cabang::class);
+        return $this->belongsTo(Cabang::class, 'cabangs_id');
     }
 }

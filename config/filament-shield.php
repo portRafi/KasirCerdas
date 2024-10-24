@@ -13,15 +13,6 @@ return [
         'cluster' => null,
     ],
 
-    // Shield::permission([
-    //     'admin' => [
-    //         'access_roles',
-    //     ],
-    //     'kasir' => [
-    //         'access_users',
-    //     ],
-    // ]),
-
     'auth_provider_model' => [
         'fqcn' => 'App\\Models\\User',
     ],

@@ -49,8 +49,8 @@ class BisnisResource extends Resource
                 ['id', '=', Auth::user()->bisnis_id]
             ]))
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('id')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('nama_bisnis')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('deskripsi')
@@ -76,11 +76,6 @@ class BisnisResource extends Resource
         return [
             //
         ];
-    }
-
-    public static function canCreate(): bool
-    {
-        return false;
     }
 
     public static function getPages(): array
