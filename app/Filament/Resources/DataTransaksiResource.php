@@ -117,6 +117,8 @@ class DataTransaksiResource extends Resource
 
                 Tables\Actions\Action::make('downloadInvoice')
                 ->label('Download Invoice')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('primary')
                 ->action(function ($record) {
                     $pdf = PDF::loadView('invoices.pdf', ['invoice' => $record]);
                     return response()->streamDownload(fn () => print($pdf->stream()), "invoice_{$record->invoice_number}.pdf");
