@@ -19,6 +19,9 @@ class ManajemenShiftResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Setting';
+    protected static ?string $navigationLabel = 'Manajemen Shift';
+
 
     public static function form(Form $form): Form
     {
@@ -46,7 +49,8 @@ class ManajemenShiftResource extends Resource
                 ->options([
                     '1' => 'Shift Pagi',
                     '2' => 'Shift Sore'
-                ]),
+                ])
+                ->selectablePlaceholder(false),
                 Tables\Columns\TextColumn::make('bisnis.nama_bisnis')
                     ->badge()
                     ->color('success')
