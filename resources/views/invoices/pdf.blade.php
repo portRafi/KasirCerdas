@@ -44,17 +44,28 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 </style> -->
+@php
+use App\Models\BarangAfterCheckout;
 
+$items = BarangAfterCheckout::where('kode_transaksi', $record->kode_transaksi)->get();
+@endphp
 
 <div class="transaksi-container">
         <div class="transaksi-header">
             <h2>Transaksi</h2>  
         </div>
+        @foreach ($items as $item)
         <div class="transaksi-details">
         <p>Kode Transaksi: {{ $invoice->kode_transaksi }}</p>
             <p>Total Harga: ${{ number_format($invoice->total_harga) }}</p>
             <p>Metode Pembayaran: {{ ucfirst($invoice->metode_pembayaran) }}</p>
             <p>Email Staff: {{ ucfirst($invoice->email_staff) }}</p>
+
+            <p>Kode Barang: {{ $item->kode }}</p>
+            <p>Kategori:   {{ $item->kategori }}</p>
+            <p>Nama:  {{ $item->nama }}</p>
+            <p>Quantity:  {{ $item->quantity }}</p>
+            <p>Total Harga:  {{ $item->total_harga }}</p>
             <table style="width: 100%; margin-bottom: 30px">
                 <!-- <thead>
                     <tr>
@@ -67,7 +78,7 @@
             </table>
         </div>
     </div>
-
+    @endforeach
     <style>
         body {
             font-family: Arial, sans-serif;
