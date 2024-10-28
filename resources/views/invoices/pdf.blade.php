@@ -1,16 +1,10 @@
 
+@php
 use App\Models\BarangAfterCheckout;
 use App\Models\DataTransaksi;
-<<<<<<< HEAD
-
-<!-- $datatransaksi = DataTransaksi::where('kode_transaksi', $invoice->kode_transaksi)->get(); -->
-$items = BarangAfterCheckout::where('kode_transaksi', $invoice->kode_transaksi)->get();
-
-=======
 $datatransaksi = DataTransaksi::where('kode_transaksi', $invoice->kode_transaksi)->get();
 $items = BarangAfterCheckout::where('kode_transaksi', $invoice->kode_transaksi)->get();
 @endphp
->>>>>>> d02e6f79fd933d899d0d65b0fd75a845822dc56d
 
 <!DOCTYPE html>
 <html lang="en">
@@ -93,6 +87,18 @@ $items = BarangAfterCheckout::where('kode_transaksi', $invoice->kode_transaksi)-
 </head>
 
 <body>
+<<<<<<< HEAD
+<div class="viewd">
+        <div class="item">
+            <h1>Invoice #{{ $invoice->invoice_number }}</h1>
+            <p>Kode Transaksi: {{ $invoice->kode_transaksi }}</p>
+            <p>Total Harga: ${{ number_format($invoice->total_harga) }}</p>
+            <p>Metode Pembayaran: {{ ucfirst($invoice->metode_pembayaran) }}</p>
+            <p>Email Staff: {{ ucfirst($invoice->email_staff) }}</p>
+        </div>
+
+</div>
+=======
     <div class="transaksi-container">
         <div class="transaksi-header">
             <h2>Transaksi</h2>  
@@ -114,5 +120,6 @@ $items = BarangAfterCheckout::where('kode_transaksi', $invoice->kode_transaksi)-
         </div>
         </div>
     </div>
+>>>>>>> cb79e72b86baa64c6d540ecc2e5af12d67c9aa40
 </body>
 </html>

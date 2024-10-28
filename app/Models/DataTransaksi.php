@@ -20,5 +20,4 @@ class DataTransaksi extends Model
     {
         return $this->belongsTo(Cabang::class, 'cabangs_id');
     }
-
 }

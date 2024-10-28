@@ -14,7 +14,7 @@ class GrafikTransaksi extends ChartWidget
     protected static string $color = 'info';
     protected static ?string $heading = 'Order Per Bulan';
     protected function getData(): array 
-    {
+    {   
         $data = Trend::query(
             DataTransaksi::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
