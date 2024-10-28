@@ -17,6 +17,7 @@ use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DataTransaksiResource\Pages;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+
 use App\Filament\Resources\DataTransaksiResource\RelationManagers;
 use App\Exports\UsersExport;
 use Filament\Pages\Actions;
@@ -115,6 +116,8 @@ class DataTransaksiResource extends Resource
                 //     })
                 //     ->color('primary'),
 
+
+                //download invoice pdf
                 Tables\Actions\Action::make('downloadInvoice')
                 ->label('Download Invoice')
                 ->icon('heroicon-o-arrow-down-tray')
