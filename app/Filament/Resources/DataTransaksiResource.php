@@ -17,6 +17,7 @@ use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DataTransaksiResource\Pages;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+
 use App\Filament\Resources\DataTransaksiResource\RelationManagers;
 use App\Exports\UsersExport;
 use Filament\Pages\Actions;
@@ -105,6 +106,19 @@ class DataTransaksiResource extends Resource
                         return view('filament.tables.modals.view-transaction', ['record' => $record]);
                     })
                     ->color('primary'),
+
+                
+                // Tables\Actions\Action::make('View Invoice')
+                //     ->label('View Invoice')
+                //     ->icon('heroicon-o-eye')
+                //     ->modalHeading('Detail Invoice')
+                //     ->modalContent(function ($record) {
+                //         return view('filament.views-invoice.view-invoice', ['record' => $record]);
+                //     })
+                //     ->color('primary'),
+
+
+                //download invoice pdf
                 Tables\Actions\Action::make('downloadInvoice')
                 ->label('Download Invoice')
                 ->icon('heroicon-o-arrow-down-tray')

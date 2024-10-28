@@ -18,7 +18,7 @@ class TransaksiWidget extends BaseWidget
         $totalTransaksiToday = DataTransaksi::where([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
             ['cabangs_id', '=', Auth::user()->cabangs_id],
-        ])->count();
+        ])->whereDate('created_at', Carbon::today())->count();
         $totalUangMasukToday = DataTransaksi::where([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
             ['cabangs_id', '=', Auth::user()->cabangs_id],

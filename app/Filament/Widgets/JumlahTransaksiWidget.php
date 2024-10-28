@@ -4,14 +4,16 @@ namespace App\Filament\Widgets;
 
 use Carbon\Carbon;
 use App\Models\DataTransaksi;
-use App\Models\PenjualanBarang;
 use Illuminate\Support\Facades\Auth;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 class JumlahTransaksiWidget extends BaseWidget
 {
+    use InteractsWithPageFilters;
+
     protected function getStats(): array
     {
         $startDate = !is_null($this->filters['startDate'] ?? null) ?
@@ -19,21 +21,17 @@ class JumlahTransaksiWidget extends BaseWidget
 
         $endDate = !is_null($this->filters['endDate'] ?? null) ?
             Carbon::parse($this->filters['endDate']) : null;
-        $totalTransaksi = DataTransaksi::whereBetween([
-            ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id],
-            [$startDate, $endDate]
-        ])->count();
-        $totalPendapatan = DataTransaksi::whereBetween([
-            ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id],
-            [$startDate, $endDate]
-        ])->sum('total_harga_after_pajak');
-        $totalKeuntungan = DataTransaksi::whereBetween([
-            ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id],
-            [$startDate, $endDate]
-        ])->sum('keuntungan');
+
+        $query = DataTransaksi::where('bisnis_id', Auth::user()->bisnis_id)
+            ->where('cabangs_id', Auth::user()->cabangs_id);
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        $totalTransaksi = $query->count();
+        $totalPendapatan = $query->sum('total_harga_after_pajak');
+        $totalKeuntungan = $query->sum('keuntungan');
 
         return [
             Stat::make('Jumlah Transaksi', $totalTransaksi)

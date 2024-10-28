@@ -2,7 +2,6 @@
 
 namespace App\Filament\Widgets;
 
-use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Barang;
 use App\Models\MetodePembayaran;
@@ -10,26 +9,20 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use Carbon\Carbon;
 
 class DatasWidget extends BaseWidget
 {
     protected function getStats(): array
     {
-        $startDate = !is_null($this->filters['startDate'] ?? null) ?
-            Carbon::parse($this->filters['startDate']) : null;
-
-        $endDate = !is_null($this->filters['endDate'] ?? null) ?
-            Carbon::parse($this->filters['endDate']) : null;
-
-        $totalBarang = Barang::whereBetween([
+   
+        $totalBarang = Barang::where([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
             ['cabangs_id', '=', Auth::user()->cabangs_id],
-            [$startDate, $endDate]
         ])->count();
-        $totalKasir = User::whereBetween([
+        $totalKasir = User::where([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
             ['cabangs_id', '=', Auth::user()->cabangs_id],
-            [$startDate, $endDate]
         ])->count();
         $totalMPAktif = MetodePembayaran::where([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
