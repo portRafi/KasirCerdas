@@ -106,6 +106,7 @@ class DataTransaksiResource extends Resource
                         return view('filament.tables.modals.view-transaction', ['record' => $record]);
                     })
                     ->color('primary'),
+
                 
                 // Tables\Actions\Action::make('View Invoice')
                 //     ->label('View Invoice')
