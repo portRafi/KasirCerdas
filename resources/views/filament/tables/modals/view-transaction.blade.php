@@ -9,7 +9,7 @@ $items = BarangAfterCheckout::where('kode_transaksi', $record->kode_transaksi)->
         <div class="item">
             <p><strong>Kode Barang:  </strong> {{ $item->kode }}</p>
             <p><strong>Kategori:  </strong> {{ $item->kategori }}</p>
-            <p><strong>Nama:  </strong> {{ $item->nama }}</p>
+            <p><strong>Nama:  </strong> {{ $item->nama }}</p> 
             <p><strong>Quantity:  </strong> {{ $item->quantity }}</p>
             <p><strong>Total Harga:  </strong> {{ $item->total_harga }}</p>
         </div>
