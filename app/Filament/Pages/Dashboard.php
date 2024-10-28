@@ -18,8 +18,17 @@ class Dashboard extends BaseDashboard
     {
         return $form->schema([
             Section::make()->schema([
-                DatePicker::make('startDate')->maxDate(fn(Get $get) => $get('endDate') ?: now()),
-                DatePicker::make('endDate')->minDate(fn(Get $get) => $get('startDate') ?: now())->maxDate(now())
+                DatePicker::make('startDate')
+                ->maxDate(fn(Get $get) => $get('endDate') ?: now())
+                ->afterStateUpdated(function ($state, callable $set) {
+                    $this->getStats(); // Memperbarui data saat startDate diperbarui
+                }),
+            DatePicker::make('endDate')
+                ->minDate(fn(Get $get) => $get('startDate') ?: now())
+                ->maxDate(now())
+                ->afterStateUpdated(function ($state, callable $set) {
+                    $this->getStats(); // Memperbarui data saat endDate diperbarui
+                })
             ])->columns(2)
         ]);
     }
