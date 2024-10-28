@@ -1,84 +1,19 @@
-<!-- 
+
+use App\Models\BarangAfterCheckout;
+use App\Models\DataTransaksi;
+
+<!-- $datatransaksi = DataTransaksi::where('kode_transaksi', $invoice->kode_transaksi)->get(); -->
+$items = BarangAfterCheckout::where('kode_transaksi', $invoice->kode_transaksi)->get();
+
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Invoice #{{ $invoice->invoice_number }}</title>
-</head>
-<body>
-<div class="viewd">
-        <div class="item">
-            <h1>Invoice #{{ $invoice->invoice_number }}</h1>
-            <p>Kode Transaksi: {{ $invoice->kode_transaksi }}</p>
-            <p>Total Harga: ${{ number_format($invoice->total_harga) }}</p>
-            <p>Metode Pembayaran: {{ ucfirst($invoice->metode_pembayaran) }}</p>
-            <p>Email Staff: {{ ucfirst($invoice->email_staff) }}</p>
-        </div>
-
-</div>
-</body>
-</html> -->
-
-<!-- <style>
-    .item strong {
-        font-weight: 600;
-        color: #cecece;
-        font-size: 15px;
-    }
-    .item p {
-        color: rgb(156, 163, 175);
-        font-weight: 400;
-        font-size: 15px;
-    }
-    .viewd {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
-    .item {
-        border: 1px solid #454545;
-        padding: 15px;
-        border-radius: 8px;
-        width: 93%;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-</style> -->
-@php
-use App\Models\BarangAfterCheckout;
-
-$items = BarangAfterCheckout::where('kode_transaksi', $record->kode_transaksi)->get();
-@endphp
-
-<div class="transaksi-container">
-        <div class="transaksi-header">
-            <h2>Transaksi</h2>  
-        </div>
-        @foreach ($items as $item)
-        <div class="transaksi-details">
-        <p>Kode Transaksi: {{ $invoice->kode_transaksi }}</p>
-            <p>Total Harga: ${{ number_format($invoice->total_harga) }}</p>
-            <p>Metode Pembayaran: {{ ucfirst($invoice->metode_pembayaran) }}</p>
-            <p>Email Staff: {{ ucfirst($invoice->email_staff) }}</p>
-
-            <p>Kode Barang: {{ $item->kode }}</p>
-            <p>Kategori:   {{ $item->kategori }}</p>
-            <p>Nama:  {{ $item->nama }}</p>
-            <p>Quantity:  {{ $item->quantity }}</p>
-            <p>Total Harga:  {{ $item->total_harga }}</p>
-            <table style="width: 100%; margin-bottom: 30px">
-                <!-- <thead>
-                    <tr>
-                        <th>Kode Transaksi.</th>
-                        <th>Total Harga</th>
-                        <th>Metode Pembayaran</th>
-                        <th>Email Staff</th>
-                    </tr>
-                </thead> -->
-            </table>
-        </div>
-    </div>
-    @endforeach
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">  
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -148,3 +83,25 @@ $items = BarangAfterCheckout::where('kode_transaksi', $record->kode_transaksi)->
             }
         }
     </style>
+
+</head>
+
+<body>
+    <div class="transaksi-container">
+        <div class="transaksi-header">
+            <h2>Transaksi</h2>  
+        </div>
+        <div class="transaksi-details">
+        <div class="item">
+            <h1>Invoice #{{ $invoice->invoice_number }}</h1>
+            <p>Kode Transaksi: {{ $item->kode_transaksi }}</p>
+            <p>Kode Barang: {{ $item->kode }}</p>
+            <p>Quantity: {{ $item->quantity }}</p>
+            <p>Nama Barang: {{ $item->nama }}</p>
+            <p>Total Harga: ${{ number_format($item->total_harga) }}</p>
+            
+        </div>
+        </div>
+    </div>
+</body>
+</html>
