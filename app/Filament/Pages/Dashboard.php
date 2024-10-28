@@ -3,19 +3,23 @@
 namespace App\Filament\Pages;
 
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
-use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Get;
+use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
-    use HasFiltersForm;
+    use BaseDashboard\Concerns\HasFiltersForm;
 
-    // public function filtersForm(Form $form): Form
-    // {
-    //     return $form->schema([
-    //         DatePicker::make('Dari Tanggal'),
-    //         DatePicker::make('Sampai Tanggal')
-    //     ]);
-    // }
+    public function filtersForm(Form $form): Form
+    {
+        return $form->schema([
+            Section::make()->schema([
+                DatePicker::make('startDate')->maxDate(fn(Get $get) => $get('endDate') ?: now()),
+                DatePicker::make('endDate')->minDate(fn(Get $get) => $get('startDate') ?: now())->maxDate(now())
+            ])->columns(2)
+        ]);
+    }
 }

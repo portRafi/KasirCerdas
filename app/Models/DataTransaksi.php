@@ -20,9 +20,4 @@ class DataTransaksi extends Model
     {
         return $this->belongsTo(Cabang::class, 'cabangs_id');
     }
-    public function invoice()
-{
-    return $this->hasOne(Invoice::class);
-}
-
 }

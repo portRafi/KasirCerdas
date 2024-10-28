@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use Carbon\Carbon;
 use App\Models\DataTransaksi;
 use App\Models\PenjualanBarang;
 use Illuminate\Support\Facades\Auth;
@@ -13,17 +14,25 @@ class JumlahTransaksiWidget extends BaseWidget
 {
     protected function getStats(): array
     {
-        $totalTransaksi = DataTransaksi::where([
+        $startDate = !is_null($this->filters['startDate'] ?? null) ?
+            Carbon::parse($this->filters['startDate']) : null;
+
+        $endDate = !is_null($this->filters['endDate'] ?? null) ?
+            Carbon::parse($this->filters['endDate']) : null;
+        $totalTransaksi = DataTransaksi::whereBetween([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
             ['cabangs_id', '=', Auth::user()->cabangs_id],
+            [$startDate, $endDate]
         ])->count();
-        $totalPendapatan = DataTransaksi::where([
+        $totalPendapatan = DataTransaksi::whereBetween([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
             ['cabangs_id', '=', Auth::user()->cabangs_id],
+            [$startDate, $endDate]
         ])->sum('total_harga_after_pajak');
-        $totalKeuntungan = DataTransaksi::where([
+        $totalKeuntungan = DataTransaksi::whereBetween([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
             ['cabangs_id', '=', Auth::user()->cabangs_id],
+            [$startDate, $endDate]
         ])->sum('keuntungan');
 
         return [

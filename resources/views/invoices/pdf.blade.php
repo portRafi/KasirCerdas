@@ -1,11 +1,5 @@
 
-@php
-use App\Models\BarangAfterCheckout;
-use App\Models\DataTransaksi;
-$datatransaksi = DataTransaksi::where('kode_transaksi', $invoice->kode_transaksi)->get();
-$items = BarangAfterCheckout::where('kode_transaksi', $invoice->kode_transaksi)->get();
-@endphp
-
+x   
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,15 +7,13 @@ $items = BarangAfterCheckout::where('kode_transaksi', $invoice->kode_transaksi)-
 </head>
 <body>
 <div class="viewd">
-    @foreach ($items as $item)
         <div class="item">
             <h1>Invoice #{{ $invoice->invoice_number }}</h1>
-            <p>Kode Transaksi: {{ $item->kode_transaksi }}</p>
-            <p>Total Harga: ${{ number_format($item->total_harga) }}</p>
-            <p>Metode Pembayaran: {{ ucfirst($datatransaksi->metode_pembayaran) }}</p> 
-            <p>Email Staff: {{ ucfirst($datatransaksi->email_staff) }}</p>
+            <p>Kode Transaksi: {{ $invoice->kode_transaksi }}</p>
+            <p>Total Harga: ${{ number_format($invoice->total_harga) }}</p>
+            <p>Metode Pembayaran: {{ ucfirst($invoice->metode_pembayaran) }}</p>
+            <p>Email Staff: {{ ucfirst($invoice->email_staff) }}</p>
         </div>
-        @endforeach
 
 </div>
 </body>
