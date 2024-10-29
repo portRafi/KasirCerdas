@@ -18,8 +18,8 @@ class DataShiftResource extends Resource
 {
     protected static ?string $model = DataShift::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
-    protected static ?string $activeNavigationIcon = 'heroicon-m-clipboard-document-list';
+    protected static ?string $navigationIcon = 'heroicon-o-document';
+    protected static ?string $activeNavigationIcon = 'heroicon-s-document';
     protected static ?string $navigationGroup = 'laporan';
     protected static ?string $navigationLabel = 'Data Shift Kasir';
 

@@ -17,7 +17,7 @@ use App\Filament\Resources\BisnisResource\RelationManagers;
 class BisnisResource extends Resource
 {
     protected static ?string $model = Bisnis::class;
-    protected static ?string $navigationIcon = 'heroicon-m-building-library';
+    protected static ?string $navigationIcon = 'heroicon-o-building-library';
     protected static ?string $navigationGroup = 'Master Data';
     protected static ?string $activeNavigationIcon = 'heroicon-m-building-library';
     protected static ?string $navigationLabel = 'bisnis';

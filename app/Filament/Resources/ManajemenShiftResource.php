@@ -18,7 +18,8 @@ class ManajemenShiftResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard';
+    protected static ?string $activeNavigationIcon = 'heroicon-s-clipboard';
     protected static ?string $navigationGroup = 'Setting';
     protected static ?string $navigationLabel = 'Manajemen Shift';
 
