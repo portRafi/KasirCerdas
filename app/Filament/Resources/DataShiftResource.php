@@ -24,71 +24,70 @@ class DataShiftResource extends Resource
     protected static ?string $navigationLabel = 'Data Shift Kasir';
 
     public static function form(Form $form): Form
-{
+    {
 
-    $shiftCount = DataShift::where('bisnis_id', Auth::user()->bisnis_id)
-        ->where('cabangs_id', Auth::user()->cabangs_id)
-        ->count();
+        
 
-    if ($shiftCount >= 2) {
-        return $form->schema([
-            Forms\Components\TextInput::make('shift_limit_notice')
-                ->disabled()
-                ->label('Notice')
-                ->default('Anda hanya dapat membuat maksimal 2 data shift.')
-                ->columnSpan('full'),
-        ]);
+        return $form
+            ->schema([
+                Forms\Components\Hidden::make('bisnis_id')
+                    ->default(Auth::user()->bisnis_id),
+                Forms\Components\Hidden::make('cabangs_id')
+                    ->default(Auth::user()->cabangs_id),
+                Forms\Components\TextInput::make('shift')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TimePicker::make('shift_start')
+                    ->seconds(false)
+                    ->label('Jam Shift Dimulai')
+                    ->required(),
+                Forms\Components\TimePicker::make('shift_end')
+                    ->seconds(false)
+                    ->label('Jam Shift Berakhir')
+                    ->required(),
+            ]);
     }
 
-    return $form
-        ->schema([
-            Forms\Components\Hidden::make('bisnis_id')
-                ->default(Auth::user()->bisnis_id),
-            Forms\Components\Hidden::make('cabangs_id')
-                ->default(Auth::user()->cabangs_id),
-            Forms\Components\TextInput::make('shift')
-                ->required()
-                ->numeric(),
-            Forms\Components\TimePicker::make('shift_start')
-                ->seconds(false)
-                ->label('Jam Shift Dimulai')
-                ->required(),
-            Forms\Components\TimePicker::make('shift_end')
-                ->seconds(false)
-                ->label('Jam Shift Berakhir')
-                ->required(),
-        ]);
-}
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->poll('5s')
+            ->query(DataShift::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+            ]))
+            ->columns([
+                Tables\Columns\TextColumn::make('shift')
+                    ->label('Shift'),
+                Tables\Columns\TextColumn::make('shift_start')
+                    ->label('Shift Start'),
+                Tables\Columns\TextColumn::make('shift_end')
+                    ->label('Shift End'),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
 
-public static function table(Table $table): Table
-{
-    return $table
-        ->poll('5s')
-        ->query(DataShift::where([
-            ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id],
-        ]))
-        ->columns([
-            Tables\Columns\TextColumn::make('shift')
-                ->label('Shift'),
-            Tables\Columns\TextColumn::make('shift_start')
-                ->label('Shift Start'),
-            Tables\Columns\TextColumn::make('shift_end')
-                ->label('Shift End'),
-        ])
-        ->filters([
-            //
-        ])
-        ->actions([
-            Tables\Actions\EditAction::make(),
-        ])
-        ->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]),
-        ]);
-}
+    public static  function canCreate():bool {
+        $shiftCount = DataShift::where('bisnis_id', Auth::user()->bisnis_id)
+            ->where('cabangs_id', Auth::user()->cabangs_id)
+            ->count();
 
+        if ($shiftCount >= 2) {
+            return(false);
+        } else {
+            return(true);
+        }
+    }
     public static function getRelations(): array
     {
         return [
