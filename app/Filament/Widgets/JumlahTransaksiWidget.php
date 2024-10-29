@@ -16,8 +16,10 @@ class JumlahTransaksiWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        $startDate = !is_null($this->filters['startDate'] ?? null) ? Carbon::parse($this->filters['startDate']) : null;
+    //mengambil data transaksi sesuai stardate dan enddate
+    $startDate = !is_null($this->filters['startDate'] ?? null) ? Carbon::parse($this->filters['startDate']) : null;
     $endDate = !is_null($this->filters['endDate'] ?? null) ? Carbon::parse($this->filters['endDate']) : null;
+    
 
     $query = DataTransaksi::where('bisnis_id', Auth::user()->bisnis_id)
         ->where('cabangs_id', Auth::user()->cabangs_id);
