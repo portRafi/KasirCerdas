@@ -37,18 +37,18 @@ class DataShiftResource extends Resource
                     ->default(Auth::user()->bisnis_id),
                 Forms\Components\Hidden::make('cabangs_id')
                     ->default(Auth::user()->cabangs_id),
+                Forms\Components\TextInput::make('shift')
+                    ->required()
+                    ->numeric(),
                 Forms\Components\TimePicker::make('shift_start')
                     ->seconds(false)
                     ->label('Jam Shift Dimulai')
-                    ->disabled($isDataShiftExists)
                     ->required(),
                 Forms\Components\TimePicker::make('shift_end')
                     ->seconds(false)
                     ->label('Jam Shift Berakhir')
-                    ->disabled($isDataShiftExists)
                     ->required(),
-            ])
-            ->visible(!$isDataShiftExists);
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -60,6 +60,8 @@ class DataShiftResource extends Resource
                 ['cabangs_id', '=', Auth::user()->cabangs_id],
             ]))
             ->columns([
+                Tables\Columns\TextColumn::make('shift')
+                    ->label('Shift'),
                 Tables\Columns\TextColumn::make('shift_start')
                     ->label('Shift Start'),
                 Tables\Columns\TextColumn::make('shift_end')
