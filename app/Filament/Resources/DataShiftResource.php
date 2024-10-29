@@ -23,14 +23,22 @@ class DataShiftResource extends Resource
     protected static ?string $navigationGroup = 'laporan';
     protected static ?string $navigationLabel = 'Data Shift Kasir';
 
-    public static function canCreate(): bool
+    public static function form(Form $form): Form
 {
 
     $shiftCount = DataShift::where('bisnis_id', Auth::user()->bisnis_id)
         ->where('cabangs_id', Auth::user()->cabangs_id)
         ->count();
 
-    return $shiftCount < 2;
+    if ($shiftCount >= 2) {
+        return $form->schema([
+            Forms\Components\TextInput::make('shift_limit_notice')
+                ->disabled()
+                ->label('Notice')
+                ->default('Anda hanya dapat membuat maksimal 2 data shift.')
+                ->columnSpan('full'),
+        ]);
+    }
 
     return $form
         ->schema([
