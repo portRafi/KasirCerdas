@@ -18,7 +18,7 @@ use App\Filament\Resources\CabangResource\RelationManagers;
 class CabangResource extends Resource
 {
     protected static ?string $model = Cabang::class;
-    protected static ?string $navigationIcon = 'heroicon-m-building-storefront';
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
     protected static ?string $navigationGroup = 'Master Data';
     protected static ?string $activeNavigationIcon = 'heroicon-m-building-storefront';
     protected static ?string $navigationLabel = 'cabang';
