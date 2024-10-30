@@ -87,39 +87,23 @@ $items = BarangAfterCheckout::where('kode_transaksi', $invoice->kode_transaksi)-
 </head>
 
 <body>
-<<<<<<< HEAD
-<div class="viewd">
-        <div class="item">
-            <h1>Invoice #{{ $invoice->invoice_number }}</h1>
-            <p>Kode Transaksi: {{ $invoice->kode_transaksi }}</p>
-            <p>Total Harga: ${{ number_format($invoice->total_harga) }}</p>
-            <p>Metode Pembayaran: {{ ucfirst($invoice->metode_pembayaran) }}</p>
-            <p>Email Staff: {{ ucfirst($invoice->email_staff) }}</p>
-        </div>
-
-</div>
-=======
     <div class="transaksi-container">
         <div class="transaksi-header">
+            @foreach ($items as $item)
             <h2>Transaksi</h2>  
         </div>
         <div class="transaksi-details">
         <div class="item">
-            <h1>Invoice #{{ $invoice->invoice_number }}</h1>
-            <p>Kode Transaksi: {{ $item->kode_transaksi }}</p>
-            <p>Kode Barang: {{ $item->kode }}</p>
-            <p>Quantity: {{ $item->quantity }}</p>
-            <p>Nama Barang: {{ $item->nama }}</p>
-            <p>Total Harga: ${{ number_format($item->total_harga) }}</p>
-<<<<<<< HEAD
-            
-=======
-            <p>Metode Pembayaran: {{ ucfirst($datatransaksi->metode_pembayaran) }}</p> 
-            <p>Email Staff: {{ ucfirst($datatransaksi->email_staff) }}</p>
->>>>>>> d02e6f79fd933d899d0d65b0fd75a845822dc56d
+            <h1>Invoice #{{ $invoice->invoice_number  ?? null}}</h1>
+            <p>Kode Transaksi: {{ $item->kode_transaksi  ?? null}}</p>
+            <p>Kode Barang: {{ $item->kode ?? null}}</p>
+            <p>Quantity: {{ $item->quantity  ?? null}}</p>
+            <p>Nama Barang: {{ $item->nama  ?? null}}</p>
+            <p>Total Harga: ${{ number_format($item->total_harga) ?? null }}</p>
+            <p>Metode Pembayaran: {{ $item->metode_pembayaran ?? null    }}</p>
         </div>
+        @endforeach
         </div>
     </div>
->>>>>>> cb79e72b86baa64c6d540ecc2e5af12d67c9aa40
 </body>
 </html>
