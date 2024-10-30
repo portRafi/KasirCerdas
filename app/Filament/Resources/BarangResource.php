@@ -81,7 +81,6 @@ class BarangResource extends Resource
                     ->numeric(),
                 Forms\Components\TextInput::make('letak_rak')
                     ->placeholder('Letak Rak')
-                    ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('keterangan')
                     ->placeholder('Keterangan')
