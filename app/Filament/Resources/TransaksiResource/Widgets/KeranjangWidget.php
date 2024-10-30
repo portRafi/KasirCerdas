@@ -271,6 +271,7 @@ class KeranjangWidget extends BaseWidget
                                 'cabangs_id' => Auth::user()->cabangs_id,
                                 'kode_transaksi' => $randomString,
                                 'kode' => $item->kode,
+                                'metode_pembayaran' => $metodePembayaran,
                                 'kategori' => $item->kategori,
                                 'nama' => $item->nama,
                                 'quantity' => $item->quantity,
