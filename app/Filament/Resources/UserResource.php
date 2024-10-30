@@ -52,8 +52,8 @@ class UserResource extends Resource
                     ->relationship('roles', 'name')
                     ->preload()
                     ->searchable(),
-                    Forms\Components\Select::make('bisnis_id')
-                    ->label('Nama Bisnis')
+                Forms\Components\Select::make('bisnis_id')
+                    ->label('bisnis_id')
                     ->required()
                     ->searchable()
                     ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")
@@ -64,7 +64,7 @@ class UserResource extends Resource
                     ->reactive(),
                 Forms\Components\Select::make('cabangs_id')
                     ->label('cabangs_id')
-                    // ->required()
+                    ->required()
                     ->options(function (callable $get) {
                         $bisnisId = $get('bisnis_id');
                         if ($bisnisId) {
