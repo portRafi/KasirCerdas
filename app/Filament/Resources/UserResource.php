@@ -52,8 +52,8 @@ class UserResource extends Resource
                     ->relationship('roles', 'name')
                     ->preload()
                     ->searchable(),
-                Forms\Components\Select::make('bisnis_id')
-                    ->label('bisnis_id')
+                    Forms\Components\Select::make('bisnis_id')
+                    ->label('Nama Bisnis')
                     ->required()
                     ->searchable()
                     ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")
