@@ -17,8 +17,12 @@ class Cabang extends Model
         return $this->hasMany(User::class);
     }
 
+    // public function bisnis()
+    // {
+    //     return $this->belongsTo(Bisnis::class);
+    // }
     public function bisnis()
     {
-        return $this->belongsTo(Bisnis::class);
+        return $this->belongsTo(Bisnis::class, 'bisnis_id');
     }
 }

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->decimal('harga_beli' ,10,2);
             $table->decimal('harga_jual' ,10,2);
             $table->integer('stok');
-            $table->integer('diskon');
+            $table->integer('diskon')->nullable();
             $table->string('satuan');
             $table->integer('berat');
             $table->integer('letak_rak');

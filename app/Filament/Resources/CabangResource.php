@@ -56,16 +56,16 @@ class CabangResource extends Resource
     {
         return $table
             ->query(Cabang::where([
-
-                // ['cabangs_id', '=', Auth::user()->cabangs_id],
                 ['id', '=', Auth::user()->cabangs_id]
             ]))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('nama_bisnis')
+                Tables\Columns\TextColumn::make('bisnis.nama_bisnis')
+                    ->label('Nama Bisnis')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('nama_cabang')
+                    Tables\Columns\TextColumn::make('nama_cabang')
+                    ->label('Nama Cabang')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('deskripsi')
                     ->searchable(),
