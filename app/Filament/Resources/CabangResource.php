@@ -62,8 +62,10 @@ class CabangResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('bisnis.nama_bisnis')
+                    ->label('Nama Bisnis')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('nama_cabang')
+                    Tables\Columns\TextColumn::make('nama_cabang')
+                    ->label('Nama Cabang')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('deskripsi')
                     ->searchable(),
