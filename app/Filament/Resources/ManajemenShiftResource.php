@@ -39,12 +39,13 @@ class ManajemenShiftResource extends Resource
             //     ['bisnis_id', '=', Auth::user()->bisnis_id],
             //     ['cabangs_id', '=', Auth::user()->cabangs_id]
             // ]))
-            ->query(function (Builder $query) {
-                $query->where('bisnis_id', Auth::user()->bisnis_id);
-                if (Auth::user()->cabangs_id) {
-                    $query->where('cabangs_id', Auth::user()->cabangs_id);
-                }
-            })
+            // ->query(function () {
+            //     $query = User::query();
+            //     $query->where('bisnis_id', Auth::user()->bisnis_id);
+            //     if (Auth::user()->cabangs_id) {
+            //         $query->where('cabangs_id', Auth::user()->cabangs_id);
+            //     }
+            // })
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
@@ -85,6 +86,19 @@ class ManajemenShiftResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                 ]),
             ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+
+        $query = parent::getEloquentQuery();
+        if (auth()->user()->cabangs_id != null) {
+            $query->where('cabangs_id', auth()->user()->cabangs_id);
+        }
+        if (auth()->user()->bisnis_id != null) {
+            $query->where('bisnis_id', auth()->user()->bisnis_id);
+        }
+        return $query->orderBy('id', 'desc');
     }
 
     public static function getRelations(): array
