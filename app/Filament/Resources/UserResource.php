@@ -52,22 +52,17 @@ class UserResource extends Resource
                     ->relationship('roles', 'name')
                     ->preload()
                     ->searchable(),
-                    // Forms\Components\Select::make('bisnis_id')
-                    //     ->label('bisnis_id')
-                    //     ->required()
-                    //     ->searchable()
-                    //     ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")
-                    //         ->limit(50)
-                    //         ->pluck('nama_bisnis', 'id')
-                    //         ->toArray())
-                    //     ->getOptionLabelUsing(fn($value): ?string => Bisnis::find($value)?->nama_bisnis)
-                    //     ->reactive(),
-                    Forms\Components\Select::make('bisnis_id')
-                        ->label('bisnis_id')
-                        ->required()
-                        ->searchable()
-                        ->options(Bisnis::all()->pluck('nama_bisnis', 'id')),
-                    Forms\Components\Select::make('cabangs_id')
+                Forms\Components\Select::make('bisnis_id')
+                    ->label('bisnis_id')
+                    ->required()
+                    ->searchable()
+                    ->getSearchResultsUsing(fn(string $search): array => Bisnis::where('nama_bisnis', 'like', "%{$search}%")
+                        ->limit(50)
+                        ->pluck('nama_bisnis', 'id')
+                        ->toArray())
+                    ->getOptionLabelUsing(fn($value): ?string => Bisnis::find($value)?->nama_bisnis)
+                    ->reactive(),
+                Forms\Components\Select::make('cabangs_id')
                     ->label('cabangs_id')
                     // ->required()
                     ->options(function (callable $get) {

@@ -52,7 +52,7 @@ class KasirResource extends Resource
                     ->relationship('roles', 'name')
                     ->preload()
                     ->searchable(),
-                Forms\Components\Select::make('bisnis_id')
+                Forms\Components\Hidden::make('bisnis_id')
                     ->default(Auth::user()->bisnis_id),
                 Forms\Components\Select::make('cabangs_id')
                     ->label('cabangs_id')
@@ -60,8 +60,7 @@ class KasirResource extends Resource
                         return Cabang::where('bisnis_id', Auth::user()->bisnis_id)
                         ->pluck('nama_cabang', 'id');
                     })
-                    ->searchable()
-                    ->required(),
+                    ->searchable(),
             ]);
     }
 
