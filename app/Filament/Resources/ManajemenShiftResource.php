@@ -35,10 +35,16 @@ class ManajemenShiftResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(User::where([
-                ['bisnis_id', '=', Auth::user()->bisnis_id],
-                ['cabangs_id', '=', Auth::user()->cabangs_id]
-            ]))
+            // ->query(User::where([
+            //     ['bisnis_id', '=', Auth::user()->bisnis_id],
+            //     ['cabangs_id', '=', Auth::user()->cabangs_id]
+            // ]))
+            ->query(function (Builder $query) {
+                $query->where('bisnis_id', Auth::user()->bisnis_id);
+                if (Auth::user()->cabangs_id) {
+                    $query->where('cabangs_id', Auth::user()->cabangs_id);
+                }
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
