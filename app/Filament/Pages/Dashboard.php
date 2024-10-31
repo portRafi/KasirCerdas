@@ -16,8 +16,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
-
-class Dashboard extends BaseDashboard
+class Dashboard extends BaseDashboardenv
 {
     use BaseDashboard\Concerns\HasFiltersForm;
     
@@ -44,7 +43,7 @@ class Dashboard extends BaseDashboard
     public function getStats()
     {
         // Contoh logika perhitungan statistik
-        $startDate = !is_null($this->filters['startDate'] ?? null) ? Carbon::parse($this->filters['startDate']) : null;
+    $startDate = !is_null($this->filters['startDate'] ?? null) ? Carbon::parse($this->filters['startDate']) : null;
     $endDate = !is_null($this->filters['endDate'] ?? null) ? Carbon::parse($this->filters['endDate']) : null;  
 
         $query = DataTransaksi::where('bisnis_id', Auth::user()->bisnis_id)
