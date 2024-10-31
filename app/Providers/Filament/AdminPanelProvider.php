@@ -75,10 +75,6 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
                 \Hasnayeen\Themes\ThemesPlugin::make(),
-<<<<<<< HEAD
-                ])->spa();       
-=======
-            ])->spa();
->>>>>>> 72d2547e2ce81a5b182ad6c7e8bcd5e4d1952d64
+                ])->spa();      
     }
 }
