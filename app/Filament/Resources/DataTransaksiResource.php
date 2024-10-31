@@ -21,7 +21,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Tables\Filters\SelectFilter;
-// use PDF; 
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,6 +30,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DataTransaksiResource\Pages;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\DataTransaksiResource\RelationManagers;
+
+use Filament\Tables\Filters\Layout;
+
+
 use App\Models\Cabang;
 
 class DataTransaksiResource extends Resource
@@ -41,11 +44,13 @@ class DataTransaksiResource extends Resource
     protected static ?string $activeNavigationIcon = 'heroicon-s-clipboard-document-list';
     protected static ?string $navigationGroup = 'laporan';
     protected static ?string $navigationLabel = 'Data Transaksi';
-
+ 
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([]);
+        ->schema([
+            
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -56,9 +61,11 @@ class DataTransaksiResource extends Resource
                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                     // ['cabangs_id', '=', Auth::user()->cabangs_id]
                 ])
-            )
+                )
+                    
             ->poll('5s')
             ->columns([
+                
                 Tables\Columns\TextColumn::make('kode_transaksi')
                     ->label('Kode Transaksi')
                     ->numeric()

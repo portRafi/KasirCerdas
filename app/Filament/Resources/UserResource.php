@@ -128,7 +128,6 @@ class UserResource extends Resource
             //
         ];
     }
-
     public static function getPages(): array
     {
         return [

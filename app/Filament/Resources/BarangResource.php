@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\BarangResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\BarangResource\RelationManagers;
-
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 class BarangResource extends Resource
 {
     protected static ?string $model = Barang::class;
@@ -182,11 +182,13 @@ class BarangResource extends Resource
             ], layout: FiltersLayout::AboveContent)
             ->actions([])
             ->bulkActions([
+                ExportBulkAction::make(),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
+
 
     public static function getRelations(): array
     {

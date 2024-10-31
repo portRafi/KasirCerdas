@@ -19,7 +19,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class Dashboard extends BaseDashboard
 {
     use BaseDashboard\Concerns\HasFiltersForm;
-
+    
     public function filtersForm(Form $form): Form
     {
         return $form->schema([
@@ -44,7 +44,7 @@ class Dashboard extends BaseDashboard
     {
         // Contoh logika perhitungan statistik
         $startDate = !is_null($this->filters['startDate'] ?? null) ? Carbon::parse($this->filters['startDate']) : null;
-        $endDate = !is_null($this->filters['endDate'] ?? null) ? Carbon::parse($this->filters['endDate']) : null;
+    $endDate = !is_null($this->filters['endDate'] ?? null) ? Carbon::parse($this->filters['endDate']) : null;  
 
         $query = DataTransaksi::where('bisnis_id', Auth::user()->bisnis_id)
             ->where('cabangs_id', Auth::user()->cabangs_id);
