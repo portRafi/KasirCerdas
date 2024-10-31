@@ -4,11 +4,16 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
+use App\Models\Cabang;
 use Filament\Forms\Form;
 use App\Models\DataPajak;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\DataPajakResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -36,7 +41,6 @@ class DataPajakResource extends Resource
         ->query(
             DataPajak::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
-                ['cabangs_id', '=', Auth::user()->cabangs_id]
             ])
         )
         ->poll('5s')
@@ -53,8 +57,30 @@ class DataPajakResource extends Resource
                     ->sortable()
             ])
             ->filters([
-                //
-            ])
+                SelectFilter::make('cabangs_id')
+                ->label('Cabang')
+                    ->options(
+                        Cabang::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama_cabang', 'id')->toArray()
+                    ),
+                Filter::make('date_range')
+                    ->form([
+                        DatePicker::make('start_date')
+                            ->label('Start Date')
+                            ->required(),
+                        DatePicker::make('end_date')
+                            ->label('End Date')
+                            ->required(),
+                    ])
+                    ->columns(2) 
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            isset($data['start_date']) && isset($data['end_date']),
+                            function (Builder $query) use ($data): Builder {
+                                return $query->whereBetween('created_at', [$data['start_date'], $data['end_date']]);
+                            }
+                        );
+                    }),
+            ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

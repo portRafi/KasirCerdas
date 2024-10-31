@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Barang;
+use App\Models\Cabang;
 use App\Models\Diskon;
 use App\Models\Satuan;
 use App\Models\Kategori;
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\BarangResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\BarangResource\RelationManagers;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 class BarangResource extends Resource
 {
     protected static ?string $model = Barang::class;
@@ -97,7 +99,7 @@ class BarangResource extends Resource
             ->query(
                 Barang::where([
                     ['bisnis_id', '=', Auth::user()->bisnis_id],
-                    ['cabangs_id', '=', Auth::user()->cabangs_id]
+                    // ['cabangs_id', '=', Auth::user()->cabangs_id]
                 ])
             )
             ->poll('5s')
@@ -141,13 +143,22 @@ class BarangResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('cabang')
+                SelectFilter::make('cabangs_id')
                     ->options(
-                        Cabang::all()->pluck('nama_cabang', 'id')->toArray()
+                        Cabang::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama_cabang', 'id')->toArray()
+                    ),
+                SelectFilter::make('nama')
+                ->label('Nama Barang')
+                    ->options(
+                        Barang::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama', 'nama')->toArray()
+                    ),
+                SelectFilter::make('satuan')
+                    ->options(
+                        Satuan::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama_satuan', 'nama_satuan')->toArray()
                     ),
                 SelectFilter::make('kategori')
                     ->options(
-                        Kategori::all()->pluck('nama', 'nama')->toArray()
+                        Kategori::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama', 'nama')->toArray()
                     ),
                 Filter::make('date_range')
                     ->form([
@@ -170,6 +181,7 @@ class BarangResource extends Resource
             ], layout: FiltersLayout::AboveContent)
             ->actions([])
             ->bulkActions([
+                ExportBulkAction::make(),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
