@@ -3,14 +3,26 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Pages\Actions;
+use App\Exports\UsersExport;
 use App\Models\DataTransaksi;
+use Barryvdh\DomPDF\Facade\PDF;
+use App\Models\MetodePembayaran;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use App\Models\BarangAfterCheckout;
+use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Resources\Pages\ListRecords;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Columns\Summarizers\Sum;
@@ -18,15 +30,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DataTransaksiResource\Pages;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\DataTransaksiResource\RelationManagers;
-use App\Exports\UsersExport;
-use Filament\Pages\Actions;
-use Filament\Resources\Pages\ListRecords;
-use Maatwebsite\Excel\Facades\Excel;
-use Filament\Tables\Actions\Action;
-// use PDF; 
-use Barryvdh\DomPDF\Facade\PDF;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Layout;
 
 
@@ -100,8 +103,34 @@ class DataTransaksiResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
-            ])
+                SelectFilter::make('metode_pembayaran')
+                    ->options(
+                        MetodePembayaran::all()->pluck('nama_mp', 'nama_mp')->toArray()
+                    ),
+                SelectFilter::make('email_staff')
+                    ->options(
+                        User::all()->pluck('email', 'email')->toArray()
+                    ),
+                Filter::make('date_range')
+                    ->form([
+                        DatePicker::make('start_date')
+                            ->label('Start Date')
+                            ->required(),
+                        DatePicker::make('end_date')
+                            ->label('End Date')
+                            ->required(),
+                    ])
+                    ->columns(2) 
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            isset($data['start_date']) && isset($data['end_date']),
+                            function (Builder $query) use ($data): Builder {
+                                return $query->whereBetween('created_at', [$data['start_date'], $data['end_date']]);
+                            }
+                        );
+                    }),
+            ], layout: FiltersLayout::AboveContent)
+            
             ->actions([
                 Tables\Actions\Action::make('Detail')
                     ->label('Detail')
@@ -112,26 +141,15 @@ class DataTransaksiResource extends Resource
                     })
                     ->color('primary'),
 
-
-                // Tables\Actions\Action::make('View Invoice')
-                //     ->label('View Invoice')
-                //     ->icon('heroicon-o-eye')
-                //     ->modalHeading('Detail Invoice')
-                //     ->modalContent(function ($record) {
-                //         return view('filament.views-invoice.view-invoice', ['record' => $record]);
-                //     })
-                //     ->color('primary'),
-
-
                 //download invoice pdf
                 Tables\Actions\Action::make('downloadInvoice')
-                ->label('Download Invoice')
-                ->icon('heroicon-o-arrow-down-tray')
-                ->color('primary')
-                ->action(function ($record) {
-                    $pdf = PDF::loadView('invoices.pdf', ['invoice' => $record]);
-                    return response()->streamDownload(fn () => print($pdf->stream()), "invoice_{$record->invoice_number}.pdf");
-                })
+                    ->label('Download Invoice')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('primary')
+                    ->action(function ($record) {
+                        $pdf = PDF::loadView('invoices.pdf', ['invoice' => $record]);
+                        return response()->streamDownload(fn() => print($pdf->stream()), "invoice_{$record->invoice_number}.pdf");
+                    })
             ])
             ->bulkActions([
                 ExportBulkAction::make(),
@@ -140,8 +158,8 @@ class DataTransaksiResource extends Resource
                 ]),
             ]);
     }
-    
-    
+
+
     public static function getRelations(): array
     {
         return [

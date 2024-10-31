@@ -11,11 +11,16 @@ use App\Models\Kategori;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\BarangResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\BarangResource\RelationManagers;
+use Filament\Tables\Filters\Layout;
 class BarangResource extends Resource
 {
     protected static ?string $model = Barang::class;
@@ -117,7 +122,7 @@ class BarangResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('diskon')
                     ->numeric()
-                    ->formatStateUsing(fn ($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.'))
+                    ->formatStateUsing(fn($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('berat')
                     ->numeric()
@@ -137,7 +142,7 @@ class BarangResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([ 
-
+                
                ])
             ->actions([
                 
