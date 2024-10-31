@@ -11,7 +11,9 @@ use App\Models\Kategori;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\BarangResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -118,7 +120,7 @@ class BarangResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('diskon')
                     ->numeric()
-                    ->formatStateUsing(fn ($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.'))
+                    ->formatStateUsing(fn($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('berat')
                     ->numeric()
@@ -138,9 +140,33 @@ class BarangResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
-                //
-            ])
+                // SelectFilter::make('cabang')
+                //     ->options(
+                //         MetodePembayaran::all()->pluck('nama_mp', 'nama_mp')->toArray()
+                //     ),
+                SelectFilter::make('kategori')
+                    ->options(
+                        Kategori::all()->pluck('email', 'email')->toArray()
+                    ),
+                Filter::make('date_range')
+                    ->form([
+                        DatePicker::make('start_date')
+                            ->label('Start Date')
+                            ->required(),
+                        DatePicker::make('end_date')
+                            ->label('End Date')
+                            ->required(),
+                    ])
+                    ->columns(2) 
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            isset($data['start_date']) && isset($data['end_date']),
+                            function (Builder $query) use ($data): Builder {
+                                return $query->whereBetween('created_at', [$data['start_date'], $data['end_date']]);
+                            }
+                        );
+                    }),
+            ], layout: FiltersLayout::AboveContent)
             ->actions([])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
