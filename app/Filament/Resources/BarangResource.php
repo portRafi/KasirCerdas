@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\BarangResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\BarangResource\RelationManagers;
-
 class BarangResource extends Resource
 {
     protected static ?string $model = Barang::class;
@@ -137,11 +136,12 @@ class BarangResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-                //
+            ->filters([ 
+
+               ])
+            ->actions([
+                
             ])
-            ->actions([])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

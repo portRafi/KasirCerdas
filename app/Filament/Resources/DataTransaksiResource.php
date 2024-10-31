@@ -25,6 +25,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use Filament\Tables\Actions\Action;
 // use PDF; 
 use Barryvdh\DomPDF\Facade\PDF;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Layout;
 
 
 class DataTransaksiResource extends Resource
@@ -35,13 +38,13 @@ class DataTransaksiResource extends Resource
     protected static ?string $activeNavigationIcon = 'heroicon-s-clipboard-document-list';
     protected static ?string $navigationGroup = 'laporan';
     protected static ?string $navigationLabel = 'Data Transaksi';
-
+ 
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                
-            ]);
+        ->schema([
+            
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -52,9 +55,11 @@ class DataTransaksiResource extends Resource
                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                     ['cabangs_id', '=', Auth::user()->cabangs_id]
                 ])
-            )
+                )
+                    
             ->poll('5s')
             ->columns([
+                
                 Tables\Columns\TextColumn::make('kode_transaksi')
                     ->label('Kode Transaksi')
                     ->numeric()
