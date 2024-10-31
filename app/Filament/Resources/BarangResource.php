@@ -13,6 +13,8 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\BarangResource\Pages;
@@ -144,9 +146,21 @@ class BarangResource extends Resource
                 //     ->options(
                 //         MetodePembayaran::all()->pluck('nama_mp', 'nama_mp')->toArray()
                 //     ),
+                SelectFilter::make('nama')
+                ->label('Nama Barang')
+                    ->options(
+                        Barang::where([
+                            ['bisnis_id', '=', Auth::user()->bisnis_id],
+                            ['cabangs_id', '=', Auth::user()->cabangs_id]
+                        ])->pluck('nama', 'nama')->toArray()
+                    ),
+                SelectFilter::make('satuan')
+                    ->options(
+                        Satuan::all()->pluck('nama_satuan', 'nama_satuan')->toArray()
+                    ),
                 SelectFilter::make('kategori')
                     ->options(
-                        Kategori::all()->pluck('email', 'email')->toArray()
+                        Kategori::all()->pluck('nama', 'nama')->toArray()
                     ),
                 Filter::make('date_range')
                     ->form([
@@ -157,7 +171,7 @@ class BarangResource extends Resource
                             ->label('End Date')
                             ->required(),
                     ])
-                    ->columns(2) 
+                    ->columns(2)
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             isset($data['start_date']) && isset($data['end_date']),
