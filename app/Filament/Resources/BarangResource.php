@@ -144,6 +144,7 @@ class BarangResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('cabangs_id')
+                ->label('Cabang')
                     ->options(
                         Cabang::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama_cabang', 'id')->toArray()
                     ),
