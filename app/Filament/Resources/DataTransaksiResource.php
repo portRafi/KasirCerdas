@@ -17,14 +17,14 @@ use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DataTransaksiResource\Pages;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-
 use App\Filament\Resources\DataTransaksiResource\RelationManagers;
 use App\Exports\UsersExport;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Maatwebsite\Excel\Facades\Excel;
 use Filament\Tables\Actions\Action;
-use PDF; 
+// use PDF; 
+use Barryvdh\DomPDF\Facade\PDF;
 
 
 class DataTransaksiResource extends Resource
@@ -107,7 +107,7 @@ class DataTransaksiResource extends Resource
                     })
                     ->color('primary'),
 
-                
+
                 // Tables\Actions\Action::make('View Invoice')
                 //     ->label('View Invoice')
                 //     ->icon('heroicon-o-eye')
@@ -127,8 +127,6 @@ class DataTransaksiResource extends Resource
                     $pdf = PDF::loadView('invoices.pdf', ['invoice' => $record]);
                     return response()->streamDownload(fn () => print($pdf->stream()), "invoice_{$record->invoice_number}.pdf");
                 })
-                
-
             ])
             ->bulkActions([
                 ExportBulkAction::make(),
