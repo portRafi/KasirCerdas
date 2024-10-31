@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Barang;
+use App\Models\Cabang;
 use App\Models\Diskon;
 use App\Models\Satuan;
 use App\Models\Kategori;
@@ -142,10 +143,10 @@ class BarangResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                // SelectFilter::make('cabang')
-                //     ->options(
-                //         MetodePembayaran::all()->pluck('nama_mp', 'nama_mp')->toArray()
-                //     ),
+                SelectFilter::make('cabangs_id')
+                    ->options(
+                        Cabang::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama_cabang', 'id')->toArray()
+                    ),
                 SelectFilter::make('nama')
                 ->label('Nama Barang')
                     ->options(
