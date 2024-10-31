@@ -19,7 +19,7 @@ class DataShiftResource extends Resource
     protected static ?string $model = DataShift::class;
     protected static ?string $navigationIcon = 'heroicon-o-document';
     protected static ?string $activeNavigationIcon = 'heroicon-s-document';
-    protected static ?string $navigationGroup = 'setting';
+    protected static ?string $navigationGroup = 'Setting';
     protected static ?string $navigationLabel = 'Data Shift Kasir';
 
     public static function form(Form $form): Form
