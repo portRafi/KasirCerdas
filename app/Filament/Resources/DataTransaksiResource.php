@@ -53,7 +53,7 @@ class DataTransaksiResource extends Resource
             ->query(
                 DataTransaksi::where([
                     ['bisnis_id', '=', Auth::user()->bisnis_id],
-                    ['cabangs_id', '=', Auth::user()->cabangs_id]
+                    // ['cabangs_id', '=', Auth::user()->cabangs_id]
                 ])
             )
             ->poll('5s')
@@ -98,6 +98,11 @@ class DataTransaksiResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('cabangs_id')
+                ->label('Cabang')
+                    ->options(
+                        MetodePembayaran::all()->pluck('nama_mp', 'nama_mp')->toArray()
+                    ),
                 SelectFilter::make('metode_pembayaran')
                     ->options(
                         MetodePembayaran::all()->pluck('nama_mp', 'nama_mp')->toArray()
