@@ -98,7 +98,7 @@ class BarangResource extends Resource
             ->query(
                 Barang::where([
                     ['bisnis_id', '=', Auth::user()->bisnis_id],
-                    ['cabangs_id', '=', Auth::user()->cabangs_id]
+                    // ['cabangs_id', '=', Auth::user()->cabangs_id]
                 ])
             )
             ->poll('5s')
@@ -149,18 +149,15 @@ class BarangResource extends Resource
                 SelectFilter::make('nama')
                 ->label('Nama Barang')
                     ->options(
-                        Barang::where([
-                            ['bisnis_id', '=', Auth::user()->bisnis_id],
-                            ['cabangs_id', '=', Auth::user()->cabangs_id]
-                        ])->pluck('nama', 'nama')->toArray()
+                        Barang::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama', 'nama')->toArray()
                     ),
                 SelectFilter::make('satuan')
                     ->options(
-                        Satuan::all()->pluck('nama_satuan', 'nama_satuan')->toArray()
+                        Satuan::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama_satuan', 'nama_satuan')->toArray()
                     ),
                 SelectFilter::make('kategori')
                     ->options(
-                        Kategori::all()->pluck('nama', 'nama')->toArray()
+                        Kategori::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama', 'nama')->toArray()
                     ),
                 Filter::make('date_range')
                     ->form([

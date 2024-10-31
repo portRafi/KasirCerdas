@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DataTransaksiResource\Pages;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\DataTransaksiResource\RelationManagers;
+use App\Models\Cabang;
 
 class DataTransaksiResource extends Resource
 {
@@ -101,15 +102,15 @@ class DataTransaksiResource extends Resource
                 SelectFilter::make('cabangs_id')
                 ->label('Cabang')
                     ->options(
-                        MetodePembayaran::all()->pluck('nama_mp', 'nama_mp')->toArray()
+                        Cabang::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama_cabang', 'id')->toArray()
                     ),
                 SelectFilter::make('metode_pembayaran')
                     ->options(
-                        MetodePembayaran::all()->pluck('nama_mp', 'nama_mp')->toArray()
+                        MetodePembayaran::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama_mp', 'nama_mp')->toArray()
                     ),
                 SelectFilter::make('email_staff')
                     ->options(
-                        User::all()->pluck('email', 'email')->toArray()
+                        User::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('email', 'email')->toArray()
                     ),
                 Filter::make('date_range')
                     ->form([
