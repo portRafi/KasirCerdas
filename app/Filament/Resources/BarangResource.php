@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\BarangResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\BarangResource\RelationManagers;
-use Filament\Tables\Filters\Layout;
 class BarangResource extends Resource
 {
     protected static ?string $model = Barang::class;
@@ -141,18 +140,42 @@ class BarangResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([ 
-                
-               ])
-            ->actions([
-                
-            ])
+            ->filters([
+                SelectFilter::make('cabang')
+                    ->options(
+                        Cabang::all()->pluck('nama_cabang', 'id')->toArray()
+                    ),
+                SelectFilter::make('kategori')
+                    ->options(
+                        Kategori::all()->pluck('nama', 'nama')->toArray()
+                    ),
+                Filter::make('date_range')
+                    ->form([
+                        DatePicker::make('start_date')
+                            ->label('Start Date')
+                            ->required(),
+                        DatePicker::make('end_date')
+                            ->label('End Date')
+                            ->required(),
+                    ])
+                    ->columns(2)
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            isset($data['start_date']) && isset($data['end_date']),
+                            function (Builder $query) use ($data): Builder {
+                                return $query->whereBetween('created_at', [$data['start_date'], $data['end_date']]);
+                            }
+                        );
+                    }),
+            ], layout: FiltersLayout::AboveContent)
+            ->actions([])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
+
 
     public static function getRelations(): array
     {
