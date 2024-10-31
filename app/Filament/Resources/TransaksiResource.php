@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransaksiResource\RelationManagers;
 use App\Filament\Resources\TransaksiResource\Widgets\TransaksiWidget;
 
-
 class TransaksiResource extends Resource
 {
     protected static ?string $model = Keranjang::class;
