@@ -124,6 +124,7 @@ class KasirResource extends Resource
             'edit' => Pages\EditKasir::route('/{record}/edit'),
         ];
     }
+
     public static function shouldRegisterNavigation(): bool
     {
         if(!auth()->user()->hasRole('super_admin')) {
