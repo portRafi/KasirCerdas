@@ -19,7 +19,6 @@ use App\Filament\Resources\UserResource\RelationManagers;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role; 
 use Illuminate\Support\Facades\Gate;
-
 class KasirResource extends Resource
 {
     protected static ?string $model = User::class;
@@ -125,4 +124,13 @@ class KasirResource extends Resource
             'edit' => Pages\EditKasir::route('/{record}/edit'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        if(!auth()->user()->hasRole('super_admin')) {
+            return false;   
+        }
+        return true;
+    }
+
 }

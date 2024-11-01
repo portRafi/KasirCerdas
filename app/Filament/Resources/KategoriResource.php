@@ -16,13 +16,12 @@ use App\Filament\Resources\KategoriResource\RelationManagers;
 
 class KategoriResource extends Resource
 {
-    protected static ?string $model = Kategori::class;
+    protected static ?string $model = Kategori::class; 
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
     protected static ?string $activeNavigationIcon = 'heroicon-m-clipboard-document-list';
     protected static ?string $navigationGroup = 'Database';
-    protected static ?string $navigationLabel = 'Kategori';
-
+    protected static ?string $navigationLabel = 'Kategori'; 
 
     public static function form(Form $form): Form
     {
@@ -85,4 +84,4 @@ class KategoriResource extends Resource
             'edit' => Pages\EditKategori::route('/{record}/edit'),
         ];
     }
-}
+} 
