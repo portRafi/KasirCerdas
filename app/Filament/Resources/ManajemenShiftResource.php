@@ -104,4 +104,13 @@ class ManajemenShiftResource extends Resource
             'edit' => Pages\EditManajemenShift::route('/{record}/edit'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        if(!auth()->user()->hasRole('super_admin')) {
+            return false;   
+        }
+        return true;
+    }
+
 }
