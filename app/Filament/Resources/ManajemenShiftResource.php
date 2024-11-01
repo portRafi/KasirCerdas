@@ -23,7 +23,6 @@ class ManajemenShiftResource extends Resource
     protected static ?string $navigationGroup = 'Setting';
     protected static ?string $navigationLabel = 'Manajemen Shift';
 
-
     public static function form(Form $form): Form
     {
         return $form
