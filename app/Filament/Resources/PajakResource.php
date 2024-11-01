@@ -48,10 +48,11 @@ class PajakResource extends Resource
     {
         return $table
             ->query(
-                Pajak::where([
-                    ['bisnis_id', '=', Auth::user()->bisnis_id],
-                    ['cabangs_id', '=', Auth::user()->cabangs_id]
-                ])
+                Pajak::where('bisnis_id', '=', Auth::user()->bisnis_id)
+                    ->where(function ($query) {
+                        $query->where('cabangs_id', Auth::user()->cabangs_id)
+                            ->orWhereNull('cabangs_id');
+                    })
             )
             ->poll('5s')
             ->columns([
@@ -59,6 +60,7 @@ class PajakResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('jumlah_pajak')
                     ->numeric()
+                    ->suffix('%')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -81,6 +83,18 @@ class PajakResource extends Resource
                 ]),
             ]);
     }
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     $query = parent::getEloquentQuery();
+    //     if (auth()->user()->cabangs_id != null) {
+    //         $query->where('cabangs_id', auth()->user()->cabangs_id);
+    //     }
+    //     if (auth()->user()->bisnis_id != null) {
+    //         $query->where('bisnis_id', auth()->user()->bisnis_id);
+    //     }
+    //     return $query->orderBy('id', 'desc');
+    // }
+
 
     public static function getRelations(): array
     {

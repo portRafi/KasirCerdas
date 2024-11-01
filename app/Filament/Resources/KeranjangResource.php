@@ -100,4 +100,4 @@ class KeranjangResource extends Resource
             'edit' => Pages\EditKeranjang::route('/{record}/edit'),
         ];
     }
-}   
+}

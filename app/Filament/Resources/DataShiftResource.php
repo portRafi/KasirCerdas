@@ -17,10 +17,9 @@ use App\Filament\Resources\DataShiftResource\RelationManagers;
 class DataShiftResource extends Resource
 {
     protected static ?string $model = DataShift::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-document';
     protected static ?string $activeNavigationIcon = 'heroicon-s-document';
-    protected static ?string $navigationGroup = 'laporan';
+    protected static ?string $navigationGroup = 'Setting';
     protected static ?string $navigationLabel = 'Data Shift Kasir';
 
     public static function form(Form $form): Form
@@ -82,7 +81,7 @@ class DataShiftResource extends Resource
         if ($shiftCount >= 2) {
             return(false);
         } else {
-            return(true);
+            return(true);   
         }
     }
     public static function getRelations(): array

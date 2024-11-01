@@ -319,13 +319,16 @@ class KeranjangWidget extends BaseWidget
                     ->form([
                         TextInput::make('quantity')->label('Quantity')->required()->numeric()->minValue(1),
                     ])
-                    ->action(function ($record, $data) {
+                    ->action(function ($record, $data) {    
                         $totDiskon = $record->harga_jual * ($record->diskon / 100);
+                        
                         $keranjang = Keranjang::where([
                             ['userid', '=', Auth::user()->id],
                             ['bisnis_id', '=', Auth::user()->bisnis_id],
                             ['cabangs_id', '=', Auth::user()->cabangs_id],
-                        ])->get($record->id);
+                            ['id', '=', $record->id] // Menambahkan id record untuk memastikan data tunggal
+                        ])->first();
+                      
                         if ($keranjang) {
                             $keranjang->update([
                                 'quantity' => $data['quantity'],
@@ -334,12 +337,13 @@ class KeranjangWidget extends BaseWidget
                                 'total_harga' => $record->harga_jual * $data['quantity'] - $totDiskon,
                             ]);
                         }
+                    
                         Notification::make()
                             ->title('Quantity Barang Di edit')
                             ->icon('heroicon-m-pencil-square')
                             ->iconColor('success')
                             ->send();
-                    })
+                    })                    
                     ->icon('heroicon-m-pencil-square'),
             ])
 

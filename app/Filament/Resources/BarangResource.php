@@ -5,18 +5,23 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Barang;
+use App\Models\Cabang;
 use App\Models\Diskon;
 use App\Models\Satuan;
 use App\Models\Kategori;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\BarangResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\BarangResource\RelationManagers;
-
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 class BarangResource extends Resource
 {
     protected static ?string $model = Barang::class;
@@ -94,7 +99,7 @@ class BarangResource extends Resource
             ->query(
                 Barang::where([
                     ['bisnis_id', '=', Auth::user()->bisnis_id],
-                    ['cabangs_id', '=', Auth::user()->cabangs_id]
+                    // ['cabangs_id', '=', Auth::user()->cabangs_id]
                 ])
             )
             ->poll('5s')
@@ -118,7 +123,7 @@ class BarangResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('diskon')
                     ->numeric()
-                    ->formatStateUsing(fn ($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.'))
+                    ->formatStateUsing(fn($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('berat')
                     ->numeric()
@@ -138,16 +143,52 @@ class BarangResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
-                //
-            ])
+                SelectFilter::make('cabangs_id')
+                ->label('Cabang')
+                    ->options(
+                        Cabang::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama_cabang', 'id')->toArray()
+                    ),
+                SelectFilter::make('nama')
+                ->label('Nama Barang')
+                    ->options(
+                        Barang::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama', 'nama')->toArray()
+                    ),
+                SelectFilter::make('satuan')
+                    ->options(
+                        Satuan::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama_satuan', 'nama_satuan')->toArray()
+                    ),
+                SelectFilter::make('kategori')
+                    ->options(
+                        Kategori::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama', 'nama')->toArray()
+                    ),
+                Filter::make('date_range')
+                    ->form([
+                        DatePicker::make('start_date')
+                            ->label('Start Date')
+                            ->required(),
+                        DatePicker::make('end_date')
+                            ->label('End Date')
+                            ->required(),
+                    ])
+                    ->columns(2)
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            isset($data['start_date']) && isset($data['end_date']),
+                            function (Builder $query) use ($data): Builder {
+                                return $query->whereBetween('created_at', [$data['start_date'], $data['end_date']]);
+                            }
+                        );
+                    }),
+            ], layout: FiltersLayout::AboveContent)
             ->actions([])
             ->bulkActions([
+                ExportBulkAction::make(),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
+
 
     public static function getRelations(): array
     {
