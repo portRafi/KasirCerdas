@@ -3,13 +3,13 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Widgets\TanggalPicker;
+use App\Http\Middleware\ShiftAuthenticate;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Forms\Components\DatePicker;
-use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;    
 use Illuminate\Routing\Middleware\SubstituteBindings;
@@ -70,7 +70,7 @@ class AdminPanelProvider extends PanelProvider
                 \Hasnayeen\Themes\Http\Middleware\SetTheme::class
             ])
             ->authMiddleware([
-                Authenticate::class,
+                ShiftAuthenticate::class,
             ])
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
