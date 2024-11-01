@@ -60,6 +60,7 @@ class PajakResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('jumlah_pajak')
                     ->numeric()
+                    ->suffix('%')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
