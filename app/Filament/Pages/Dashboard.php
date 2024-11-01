@@ -16,7 +16,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
-class Dashboard extends BaseDashboardenv
+class Dashboard extends BaseDashboard
 {
     use BaseDashboard\Concerns\HasFiltersForm;
     
