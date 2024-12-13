@@ -12,7 +12,7 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Carbon\Carbon;
 
 class DatasWidget extends BaseWidget
-{
+{                                                   
     protected function getStats(): array
     {
    

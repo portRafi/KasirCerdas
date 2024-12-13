@@ -30,7 +30,7 @@ class JumlahTransaksiWidget extends BaseWidget
     $totalTransaksi = $query->count();
     $totalPendapatan = $query->sum('total_harga_after_pajak');
     $totalKeuntungan = $query->sum('keuntungan');
-
+    
     return [
         Stat::make('Jumlah Transaksi', $totalTransaksi)
             ->description('Data Jumlah Transaksi')
@@ -42,7 +42,7 @@ class JumlahTransaksiWidget extends BaseWidget
             ->descriptionIcon('heroicon-s-circle-stack', IconPosition::Before)
             ->color('primary'),
         Stat::make('Pendapatan', 'Rp.' . number_format($totalPendapatan, 0, ',', '.'))
-            ->description('Data Pendapatan')
+            ->description('Data Pendataan')
             ->descriptionIcon('heroicon-s-circle-stack', IconPosition::Before)
             ->color('primary'),
     ];

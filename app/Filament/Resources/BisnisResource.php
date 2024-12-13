@@ -41,7 +41,7 @@ class BisnisResource extends Resource
                     ->maxLength(255),
             ]);
     }
-
+    
     public static function table(Table $table): Table
     {
         return $table

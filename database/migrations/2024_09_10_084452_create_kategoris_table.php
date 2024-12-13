@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('cabangs_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('nama');
             $table->timestamps();
-        });
+        }); 
     }
 
     /**

@@ -47,7 +47,7 @@ class CabangResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('alamat')
                     ->placeholder('Tambah Alamat')
-                    ->required()
+                    ->required()    
                     ->maxLength(255),
             ]);
     }

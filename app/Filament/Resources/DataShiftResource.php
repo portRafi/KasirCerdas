@@ -34,7 +34,7 @@ class DataShiftResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\TimePicker::make('shift_start')
-                    ->seconds(false)
+                    ->seconds(false)    
                     ->label('Jam Shift Dimulai')
                     ->required(),
                 Forms\Components\TimePicker::make('shift_end')

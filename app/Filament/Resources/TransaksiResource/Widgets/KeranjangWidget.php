@@ -38,6 +38,7 @@ class KeranjangWidget extends BaseWidget
 
     public function calculateTotalHargaWithPajak($totalHarga)
     {
+        
         $jumlahPajakTotal = Pajak::where([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
             ['cabangs_id', '=', Auth::user()->cabangs_id],
@@ -113,7 +114,7 @@ class KeranjangWidget extends BaseWidget
                                     ['bisnis_id', '=', Auth::user()->bisnis_id],
                                     ['cabangs_id', '=', Auth::user()->cabangs_id],
                                 ])->sum('total_harga') ?: 0;
-
+                                    
                                 $totalHargaDenganPajak = $this->calculateTotalHargaWithPajak($totalHarga);
 
                                 return $totalHargaDenganPajak;
@@ -178,7 +179,7 @@ class KeranjangWidget extends BaseWidget
                             ->required()
                             ->label('Pilih Metode Pembayaran')
                             ->options(MetodePembayaran::where([
-                                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                                ['bisnis_id', '=', Auth::user()->bisnis_id],            
                                 ['cabangs_id', '=', Auth::user()->cabangs_id]
                             ])->active()->pluck('nama_mp', 'nama_mp')),
                     ])
@@ -225,7 +226,7 @@ class KeranjangWidget extends BaseWidget
                             'kode_transaksi' => $randomString,
                             'email_staff' => $emailStaff,
                             'metode_pembayaran' => $metodePembayaran,
-                            'total_harga' => $totalHarga,
+                            'totoal_harga' => $totalHarga,
                             'total_harga_after_pajak' => $totalHargaAfterPajak,
                             'selisih_pajak' => $jumlahPajak,
                             'keuntungan' => $keuntungan

@@ -14,5 +14,10 @@
         "postcss-nesting": "^12.1.5",
         "tailwindcss": "^3.4.14",
         "vite": "^5.0.0"
+    },
+    "dependencies": {
+        "@inertiajs/inertia": "^0.9.4",
+        "@inertiajs/inertia-vue3": "^0.4.7",
+        "vue": "^3.5.13"
     }
 }

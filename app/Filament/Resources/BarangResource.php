@@ -32,7 +32,6 @@ class BarangResource extends Resource
     protected static ?string $navigationGroup = 'Database';
     protected static ?string $navigationLabel = 'Barang';
 
-
     public static function form(Form $form): Form
     {
         return $form

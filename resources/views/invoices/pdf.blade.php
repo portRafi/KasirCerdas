@@ -2,6 +2,9 @@
 @php
 use App\Models\BarangAfterCheckout;
 use App\Models\DataTransaksi;
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;
+use Mike42\Escpos\Printer;
+
 $datatransaksi = DataTransaksi::where('kode_transaksi', $invoice->kode_transaksi)->get();
 $items = BarangAfterCheckout::where('kode_transaksi', $invoice->kode_transaksi)->get();
 @endphp
@@ -14,6 +17,14 @@ $items = BarangAfterCheckout::where('kode_transaksi', $invoice->kode_transaksi)-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">  
     
+    $conenction = new FilePrintConnector(''' . $printer . ''');
+    $conenction = new Printer($conector);
+
+    $printer -> text('Hello World!\n');
+    $printer -> cut();
+
+    $printer -> close();
+
     <style>
         body {
             font-family: Arial, sans-serif;
