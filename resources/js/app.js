@@ -1,17 +1,6 @@
-import { createApp, h } from 'vue';
-import { createInertiaApp } from '@inertiajs/vue3';
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import '../css/app.css';
+import { createApp } from 'vue';
+import KasirApp from './components/.vue';
 
-createInertiaApp({
-    resolve: (name) =>
-        resolvePageComponent(
-            `./Pages/${name}.vue`,
-            import.meta.glob('./Pages/**/*.vue')
-        ),
-    setup({ el, App, props, plugin }) {
-        createApp({ render: () => h(App, props) })
-            .use(plugin)
-            .mount(el);
-    },
-});
+const app = createApp({});
+app.component('kasir-app', KasirApp);
+app.mount('#app'); // Akan mengaitkan Vue ke elemen HTML dengan ID 'app'

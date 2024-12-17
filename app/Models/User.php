@@ -9,7 +9,6 @@ use Laravel\Sanctum\HasApiTokens;
 use Filament\Panel;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Support\Facades\Storage;
-
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -78,5 +77,4 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->email && $this->password;
     }
-    
 }

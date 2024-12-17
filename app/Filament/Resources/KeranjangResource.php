@@ -92,6 +92,14 @@ class KeranjangResource extends Resource
         ];
     }
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        if(!auth()->user()->hasRole('super_admin')) {
+            return true;   
+        }
+        return false;
+    }
+
     public static function getPages(): array
     {
         return [

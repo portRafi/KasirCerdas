@@ -2,6 +2,7 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "serve": "vite preview",
         "dev": "vite",
         "build": "vite build"
     },

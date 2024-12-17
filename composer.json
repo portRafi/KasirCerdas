@@ -21,6 +21,7 @@
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "3.0",
         "maatwebsite/excel": "^3.1",
+        "mike42/escpos-php": "^4.0",
         "psr/simple-cache": "2.0",
         "pxlrbt/filament-excel": "^2.3",
         "spatie/laravel-permission": "^6.9",
