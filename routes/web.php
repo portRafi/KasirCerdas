@@ -23,4 +23,4 @@ Route::get('/', function () {
 //     return Inertia::render('Kasir/Dashboard');
 // })->name('kasir.dashboard');
 
-Route::get('/kasir/dashboard', [KasirController::class, 'dashboard'])->name('kasir.dashboard');
+Route::get('/kasir/dashboard', [KasirController::class, 'index'])->name('kasir.dashboard');

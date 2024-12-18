@@ -74,9 +74,6 @@ class ShiftAuthenticate extends Middleware
             } else {
                 abort(404, 'Shift tidak valid.');
             }
-
-            // Inertia::location(route('kasir.dashboard')); 
-            // return; 
             return redirect()->route('kasir.dashboard');
         }
 
