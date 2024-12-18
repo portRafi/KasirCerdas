@@ -75,8 +75,9 @@ class ShiftAuthenticate extends Middleware
                 abort(404, 'Shift tidak valid.');
             }
 
-            Inertia::location(route('kasir.dashboard')); 
-            return; 
+            // Inertia::location(route('kasir.dashboard')); 
+            // return; 
+            return redirect()->route('kasir.dashboard');
         }
 
         $panel = Filament::getCurrentPanel();

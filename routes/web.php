@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\KasirController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -23,6 +23,4 @@ Route::get('/', function () {
 //     return Inertia::render('Kasir/Dashboard');
 // })->name('kasir.dashboard');
 
-Route::get('/kasir/dashboard', function () {
-    return view('test'); 
-});
+Route::get('/kasir/dashboard', [KasirController::class, 'dashboard'])->name('kasir.dashboard');
