@@ -1,6 +1,17 @@
 import { createApp } from 'vue';
-import KasirApp from './components/.vue';
+import { createRouter, createWebHistory } from 'vue-router';
+import Dashboard from './Pages/Kasir/dashboard.vue'; 
 
-const app = createApp({});
-app.component('kasir-app', KasirApp);
-app.mount('#app'); // Akan mengaitkan Vue ke elemen HTML dengan ID 'app'
+const routes = [
+  {
+    path: '/kasir/dashboard',
+    component: Dashboard, 
+  },
+];
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
+
+createApp({}).use(router).mount('#app');
