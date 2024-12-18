@@ -18,3 +18,6 @@ Route::get('/', function () {
 //     Route::get('/products', [ProductController::class, 'index']); // Tampilkan produk
 //     Route::post('/transactions', [TransactionController::class, 'store']); // Simpan transaksi
 // });
+Route::get('/kasir/dashboard', function () {
+    return Inertia::render('Kasir/Dashboard');
+})->name('kasir.dashboard');
