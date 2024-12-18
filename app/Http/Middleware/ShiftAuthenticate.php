@@ -1,3 +1,5 @@
+<?php
+
 namespace App\Http\Middleware;
 
 use App\Models\DataShift;
@@ -60,7 +62,7 @@ class ShiftAuthenticate extends Middleware
             if ($shift1) { // Shift pagi
                 if ($currentHour < $shiftStart1 || $currentHour > $shiftEnd1) {
                     Auth::logout();
-                    Inertia::location(route('login'));
+                    Inertia::location(route('login')); 
                     return;
                 }
             } elseif ($shift2) { // Shift sore
