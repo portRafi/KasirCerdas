@@ -29,7 +29,7 @@ class ShiftAuthenticate extends Middleware
 
         /** @var Model $user */
         $user = $guard->user();
-        // dd($user);
+
         if ($user->hasRole('kasir')) {
             $shift1 = $user->shift === '1';
             $shift2 = $user->shift === '2';
@@ -46,7 +46,6 @@ class ShiftAuthenticate extends Middleware
                 ['shift', '=', '2'],
             ])->first();
 
-
             if ($shiftData1) {
                 $shiftStart1 = $shiftData1->shift_start;
                 $shiftEnd1 = $shiftData1->shift_end;
@@ -56,37 +55,32 @@ class ShiftAuthenticate extends Middleware
                 $shiftStart2 = $shiftData2->shift_start;
                 $shiftEnd2 = $shiftData2->shift_end;
             }
+
             $now = Carbon::now();
             $currentHour = $now->format('H:i');
 
-            if ($shift1) { //pagi
-                $shiftStart1;
-                $shiftEnd1;
-            } elseif ($shift2) { //sore
-                $shiftStart2;
-                $shiftEnd2;
-            } else {
-                abort(404, 'Shift tidak valid.');
-            }
-
-            if ($shift1) {
+            if ($shift1) { // Pagi
                 if ($currentHour < $shiftStart1 || $currentHour > $shiftEnd1) {
                     Auth::logout();
                     abort(403, 'Anda hanya bisa login selama shift kerja Anda.');
                 }
-            } else if ($shift2) {
+            } elseif ($shift2) { // Sore
                 if ($currentHour < $shiftStart2 || $currentHour > $shiftEnd2) {
                     Auth::logout();
                     abort(403, 'Anda hanya bisa login selama shift kerja Anda.');
                 }
+            } else {
+                abort(404, 'Shift tidak valid.');
             }
+
+            redirect()->route('kasir.dashboard')->send();  //nanti ini di ubah rap
         }
 
         $panel = Filament::getCurrentPanel();
 
         abort_if(
-            $user instanceof FilamentUser ?
-                (! $user->canAccessPanel($panel)) :
+            $user instanceof FilamentUser ? 
+                (! $user->canAccessPanel($panel)) : 
                 (config('app.env') !== 'local'),
             403,
         );
