@@ -74,6 +74,7 @@ class ShiftAuthenticate extends Middleware
             } else {
                 abort(404, 'Shift tidak valid.');
             }
+
             return redirect()->route('kasir.dashboard');
         }
 
