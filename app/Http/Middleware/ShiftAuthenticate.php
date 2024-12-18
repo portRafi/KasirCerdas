@@ -1,5 +1,3 @@
-<?php
-
 namespace App\Http\Middleware;
 
 use App\Models\DataShift;
@@ -22,7 +20,6 @@ class ShiftAuthenticate extends Middleware
 
         if (! $guard->check()) {
             $this->unauthenticated($request, $guards);
-
             return;
         }
 
@@ -32,8 +29,8 @@ class ShiftAuthenticate extends Middleware
         $user = $guard->user();
 
         if ($user->hasRole('kasir')) {
-            $shift1 = $user->shift === '1';
-            $shift2 = $user->shift === '2';
+            $shift1 = $user->shift === '1'; // Shift pagi
+            $shift2 = $user->shift === '2'; // Shift sore
 
             $shiftData1 = DataShift::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
@@ -60,22 +57,23 @@ class ShiftAuthenticate extends Middleware
             $now = Carbon::now();
             $currentHour = $now->format('H:i');
 
-            if ($shift1) { // Pagi
+            if ($shift1) { // Shift pagi
                 if ($currentHour < $shiftStart1 || $currentHour > $shiftEnd1) {
                     Auth::logout();
-                    abort(403, 'Anda hanya bisa login selama shift kerja Anda.');
+                    Inertia::location(route('login'));
+                    return;
                 }
-            } elseif ($shift2) { // Sore
+            } elseif ($shift2) { // Shift sore
                 if ($currentHour < $shiftStart2 || $currentHour > $shiftEnd2) {
                     Auth::logout();
-                    abort(403, 'Anda hanya bisa login selama shift kerja Anda.');
+                    Inertia::location(route('login')); 
+                    return;
                 }
             } else {
                 abort(404, 'Shift tidak valid.');
             }
 
-            // redirect()->route('kasir.dashboard')->send();  //nanti ini di ubah rap
-            Inertia::location(route('kasir.dashboard'));
+            Inertia::location(route('kasir.dashboard')); 
             return; 
         }
 
