@@ -16,7 +16,7 @@ class ShiftAuthenticate extends Middleware
     /**
      * @param  array<string>  $guards
      */
-    protected function authenticate($request, array $guards): void
+    protected function authenticate($request, array $guards)
     {
         $guard = Filament::auth();
 
