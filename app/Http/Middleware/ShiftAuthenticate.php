@@ -30,53 +30,53 @@ class ShiftAuthenticate extends Middleware
         /** @var Model $user */
         $user = $guard->user();
 
-        if ($user->hasRole('kasir')) {
-            $shift1 = $user->shift === '1'; // Shift pagi
-            $shift2 = $user->shift === '2'; // Shift sore
+        // if ($user->hasRole('kasir')) {
+        //     $shift1 = $user->shift === '1'; // Shift pagi
+        //     $shift2 = $user->shift === '2'; // Shift sore
 
-            $shiftData1 = DataShift::where([
-                ['bisnis_id', '=', Auth::user()->bisnis_id],
-                ['cabangs_id', '=', Auth::user()->cabangs_id],
-                ['shift', '=', '1'],
-            ])->first();
+        //     $shiftData1 = DataShift::where([
+        //         ['bisnis_id', '=', Auth::user()->bisnis_id],
+        //         ['cabangs_id', '=', Auth::user()->cabangs_id],
+        //         ['shift', '=', '1'],
+        //     ])->first();
 
-            $shiftData2 = DataShift::where([
-                ['bisnis_id', '=', Auth::user()->bisnis_id],
-                ['cabangs_id', '=', Auth::user()->cabangs_id],
-                ['shift', '=', '2'],
-            ])->first();
+        //     $shiftData2 = DataShift::where([
+        //         ['bisnis_id', '=', Auth::user()->bisnis_id],
+        //         ['cabangs_id', '=', Auth::user()->cabangs_id],
+        //         ['shift', '=', '2'],
+        //     ])->first();
 
-            if ($shiftData1) {
-                $shiftStart1 = $shiftData1->shift_start;
-                $shiftEnd1 = $shiftData1->shift_end;
-            }
+        //     if ($shiftData1) {
+        //         $shiftStart1 = $shiftData1->shift_start;
+        //         $shiftEnd1 = $shiftData1->shift_end;
+        //     }
 
-            if ($shiftData2) {
-                $shiftStart2 = $shiftData2->shift_start;
-                $shiftEnd2 = $shiftData2->shift_end;
-            }
+        //     if ($shiftData2) {
+        //         $shiftStart2 = $shiftData2->shift_start;
+        //         $shiftEnd2 = $shiftData2->shift_end;
+        //     }
 
-            $now = Carbon::now();
-            $currentHour = $now->format('H:i');
+        //     $now = Carbon::now();
+        //     $currentHour = $now->format('H:i');
 
-            if ($shift1) { // Shift pagi
-                if ($currentHour < $shiftStart1 || $currentHour > $shiftEnd1) {
-                    Auth::logout();
-                    Inertia::location(route('login')); 
-                    return;
-                }
-            } elseif ($shift2) { // Shift sore
-                if ($currentHour < $shiftStart2 || $currentHour > $shiftEnd2) {
-                    Auth::logout();
-                    Inertia::location(route('login')); 
-                    return;
-                }
-            } else {
-                abort(404, 'Shift tidak valid.');
-            }
+        //     if ($shift1) { // Shift pagi
+        //         if ($currentHour < $shiftStart1 || $currentHour > $shiftEnd1) {
+        //             Auth::logout();
+        //             Inertia::location(route('login')); 
+        //             return;
+        //         }
+        //     } elseif ($shift2) { // Shift sore
+        //         if ($currentHour < $shiftStart2 || $currentHour > $shiftEnd2) {
+        //             Auth::logout();
+        //             Inertia::location(route('login')); 
+        //             return;
+        //         }
+        //     } else {
+        //         abort(404, 'Shift tidak valid.');
+        //     }
 
-            return redirect()->route('kasir.dashboard');
-        }
+        //     // return redirect()->route('kasir.dashboard');
+        // }
 
         $panel = Filament::getCurrentPanel();
 
