@@ -14,7 +14,7 @@
 
 <script setup>
 defineProps({
-  keranjangs: Array,
+  barang_after_checkout: Array,
 });
 </script>
 
@@ -106,7 +106,7 @@ export default {
         Misc: {
           centerLine: (count) => '\x1B' + '\x61' + '\x31' + '-'.repeat(count)
         }
-      }
+      };
 
       const texts = [
         printable.Align.reset(),
@@ -114,38 +114,37 @@ export default {
         printable.Keyboard.enter(1),
         printable.Misc.centerLine(10),
         printable.Keyboard.enter(2),
-        printable.Align.left(printable.Font.normal('No. 1')),
+        printable.Align.left(printable.Font.normal(`Kode Transaksi: ${this.barang_after_checkout[0].kode_transaksi}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal('Kasir: Rafi')),
+        printable.Align.left(printable.Font.normal(`kasir: Asep`)),
         printable.Keyboard.enter(2),
       ];
 
       const insertIndex = 9;
-      const keranjangTexts = [];
-      this.keranjangs.forEach((keranjang) => {
-        keranjangTexts.push(printable.Align.left(printable.Font.normal(`${keranjang.nama}`)));
-        keranjangTexts.push(printable.Keyboard.enter(1));
-        keranjangTexts.push(
+      const BACTexts = [];
+      this.barang_after_checkout.forEach((BAC) => {
+        BACTexts.push(printable.Align.left(printable.Font.normal(`${BAC.nama}`)));
+        BACTexts.push(printable.Keyboard.enter(1));
+        BACTexts.push(
           printable.Align.left(
             printable.Font.normal(
-              `Qty ${keranjang.quantity} x ${keranjang.harga_jual} @ ${keranjang.total_harga}`
+              `Qty ${BAC.quantity} x ${BAC.harga_jual} @ ${BAC.total_harga}`
             )
           )
         );
-        keranjangTexts.push(printable.Keyboard.enter(1));
+        BACTexts.push(printable.Keyboard.enter(1));
       });
-      const totalHarga = this.keranjangs.reduce((total, keranjang) => {
-        return total + parseFloat(keranjang.total_harga);
+      const totalHarga = this.barang_after_checkout.reduce((total, BAC) => {
+        return total + parseFloat(BAC.total_harga);
       }, 0);
 
-      // const formattedTotalHarga = totalHarga.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
-      console.log(totalHarga);
-      
-      texts.splice(insertIndex, 0, ...keranjangTexts);
+      texts.splice(insertIndex, 0, ...BACTexts);
 
       texts.push(
         printable.Keyboard.enter(1),
         printable.Align.left(printable.Font.normal(`PPN\t: 12%`)),
+        printable.Keyboard.enter(1),
+        printable.Align.left(printable.Font.normal(`Payment:\t: ${this.barang_after_checkout[0].metode_pembayaran}`)),
         printable.Keyboard.enter(1),
         printable.Align.left(printable.Font.normal(`Total\t: Rp.${totalHarga}.00`)),
         printable.Keyboard.enter(2),
@@ -153,7 +152,6 @@ export default {
         printable.Align.reset(),
         printable.Keyboard.enter(2)
       );
-
 
       this.deviceName = "Sedang mencetak...";
       try {
@@ -166,7 +164,6 @@ export default {
         alert("Gagal mencetak.");
       }
     },
-
 
     async printText(text) {
       try {

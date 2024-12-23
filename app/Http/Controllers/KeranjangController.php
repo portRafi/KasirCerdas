@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BarangAfterCheckout;
 use App\Models\Keranjang;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,23 +15,13 @@ class KeranjangController extends Controller
    * @return \Inertia\Response
    */
   public function index(Request $request)
-{
-    $keranjangs = Keranjang::all();
-
-    $keranjangData = $keranjangs->map(function ($keranjang) {
-        return [
-            'id'          => $keranjang->id,
-            'nama'        => $keranjang->nama,
-            'harga_jual'  => $keranjang->harga_jual,
-            'quantity'    => $keranjang->quantity,
-            'total_harga' => $keranjang->total_harga,
-        ];
-    });
+  {
+    $barang_after_checkout = BarangAfterCheckout::latest()->get();
 
     return Inertia::render('Dashboard', [
-        'keranjangs' => $keranjangData,
+      'barang_after_checkout' => $barang_after_checkout
     ]);
-}
+  }
 
 
 
