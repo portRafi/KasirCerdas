@@ -5,7 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Middleware\RoleMiddleware;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\BarangController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,8 +27,15 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return Inertia::render('Index');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+
+Route::get('/pos', [\App\Http\Controllers\BarangController::class, 'index']);
+Route::resource('/barangs', BarangController::class);
+Route::resource('/metodepembayaran', BarangController::class);
+Route::resource('/pajak', BarangController::class);
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -37,5 +44,3 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-
-Route::resource ('/barangs',DashboardController::class);
