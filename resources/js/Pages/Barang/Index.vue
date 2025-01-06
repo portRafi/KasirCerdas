@@ -14,7 +14,9 @@ const props = defineProps({
 const paymentMethod = ref('');
 const cart = ref([]);
 const showModal = ref(false);
+const showModalCart = ref(false);
 const selectedProduct = ref(null);
+const selectedIndex = ref(null);
 const quantity = ref(1);
 const note = ref('');
 const printer = ref(null);
@@ -29,7 +31,7 @@ const filteredAndSortedProducts = computed(() => {
     let filteredProducts = props.barangs.filter(barang => {
         const query = searchQuery.value.toLowerCase();
         return (
-            barang.nama.toLowerCase().includes(query) || 
+            barang.nama.toLowerCase().includes(query) ||
             barang.kategori.toLowerCase().includes(query) ||
             barang.kode.toLowerCase().includes(query)
         );
@@ -60,20 +62,36 @@ const openProductModal = (barang) => {
     showModal.value = true;
 };
 
+const editProductCart = (item, index) => {
+    selectedProduct.value = item;
+    selectedIndex.value = index;
+    quantity.value = item.quantity;
+    note.value = item.note;
+    showModalCart.value = true;
+};
+
+const saveCartChanges = () => {
+    cart.value[selectedIndex.value].quantity = quantity.value;
+    cart.value[selectedIndex.value].note = note.value;
+    cart.value[selectedIndex.value].total_harga_without_pajak_diskon = quantity.value * cart.value[selectedIndex.value].harga_jual;
+    showModalCart.value = false;
+};
+
 const addToCart = () => {
     if (selectedProduct.value) {
         const totalHargaPerItem = selectedProduct.value.harga_jual;
-        const discountPerItem = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
-        const totalDiskon = discountPerItem;
-        const totalPajak = totalHargaPerItem * (props.pajak / 100);
+        const totalDiskon = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
         const existingProductIndex = cart.value.findIndex(item => item.kode === selectedProduct.value.kode);
-        const totalHarga = totalHargaPerItem * quantity.value;
+        const totalHargaSebelumDiskonPajak = totalHargaPerItem * quantity.value;
+        const totalPajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
+        const totalHarga = (totalHargaSebelumDiskonPajak - totalDiskon) + totalPajak;
 
         if (existingProductIndex !== -1) {
             cart.value[existingProductIndex].quantity += quantity.value;
-            cart.value[existingProductIndex].total_harga += totalHarga;
-            cart.value[existingProductIndex].total_harga_without_pajak_diskon += totalHargaPerItem * quantity.value;
-            cart.value[existingProductIndex].total_diskon = discountPerItem;
+            cart.value[existingProductIndex].total_harga += totalHargaSebelumDiskonPajak + totalPajak 
+            cart.value[existingProductIndex].total_harga_without_pajak_diskon += totalHargaSebelumDiskonPajak
+            cart.value[existingProductIndex].total_diskon = totalDiskon;
+            cart.value[existingProductIndex].total_pajak += totalPajak
         } else {
             cart.value.push({
                 kode: selectedProduct.value.kode,
@@ -83,8 +101,8 @@ const addToCart = () => {
                 metode_pembayaran: paymentMethod.value,
                 harga_jual: totalHargaPerItem,
                 harga_beli: selectedProduct.value.harga_beli,
-                total_harga: (totalHarga - totalDiskon) + totalPajak,
-                total_harga_without_pajak_diskon: totalHargaPerItem * quantity.value,
+                total_harga: totalHarga,
+                total_harga_without_pajak_diskon: totalHargaSebelumDiskonPajak,
                 total_diskon: totalDiskon,
                 total_pajak: totalPajak,
                 note: note.value,
@@ -276,9 +294,13 @@ const print = async () => {
                             </p>
                         </div>
                         <p class="font-medium">Rp {{ item.total_harga_without_pajak_diskon.toLocaleString() }}</p>
+                        <button @click="editProductCart(item, index)"
+                            class="text-blue-500 hover:underline ml-3">Edit</button>
                         <button @click="removeFromCart(index)" class="text-red-500 hover:underline ml-3">Hapus</button>
                     </div>
                 </div>
+
+                
 
                 <div class="mt-3 pt-2 border-t">
                     <div class="flex justify-between items-center ">
@@ -353,7 +375,52 @@ const print = async () => {
                 </div>
 
             </div>
+            <!-- edit cart modal -->
+            <div v-if="showModalCart" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div class="bg-white rounded-lg w-96 overflow-hidden">
+                        <div class="p-4 border-b">
+                            <div class="flex items-center space-x-4">
+                                <div>
+                                    <h3 class="font-semibold text-lg">{{ selectedProduct?.nama }}</h3>
+                                    <p class="text-gray-600">Rp {{ selectedProduct?.harga_jual.toLocaleString() }}</p>
+                                    <p class="text-gray-600">Ket: {{ selectedProduct?.keterangan }}</p>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="p-4">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                                <div class="flex items-center space-x-4">
+                                    <button @click="decreaseQty" class="p-2 border rounded-lg hover:bg-gray-50">
+                                        <span class="text-xl font-semibold">-</span>
+                                    </button>
+                                    <span class="text-xl font-semibold jumlah">{{ quantity }}</span>
+                                    <button @click="increaseQty" class="p-2 border rounded-lg hover:bg-gray-50">
+                                        <span class="text-xl font-semibold">+</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                                <textarea v-model="note"
+                                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    rows="3" placeholder="Add special instructions..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 flex justify-end space-x-2">
+                            <button @click="showModalCart = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
+                                Cancel
+                            </button>
+                            <button @click="addToCart"
+                                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                Edit Cart   
+                            </button>
+                        </div>
+                    </div>
+                </div>
             <!-- Product Modal -->
             <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                 <div class="bg-white rounded-lg w-96 overflow-hidden">
