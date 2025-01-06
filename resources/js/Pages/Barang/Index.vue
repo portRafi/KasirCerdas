@@ -1,16 +1,15 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import axios from 'axios';
 
-
 const props = defineProps({
-  barangs: Array,
-  metodepembayaran: Array,
-  pajak: Number,
-  namakasir: Array,
-})  
+    barangs: Array,
+    metodepembayaran: Array,
+    pajak: Number,
+    namakasir: Array,
+})
 
 const paymentMethod = ref('');
 const cart = ref([]);
@@ -23,7 +22,31 @@ const writer = ref(null);
 const printerStatus = ref('OFF');
 const deviceName = ref('');
 const printerStatusClass = ref('badge bg-danger');
-const randomString = ref('');
+const searchQuery = ref('');
+const sortOption = ref('asc');
+
+const filteredAndSortedProducts = computed(() => {
+    let filteredProducts = props.barangs.filter(barang => {
+        const query = searchQuery.value.toLowerCase();
+        return (
+            barang.nama.toLowerCase().includes(query) || 
+            barang.kategori.toLowerCase().includes(query) ||
+            barang.kode.toLowerCase().includes(query)
+        );
+    });
+
+    if (sortOption.value === 'asc') {
+        filteredProducts.sort((a, b) => a.nama.localeCompare(b.nama));
+    } else if (sortOption.value === 'desc') {
+        filteredProducts.sort((a, b) => b.nama.localeCompare(a.nama));
+    } else if (sortOption.value === 'price_desc') {
+        filteredProducts.sort((a, b) => a.harga_jual - b.harga_jual);
+    } else if (sortOption.value === 'price_asc') {
+        filteredProducts.sort((a, b) => b.harga_jual - a.harga_jual);
+    }
+
+    return filteredProducts;
+});
 
 const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
 const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
@@ -57,6 +80,7 @@ const addToCart = () => {
                 kategori: selectedProduct.value.kategori,
                 nama: selectedProduct.value.nama,
                 quantity: quantity.value,
+                metode_pembayaran: paymentMethod.value,
                 harga_jual: totalHargaPerItem,
                 harga_beli: selectedProduct.value.harga_beli,
                 total_harga: (totalHarga - totalDiskon) + totalPajak,
@@ -72,7 +96,6 @@ const addToCart = () => {
     }
 };
 
-
 const increaseQty = () => {
     quantity.value++;
 };
@@ -87,16 +110,12 @@ const removeFromCart = (index) => {
     cart.value.splice(index, 1);
 };
 
-// const checkout = () => {
-//     if (cart.value.length === 0) {
-//         alert('Keranjang kosong. Silakan tambahkan produk.');
-//         return;
-//     }
-//     // print(cart.value);
-//     cart.value = [];
-// };
-
 const checkout = async () => {
+    if (!paymentMethod.value) {
+        alert('Silakan pilih metode pembayaran terlebih dahulu.');
+        return;
+    }
+
     if (cart.value.length === 0) {
         alert('Keranjang kosong. Silakan tambahkan produk.');
         return;
@@ -109,10 +128,11 @@ const checkout = async () => {
     }));
 
     try {
-        const response = await axios.post('/checkout', { cart: cartWithTransactionCode });
-        
+        const response = await axios.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
+
         if (response.data.success) {
             alert('Checkout berhasil!');
+            window.location.reload();
         } else {
             alert('Terjadi kesalahan. Silakan coba lagi.');
         }
@@ -125,9 +145,9 @@ const checkout = async () => {
 };
 
 function generateRandomString() {
-  const prefix = 'kc_';
-  const randomPart = Math.random().toString(36).substring(2, 7); 
-  return prefix + randomPart;
+    const prefix = 'kc_';
+    const randomPart = Math.random().toString(36).substring(2, 7);
+    return prefix + randomPart;
 }
 
 
@@ -180,32 +200,23 @@ const print = async () => {
             centerLine: (count) => '\x1B' + '\x61' + '\x31' + '-'.repeat(count)
         }
     };
-    //kode_transaksi:
     const texts = [
         printable.Align.reset(),
         printable.Align.center(printable.Font.large('PT. Ionbit Cafe')),
         printable.Keyboard.enter(1),
         printable.Misc.centerLine(10),
         printable.Keyboard.enter(2),
-        printable.Align.left(printable.Font.normal(`ID Transaksi: `+generateRandomString())),
+        printable.Align.left(printable.Font.normal(`ID Transaksi: ` + generateRandomString())),
         printable.Keyboard.enter(1),
         printable.Align.left(printable.Font.normal(`Kasir: ${namakasir}`)),
         printable.Keyboard.enter(2),
-    ];  
+    ];
 
     cart.value.forEach((item) => {
         texts.push(printable.Align.left(printable.Font.normal(`${item.nama}`)));
         texts.push(printable.Keyboard.enter(1));
         texts.push(printable.Align.left(printable.Font.normal(`Qty ${item.quantity} x ${item.harga_jual} @ ${item.total_harga.toLocaleString()}`)));
         texts.push(printable.Keyboard.enter(1));
-        // texts.push(
-        //     printable.Align.left(
-        //         printable.Font.normal(
-        //             `Qty: ${item.quantity} x ${item.harga_jual} = Rp ${item.total_harga.toLocaleString()}`
-        //         )
-        //     )
-        // );
-        // texts.push(printable.Keyboard.enter(1));
     });
 
     texts.push(
@@ -240,21 +251,21 @@ const print = async () => {
     <Head title="Dashboard kasir " />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight text-left">Point Of Sales | Ionbit</h2>
-            <!-- <div>
+        <!-- <template #header> -->
+        <!-- <h2 class="font-semibold text-xl text-gray-800 leading-tight text-left ">Point Of Sales | Ionbit</h2> -->
+        <!-- <div>
                 <div class="status">
                     <span :class="printerStatusClass">{{ printerStatus }}</span>
                 </div>
                 <button @click="connect" class="btnConnect">Connect</button>
                 <button @click="print" class="btnPrint">Print</button>
             </div> -->
-        </template>
+        <!-- </template> -->
 
         <div class="flex h-[calc(100vh-150px)] bg-gray-100">
             <!-- Bagian Kiri - Cart -->
-            <div class="w-1/4 bg-white p-4 flex flex-col">
-                <div class="flex-1 overflow-y-auto">
+            <div class="w-1/4 bg-white p-4 flex flex-col h-[110%] rounded-b-xl">
+                <div class="overflow-y-auto h-[80%]">
                     <div v-for="(item, index) in cart" :key="index"
                         class="flex items-center justify-between py-2 border-b">
                         <div class="flex-1">
@@ -264,7 +275,7 @@ const print = async () => {
                                 {{ item.quantity }} x Rp {{ item.harga_jual.toLocaleString() }}
                             </p>
                         </div>
-                        <p class="font-medium">Rp {{ item.total_harga.toLocaleString() }}</p>
+                        <p class="font-medium">Rp {{ item.total_harga_without_pajak_diskon.toLocaleString() }}</p>
                         <button @click="removeFromCart(index)" class="text-red-500 hover:underline ml-3">Hapus</button>
                     </div>
                 </div>
@@ -272,7 +283,7 @@ const print = async () => {
                 <div class="mt-3 pt-2 border-t">
                     <div class="flex justify-between items-center ">
                         <span class="text-gray-600">Metode Pembayaran</span>
-                        <select v-model="paymentMethod" class="px-7 py-1 border rounded-md">
+                        <select v-model="paymentMethod" class="px-7 py-1 border rounded-lg">
                             <option v-for="mp in metodepembayaran" :key="mp.id" :value='mp.nama_mp'>{{ mp.nama_mp }}
                             </option>
                         </select>
@@ -300,7 +311,7 @@ const print = async () => {
 
                 <div class="grid grid-cols-4 gap-2 mt-4">
                     <button @click="checkout"
-                        class="col-span-4 p-2 bg-blue-500 text-white font-semibold hover:bg-blue-600 rounded-lg">
+                        class="col-span-4 p-2 bg-blue-500 text-white font-semibold hover:bg-blue-600 rounded-xl">
                         Checkout
                     </button>
                 </div>
@@ -309,13 +320,29 @@ const print = async () => {
             <!-- Bagian Kanan - Products -->
 
             <div class="flex-1 p-5">
-                <div class="bg-white rounded-lg p-5">
+                <div class="bg-white rounded-xl p-5">
+                    <div class="flex justify-left items-center mb-4">
+                        <div class="flex items-center space-x-2 mr-3">
+                            <input type="text" placeholder="Cari barang..."
+                                class="border border-gray-300 rounded-xl px-4 py-2 w-64" v-model="searchQuery" />
+                        </div>
+                        <div class="relative">
+                            <select v-model="sortOption"
+                                class="border border-gray-300 rounded-xl px-4 py-2 cursor-pointer pr-8">
+                                <option value="asc">A - Z</option>
+                                <option value="desc">Z - A</option>
+                                <option value="price_asc">Harga ter-tinggi</option>
+                                <option value="price_desc">Harga ter-rendah</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="grid grid-cols-4 gap-4">
-                        <div v-for="barang in barangs" :key="barang.id"
-                            class="border rounded-lg p-5 cursor-pointer hover:shadow-md transition-shadow"
+                        <div v-for="barang in filteredAndSortedProducts" :key="barang.id"
+                            class="border rounded-xl p-5 cursor-pointer hover:shadow-md transition-shadow"
                             @click="openProductModal(barang)">
-                            <h3 class="font-bold text-lg">{{ barang.nama }} - <span class="text-blue-600">{{ barang.stok
-                                    }}<span class="text-sm font-normal text-gray-600    ">{{ barang.satuan }}</span></span></h3>
+                            <h3 class="font-bold text-lg">{{ barang.nama }} - <span class="text-blue-600">{{
+                                barang.stok }}<span class="text-sm font-normal text-gray-600">{{ barang.satuan
+                                        }}</span></span></h3>
                             <p class="text-m text-gray-600">{{ barang.kategori }} | <span class="font-bold">{{
                                 barang.kode
                                     }}</span></p>
@@ -324,6 +351,7 @@ const print = async () => {
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <!-- Product Modal -->
