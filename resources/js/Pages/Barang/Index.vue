@@ -162,7 +162,7 @@ const addToCart = () => {
         }
 
         showModal.value = false;
-        console.log(cart);
+        console.table(cart);
     }
 };
 
