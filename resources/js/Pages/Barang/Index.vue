@@ -3,12 +3,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-defineProps({
-    barangs: Array,
-    metodepembayaran: Array,
-    pajak: Array,
-    namakasir: Array,
-});
+const props = defineProps({
+  barangs: Array,
+  metodepembayaran: Array,
+  pajak: Number,
+  namakasir: Array,
+})  
 
 const paymentMethod = ref('');
 const cart = ref([]);
@@ -24,12 +24,11 @@ const printerStatusClass = ref('badge bg-danger');
 const randomString = ref('');
 
 function generateRandomString() {
-  const prefix = 'KC_';
+  const prefix = 'kc_';
   const randomPart = Math.random().toString(36).substring(2, 7); 
-  randomString.value = prefix + randomPart;
+  return prefix + randomPart; 
 }
-generateRandomString();
-
+const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
 const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
 const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
 const calculateDiskonBarang = () => cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
@@ -43,13 +42,12 @@ const openProductModal = (barang) => {
 
 const addToCart = () => {
     if (selectedProduct.value) {
-
         const totalHargaPerItem = selectedProduct.value.harga_jual;
         const discountPerItem = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
-        const totalHargaAfterDiskonPerItem = totalHargaPerItem;
-        const totalHarga = totalHargaAfterDiskonPerItem * quantity.value;
         const totalDiskon = discountPerItem;
+        const totalPajak = totalHargaPerItem * (props.pajak / 100);
         const existingProductIndex = cart.value.findIndex(item => item.kode === selectedProduct.value.kode);
+        const totalHarga = totalHargaPerItem * quantity.value;
 
         if (existingProductIndex !== -1) {
             cart.value[existingProductIndex].quantity += quantity.value;
@@ -64,9 +62,10 @@ const addToCart = () => {
                 quantity: quantity.value,
                 harga_jual: totalHargaPerItem,
                 harga_beli: selectedProduct.value.harga_beli,
-                total_harga: totalHarga - totalDiskon,
+                total_harga: (totalHarga - totalDiskon) + totalPajak,
                 total_harga_without_pajak_diskon: totalHargaPerItem * quantity.value,
                 total_diskon: totalDiskon,
+                total_pajak: totalPajak,
                 note: note.value,
             });
         }
@@ -184,7 +183,7 @@ const print = async () => {
         printable.Keyboard.enter(1),
         printable.Align.left(printable.Font.normal(`Diskon\t: Rp ${calculateDiskonBarang().toLocaleString()}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Total\t: Rp ${calculateTotal().toLocaleString()}`)),
+        printable.Align.left(printable.Font.normal(`Total\t: Rp ${calculateTotalPajak().toLocaleString()}`)),
         printable.Keyboard.enter(2),
         printable.Align.center(printable.Font.normal('Terima Kasih')),
         printable.Align.reset()
@@ -253,7 +252,7 @@ const print = async () => {
                         </div>
                         <div class="flex justify-between mb-2 text-sm border-t pt-2">
                             <span class="text-gray-600">Total Pajak</span>
-                            <span class="text-gray-600 ">Rp {{ calculateSubtotal().toLocaleString() }}</span>
+                            <span class="text-gray-600 ">Rp {{ calculateTotalPajak().toLocaleString() }}</span>
                         </div>
                         <div class="flex justify-between mb-2 text-sm ">
                             <span class="text-gray-600">Diskon Barang</span>
@@ -284,7 +283,7 @@ const print = async () => {
                             class="border rounded-lg p-5 cursor-pointer hover:shadow-md transition-shadow"
                             @click="openProductModal(barang)">
                             <h3 class="font-bold text-lg">{{ barang.nama }} - <span class="text-blue-600">{{ barang.stok
-                                    }}</span></h3>
+                                    }}<span class="text-sm font-normal text-gray-600    ">{{ barang.satuan }}</span></span></h3>
                             <p class="text-m text-gray-600">{{ barang.kategori }} | <span class="font-bold">{{
                                 barang.kode
                                     }}</span></p>

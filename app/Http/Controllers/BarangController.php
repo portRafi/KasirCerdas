@@ -14,16 +14,18 @@ class BarangController extends Controller
     {
         $barangs = Barang::where([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id]
+            ['cabangs_id', '=', Auth::user()->cabangs_id],
+            ['stok', '>=', 1]
         ])->get(); 
         $metodepembayaran = MetodePembayaran::where([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id]
+            ['cabangs_id', '=', Auth::user()->cabangs_id],
+            ['is_Active', '=', true]
         ])->get();
         $pajak = Pajak::where([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id]
-        ])->get();
+            ['cabangs_id', '=', Auth::user()->cabangs_id],
+        ])->sum('jumlah_pajak');
         $namaKasir = Auth::user()->name;
 
         return Inertia::render('Barang/Index', [
