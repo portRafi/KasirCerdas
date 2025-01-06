@@ -1,4 +1,4 @@
-<!-- <script setup>
+<script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
@@ -7,26 +7,32 @@ defineProps({
     barangs: Array,
     metodepembayaran: Array,
     pajak: Array,
+    namakasir: Array,
 });
-const paymentMethod = ref('');
 
+const paymentMethod = ref('');
 const cart = ref([]);
 const showModal = ref(false);
 const selectedProduct = ref(null);
 const quantity = ref(1);
 const note = ref('');
+const printer = ref(null);
+const writer = ref(null);
+const printerStatus = ref('OFF');
+const deviceName = ref('');
+const printerStatusClass = ref('badge bg-danger');
+const randomString = ref('');
 
-const calculateTotal = () => {
-    return cart.value.reduce((sum, item) => sum + item.total_harga, 0);
-};
-
-const calculateSubtotal = () => {
-    return cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
+function generateRandomString() {
+  const prefix = 'KC_';
+  const randomPart = Math.random().toString(36).substring(2, 7); 
+  randomString.value = prefix + randomPart;
 }
+generateRandomString();
 
-const calculateDiskonBarang = () => {
-    return cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
-}
+const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
+const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
+const calculateDiskonBarang = () => cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
 
 const openProductModal = (barang) => {
     selectedProduct.value = barang;
@@ -71,102 +77,6 @@ const addToCart = () => {
 };
 
 
-
-const increaseQty = () => {
-    quantity.value++;
-};
-
-const decreaseQty = () => {
-    if (quantity.value > 1) {
-        quantity.value--;
-    }
-};
-
-const removeFromCart = (index) => {
-    cart.value.splice(index, 1);
-};
-
-const checkout = () => {
-    if (cart.value.length === 0) {
-        alert('Keranjang kosong. Silakan tambahkan produk.');
-        return;
-    }
-    console.log(cart)
-    alert('Checkout berhasil!');
-    cart.value = [];
-};
-</script> -->
-
-<script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
-
-defineProps({
-    barangs: Array,
-    metodepembayaran: Array,
-    pajak: Array,
-});
-
-const paymentMethod = ref('');
-const cart = ref([]);
-const showModal = ref(false);
-const selectedProduct = ref(null);
-const quantity = ref(1);
-const note = ref('');
-const printer = ref(null);
-const writer = ref(null);
-const printerStatus = ref('OFF');
-const deviceName = ref('');
-const printerStatusClass = ref('badge bg-danger');
-
-const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
-const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
-const calculateDiskonBarang = () => cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
-
-const openProductModal = (barang) => {
-    selectedProduct.value = barang;
-    quantity.value = 1;
-    note.value = '';
-    showModal.value = true;
-};
-
-const addToCart = () => {
-    if (selectedProduct.value) {
-
-        const totalHargaPerItem = selectedProduct.value.harga_jual;
-        const discountPerItem = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
-        const totalHargaAfterDiskonPerItem = totalHargaPerItem;
-        const totalHarga = totalHargaAfterDiskonPerItem * quantity.value;
-        const totalDiskon = discountPerItem;
-        const existingProductIndex = cart.value.findIndex(item => item.kode === selectedProduct.value.kode);
-
-        if (existingProductIndex !== -1) {
-            cart.value[existingProductIndex].quantity += quantity.value;
-            cart.value[existingProductIndex].total_harga += totalHarga;
-            cart.value[existingProductIndex].total_harga_without_pajak_diskon += totalHargaPerItem * quantity.value;
-            cart.value[existingProductIndex].total_diskon = discountPerItem;
-        } else {
-            cart.value.push({
-                kode: selectedProduct.value.kode,
-                kategori: selectedProduct.value.kategori,
-                nama: selectedProduct.value.nama,
-                quantity: quantity.value,
-                harga_jual: totalHargaPerItem,
-                harga_beli: selectedProduct.value.harga_beli,
-                total_harga: totalHarga - totalDiskon,
-                total_harga_without_pajak_diskon: totalHargaPerItem * quantity.value,
-                total_diskon: totalDiskon,
-                note: note.value,
-            });
-        }
-
-        showModal.value = false;
-        console.table(cart);
-    }
-};
-
-
 const increaseQty = () => {
     quantity.value++;
 };
@@ -190,7 +100,6 @@ const checkout = () => {
     cart.value = [];
 };
 
-// Printer Methods
 const connect = async () => {
     if (printer.value && writer.value) {
         alert('Printer sudah terhubung!');
@@ -240,34 +149,42 @@ const print = async () => {
             centerLine: (count) => '\x1B' + '\x61' + '\x31' + '-'.repeat(count)
         }
     };
-
+    //kode_transaksi:
     const texts = [
         printable.Align.reset(),
-        printable.Align.center(printable.Font.normal('PT. Ionbit Cafe')),
+        printable.Align.center(printable.Font.large('PT. Ionbit Cafe')),
+        printable.Keyboard.enter(1),
+        printable.Misc.centerLine(10),
         printable.Keyboard.enter(2),
-    ];
+        printable.Align.left(printable.Font.normal(`ID Transaksi: `+generateRandomString())),
+        printable.Keyboard.enter(1),
+        printable.Align.left(printable.Font.normal(`Kasir: ${namakasir}`)),
+        printable.Keyboard.enter(2),
+    ];  
 
     cart.value.forEach((item) => {
-        texts.push(printable.Align.left(printable.Font.large    (`${item.nama}`)));
+        texts.push(printable.Align.left(printable.Font.normal(`${item.nama}`)));
         texts.push(printable.Keyboard.enter(1));
-        texts.push(printable.Misc.centerLine(10));
-        texts.push(printable.Keyboard.enter(2));
-        texts.push(printable.Keyboard.enter(2));
-        texts.push(printable.Keyboard.enter(2));
-        texts.push(
-            printable.Align.left(
-                printable.Font.normal(
-                    `Qty: ${item.quantity} x ${item.harga_jual} = Rp ${item.total_harga.toLocaleString()}`
-                )
-            )
-        );
+        texts.push(printable.Align.left(printable.Font.normal(`Qty ${item.quantity} x ${item.harga_jual} @ ${item.total_harga.toLocaleString()}`)));
         texts.push(printable.Keyboard.enter(1));
+        // texts.push(
+        //     printable.Align.left(
+        //         printable.Font.normal(
+        //             `Qty: ${item.quantity} x ${item.harga_jual} = Rp ${item.total_harga.toLocaleString()}`
+        //         )
+        //     )
+        // );
+        // texts.push(printable.Keyboard.enter(1));
     });
 
     texts.push(
-        printable.Align.left(printable.Font.normal(`Subtotal: Rp ${calculateSubtotal().toLocaleString()}`)),
+        printable.Align.left(printable.Font.normal(`Subtotal\t: Rp ${calculateSubtotal().toLocaleString()}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Total: Rp ${calculateTotal().toLocaleString()}`)),
+        printable.Align.left(printable.Font.normal(`Tax\t: Rp ${calculateSubtotal().toLocaleString()}`)),
+        printable.Keyboard.enter(1),
+        printable.Align.left(printable.Font.normal(`Diskon\t: Rp ${calculateDiskonBarang().toLocaleString()}`)),
+        printable.Keyboard.enter(1),
+        printable.Align.left(printable.Font.normal(`Total\t: Rp ${calculateTotal().toLocaleString()}`)),
         printable.Keyboard.enter(2),
         printable.Align.center(printable.Font.normal('Terima Kasih')),
         printable.Align.reset()
@@ -294,13 +211,13 @@ const print = async () => {
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight text-left">Point Of Sales | Ionbit</h2>
-            <div>
+            <!-- <div>
                 <div class="status">
                     <span :class="printerStatusClass">{{ printerStatus }}</span>
                 </div>
                 <button @click="connect" class="btnConnect">Connect</button>
                 <button @click="print" class="btnPrint">Print</button>
-            </div>
+            </div> -->
         </template>
 
         <div class="flex h-[calc(100vh-150px)] bg-gray-100">
@@ -335,12 +252,8 @@ const print = async () => {
                             <span class="font-medium">Rp {{ calculateSubtotal().toLocaleString() }}</span>
                         </div>
                         <div class="flex justify-between mb-2 text-sm border-t pt-2">
-                            <span class="text-gray-600">PPN</span>
+                            <span class="text-gray-600">Total Pajak</span>
                             <span class="text-gray-600 ">Rp {{ calculateSubtotal().toLocaleString() }}</span>
-                        </div>
-                        <div class="flex justify-between mb-2 text-sm">
-                            <span class="text-gray-600">Pajak Layanan</span>
-                            <span class="text-gray-600 ">- Rp {{ calculateDiskonBarang().toLocaleString() }}</span>
                         </div>
                         <div class="flex justify-between mb-2 text-sm ">
                             <span class="text-gray-600">Diskon Barang</span>
@@ -351,8 +264,6 @@ const print = async () => {
                             <span class="text-gray-600 text-base">Total</span>
                             <span class="text-base font-semibold">Rp {{ calculateTotal().toLocaleString() }}</span>
                         </div>
-                        <!-- <div class="flex justify-between mt-4 pt-4 border-t">
-                        </div> -->
                     </div>
                 </div>
 
@@ -402,10 +313,8 @@ const print = async () => {
                             <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
                             <div class="flex items-center space-x-4">
                                 <button @click="decreaseQty" class="p-2 border rounded-lg hover:bg-gray-50">
-                                    <!-- SVG for Decrease -->
                                 </button>
                                 <span class="text-xl font-semibold jumlah">{{ quantity }}</span>
-                                <!-- Display Quantity -->
                                 <button @click="increaseQty" class="p-2 border rounded-lg hover:bg-gray-50">
                                 </button>
                             </div>

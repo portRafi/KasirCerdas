@@ -24,11 +24,13 @@ class BarangController extends Controller
             ['bisnis_id', '=', Auth::user()->bisnis_id],
             ['cabangs_id', '=', Auth::user()->cabangs_id]
         ])->get();
+        $namaKasir = Auth::user()->name;
 
         return Inertia::render('Barang/Index', [
             'barangs' => $barangs,
             'metodepembayaran' => $metodepembayaran,
             'pajak' => $pajak,
+            'namakasir' => $namaKasir,
         ]);
     }
 }
