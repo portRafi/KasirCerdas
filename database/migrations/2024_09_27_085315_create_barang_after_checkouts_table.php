@@ -20,9 +20,9 @@ return new class extends Migration
             $table->string('kategori');
             $table->string('nama');
             $table->integer('quantity');
-            $table->decimal('harga_jual', 10,2);
             $table->decimal('harga_beli', 10,2);
-            $table->decimal('total_harga_without_pajak_diskon', 10,2);
+            $table->decimal('harga_jual', 10,2);
+            // $table->decimal('total_harga_without_pajak_diskon', 10,2);
             $table->decimal('total_harga', 10,2);
             $table->decimal('total_diskon', 10,2);
             $table->decimal('total_pajak', 10,2);

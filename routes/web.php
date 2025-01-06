@@ -35,6 +35,8 @@ Route::get('/pos', [\App\Http\Controllers\BarangController::class, 'index']);
 Route::resource('/barangs', BarangController::class);
 Route::resource('/metodepembayaran', BarangController::class);
 Route::resource('/pajak', BarangController::class);
+Route::post('/checkout', [BarangController::class, 'store']);
+
 
 
 Route::middleware('auth')->group(function () {

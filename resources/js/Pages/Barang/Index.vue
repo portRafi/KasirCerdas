@@ -2,6 +2,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import axios from 'axios';
+
 
 const props = defineProps({
   barangs: Array,
@@ -23,11 +25,6 @@ const deviceName = ref('');
 const printerStatusClass = ref('badge bg-danger');
 const randomString = ref('');
 
-function generateRandomString() {
-  const prefix = 'kc_';
-  const randomPart = Math.random().toString(36).substring(2, 7); 
-  return prefix + randomPart; 
-}
 const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
 const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
 const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
@@ -90,14 +87,49 @@ const removeFromCart = (index) => {
     cart.value.splice(index, 1);
 };
 
-const checkout = () => {
+// const checkout = () => {
+//     if (cart.value.length === 0) {
+//         alert('Keranjang kosong. Silakan tambahkan produk.');
+//         return;
+//     }
+//     // print(cart.value);
+//     cart.value = [];
+// };
+
+const checkout = async () => {
     if (cart.value.length === 0) {
         alert('Keranjang kosong. Silakan tambahkan produk.');
         return;
     }
-    print(cart.value);
-    cart.value = [];
+
+    const kodeTransaksi = generateRandomString();
+    const cartWithTransactionCode = cart.value.map(item => ({
+        ...item,
+        kode_transaksi: kodeTransaksi
+    }));
+
+    try {
+        const response = await axios.post('/checkout', { cart: cartWithTransactionCode });
+        
+        if (response.data.success) {
+            alert('Checkout berhasil!');
+        } else {
+            alert('Terjadi kesalahan. Silakan coba lagi.');
+        }
+
+        cart.value = [];
+    } catch (error) {
+        console.error('Checkout gagal:', error);
+        alert('Checkout gagal. Silakan coba lagi.');
+    }
 };
+
+function generateRandomString() {
+  const prefix = 'kc_';
+  const randomPart = Math.random().toString(36).substring(2, 7); 
+  return prefix + randomPart;
+}
+
 
 const connect = async () => {
     if (printer.value && writer.value) {
