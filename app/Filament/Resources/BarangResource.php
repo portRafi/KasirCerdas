@@ -22,6 +22,7 @@ use App\Filament\Resources\BarangResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\BarangResource\RelationManagers;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use Filament\Tables\Columns\FileUpload;
 class BarangResource extends Resource
 {
     protected static ?string $model = Barang::class;
@@ -40,6 +41,14 @@ class BarangResource extends Resource
                     ->default(Auth::user()->bisnis_id),
                 Forms\Components\Hidden::make('cabangs_id')
                     ->default(Auth::user()->cabangs_id),
+                // Form\Components\FileUpload::make('upload')
+                //     ->directory('barang')
+                //     ->image()
+                //     ->required()
+                //     ->label('Foto Barang'),
+                // Forms\Components\TextInput::make('barcode')
+                //     ->placeholder('Barcode Barang')
+                //     ->maxLength(255),
                 Forms\Components\TextInput::make('kode')
                     ->placeholder('Kode Barang')
                     ->required()
@@ -103,6 +112,12 @@ class BarangResource extends Resource
             )
             ->poll('5s')
             ->columns([
+                // Tables\Columns\FileUpload::make('upload')
+                //     ->label('Foto Barang'
+                //     ->image()
+                //     ->sortable()),
+                // Tables\Columns\TextColumn::make('barcode')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('kode')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama')

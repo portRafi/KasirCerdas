@@ -13,7 +13,7 @@ const props = defineProps({
 
 const paymentMethod = ref('');
 const cart = ref([]);
-const showModal = ref(false);
+const showModal = ref(false);   
 const showModalCart = ref(false);
 const selectedProduct = ref(null);
 const selectedIndex = ref(null);
@@ -62,7 +62,7 @@ const openProductModal = (barang) => {
     showModal.value = true;
 };
 
-const editProductCart = (item, index) => {
+    const editProductCart = (item, index) => {
     selectedProduct.value = item;
     selectedIndex.value = index;
     quantity.value = item.quantity;
@@ -74,10 +74,12 @@ const saveCartChanges = () => {
     cart.value[selectedIndex.value].quantity = quantity.value;
     cart.value[selectedIndex.value].note = note.value;
     cart.value[selectedIndex.value].total_harga_without_pajak_diskon = quantity.value * cart.value[selectedIndex.value].harga_jual;
+    cart.value[selectedIndex.value].total_pajak = cart.value[selectedIndex.value].total_harga_without_pajak_diskon * (props.pajak / 100);
+    cart.value[selectedIndex.value].total_harga = (cart.value[selectedIndex.value].total_harga_without_pajak_diskon - cart.value[selectedIndex.value].total_diskon) + cart.value[selectedIndex.value].total_pajak;
     showModalCart.value = false;
 };
 
-const addToCart = () => {
+    const addToCart = () => {
     if (selectedProduct.value) {
         const totalHargaPerItem = selectedProduct.value.harga_jual;
         const totalDiskon = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
@@ -299,9 +301,7 @@ const print = async () => {
                         <button @click="removeFromCart(index)" class="text-red-500 hover:underline ml-3">Hapus</button>
                     </div>
                 </div>
-
                 
-
                 <div class="mt-3 pt-2 border-t">
                     <div class="flex justify-between items-center ">
                         <span class="text-gray-600">Metode Pembayaran</span>
@@ -380,7 +380,7 @@ const print = async () => {
                     <div class="bg-white rounded-lg w-96 overflow-hidden">
                         <div class="p-4 border-b">
                             <div class="flex items-center space-x-4">
-                                <div>
+                                <div>   
                                     <h3 class="font-semibold text-lg">{{ selectedProduct?.nama }}</h3>
                                     <p class="text-gray-600">Rp {{ selectedProduct?.harga_jual.toLocaleString() }}</p>
                                     <p class="text-gray-600">Ket: {{ selectedProduct?.keterangan }}</p>
@@ -414,10 +414,11 @@ const print = async () => {
                             <button @click="showModalCart = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
                                 Cancel
                             </button>
-                            <button @click="addToCart"
-                                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                                Edit Cart   
-                            </button>
+                         <button @click="saveCartChanges"
+                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                            Edit Cart   
+                        </button>
+
                         </div>
                     </div>
                 </div>
