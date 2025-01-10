@@ -43,8 +43,9 @@ class BarangResource extends Resource
                     ->default(Auth::user()->cabangs_id),
                 Forms\Components\FileUpload::make('foto')
                     ->disk('r2')
-                    ->directory('barang/foto')
+                    ->directory('tmp')
                     ->visibility('public')
+                    ->fetchFileInformation(false)
                     ->label('Foto Barang'),
                 Forms\Components\TextInput::make('kode')
                     ->placeholder('Kode Barang')

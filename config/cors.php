@@ -8,12 +8,13 @@ return [
         "GET",
         "PUT",
         "POST",
-        "DELETE"
+        "DELETE",
+        "*"
     ],
 
-    'allowed_origins' => ['http://127.0.0.1:8000'],
+    'allowed_origins' => ['*'],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => ['*'],
 
     'allowed_headers' => ['*'],
 
@@ -21,11 +22,12 @@ return [
         "x-amz-server-side-encryption",
         "x-amz-request-id",
         "x-amz-id-2",
-        "Content-Type"
+        "Content-Type",
+        "*"
     '],
 
     'max_age' => 0,
 
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 
 ];
