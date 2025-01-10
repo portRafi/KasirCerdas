@@ -437,8 +437,7 @@ const print = async () => {
                                     <span class="text-xl font-semibold">-</span>
                                 </button>
                                 <span class="text-xl font-semibold">{{ quantity }}</span>
-                                <button @click="increaseQty" class="p-2 border rounded-lg hover:bg-gray-50"
-                                    :disabled="quantity >= selectedProduct?.stok">
+                                <button @click="increaseQty" class="p-2 border rounded-lg hover:bg-gray-50">
                                     <span class="text-xl font-semibold">+</span>
                                 </button>
                             </div>
