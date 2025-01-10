@@ -254,7 +254,7 @@ const print = async () => {
 
     try {
         for (let text of texts) {
-            const encoder = new TextEncoder();
+            const encoder = new TextEncoder();  
             const encodedText = encoder.encode(text);
             await writer.value.write(encodedText);
         }
@@ -264,49 +264,12 @@ const print = async () => {
         alert('Gagal mencetak.');
     }
 
-    // EOF = new Uint8Array([0x1D, 0x56, 0x41, 0x10]);
-    // await writer.value.write(EOF);
-    // await writer.value.releaseLock();
-
-    // printer.value = null;
-    // writer.value = null;
-    // printerStatus.value = 'DISCONNECTED';
-    // printerStatusClass.value = 'badge bg-danger';
-
-    // selectedProduct.value = null;
-    // selectedIndex.value = null;
-    // quantity.value = 1;
-    // note.value = '';
-    // showModal.value = false;
-    // showModalCart.value = false;
-    // cart.value = [];
-    // paymentMethod.value = null;
-    // paymentAmount.value = 0;
-    // changeAmount.value = 0;
-
-    // deviceName.value = '';
-    // printerStatus.value = 'OFF';
-    // printerStatusClass.value = 'badge bg-danger';
-    // printer.value = null;
-    // writer.value = null;
-
-    // alert('Cetak selesai!');
-
 };
 </script>
 
 <template>
     <Head title="Dashboard Kasir" />
-      <!-- <template #header> -->
-        <!-- <h2 class="font-semibold text-xl text-gray-800 leading-tight text-left ">Point Of Sales | Ionbit</h2> -->
-        <!-- <div>
-                <div class="status">
-                    <span :class="printerStatusClass">{{ printerStatus }}</span>
-                </div>
-                <button @click="connect" class="btnConnect">Connect</button>
-                <button @click="print" class="btnPrint">Print</button>
-            </div> -->
-        <!-- </template> -->
+    
     <AuthenticatedLayout>
         <div class="flex flex-col md:flex-row h-[calc(100vh-150px)] bg-gray-100">
             <!-- Bagian Kiri - Cart -->
@@ -327,7 +290,7 @@ const print = async () => {
                         <button @click="removeFromCart(index)" class="text-red-500 hover:underline ml-3">Hapus</button>
                     </div>
                 </div>
-
+               
                 <div class="mt-3 pt-2 border-t">
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">Metode Pembayaran</span>
@@ -506,4 +469,3 @@ const print = async () => {
         </div>
     </AuthenticatedLayout>
 </template>
-
