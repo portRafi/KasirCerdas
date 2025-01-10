@@ -293,7 +293,7 @@ const print = async () => {
             </div> -->
     <!-- </template> -->
     <AuthenticatedLayout>
-        <div class="flex flex-col md:flex-row h-[calc(100vh-150px)] bg-gray-100">
+        <div class="flex flex-col md:flex-row h-[calc(100vh-150px)] bg-gray-100 overflow-hidden">
             <!-- Bagian Kiri - Cart -->
             <div class="w-full md:w-1/3 lg:w-1/4 bg-white p-4 flex flex-col h-full rounded-b-xl">
                 <div class="overflow-y-auto h-[75%]">
@@ -371,23 +371,34 @@ const print = async () => {
                             </select>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 pr-2 overflow-y-auto" style="max-height: 63vh;">
                         <div v-for="barang in filteredAndSortedProducts" :key="barang.id"
-                            class="border rounded-xl p-5 cursor-pointer hover:shadow-md transition-shadow"
+                            class="border rounded-xl p-5 cursor-pointer hover:shadow-md transition-shadow w-full flex flex-col justify-center"
                             @click="openProductModal(barang)">
-                            <h3 class="font-bold text-lg">
-                                {{ barang.nama }} - <span class="text-blue-600">{{ barang.stok }}
-                                    <span class="text-sm font-normal text-gray-600">{{ barang.satuan }}</span></span>
-                            </h3>
-                            <p class="text-m text-gray-600">
-                                {{ barang.kategori }} | <span class="font-bold">{{ barang.kode }}</span>
-                            </p>
-                            <p class="font-bold text-lg pt-1 text-gray-600">
-                                Rp {{ barang.harga_jual }}
-                                <span class="text-sm text-blue-600 font-normal">/ {{ barang.satuan }}</span>
-                            </p>
+                            <div class="flex items-start gap-4">
+                                <div class="w-24 h-24 bg-gray-300 rounded-lg overflow-hidden flex-shrink-0">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="flex flex-col flex-grow">
+                                    <h3 class="font-bold text-lg">
+                                        {{ barang.nama }}
+                                    </h3>
+                                    <p class="text-sm text-gray-600">
+                                        {{ barang.kategori }} | <span class="font-bold">{{ barang.kode }}</span>
+                                    </p>
+                                    <p class="text-sm text-gray-600">
+                                        Stok: <span class="font-bold text-blue-600">{{ barang.stok }}</span>
+                                        <span class="text-xs font-normal text-gray-600">{{ barang.satuan }}</span>
+                                    </p>
+                                    <p class="font-bold text-lg pt-1 text-gray-600">
+                                        Rp {{ barang.harga_jual }}
+                                        <span class="text-sm text-blue-600 font-normal">/ {{ barang.satuan }}</span>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
             <div v-if="showModalCart" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
