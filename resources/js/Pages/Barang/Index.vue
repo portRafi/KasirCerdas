@@ -279,23 +279,12 @@ const print = async () => {
 </script>
 
 <template>
-
     <Head title="Dashboard Kasir" />
 
-    <!-- <template #header> -->
-    <!-- <h2 class="font-semibold text-xl text-gray-800 leading-tight text-left ">Point Of Sales | Ionbit</h2> -->
-    <!-- <div>
-                <div class="status">
-                    <span :class="printerStatusClass">{{ printerStatus }}</span>
-                </div>
-                <button @click="connect" class="btnConnect">Connect</button>
-                <button @click="print" class="btnPrint">Print</button>
-            </div> -->
-    <!-- </template> -->
     <AuthenticatedLayout>
-        <div class="flex flex-col md:flex-row h-[calc(100vh-150px)] bg-gray-100 overflow-hidden">
-            <!-- Bagian Kiri - Cart -->
-            <div class="w-full md:w-1/3 lg:w-1/4 bg-white p-4 flex flex-col h-full rounded-b-xl">
+        <div class="flex flex-col lg:flex-row h-[calc(100vh-150px)] bg-gray-100 overflow-hidden">
+            <!-- Cart Section - Modified for tablet responsiveness -->
+            <div class="w-full lg:w-1/4 bg-white p-4 flex flex-col h-full rounded-b-xl">
                 <div class="overflow-y-auto h-[75%]">
                     <div v-for="(item, index) in cart" :key="index"
                         class="flex items-center justify-between py-2 border-b">
@@ -310,15 +299,15 @@ const print = async () => {
                         </div>
                         <p class="font-medium">Rp {{ item.total_harga_without_pajak_diskon.toLocaleString() }}</p>
                         <button @click="editProductCart(item, index)"
-                            class="text-blue-500 hover:underline ml-3">Edit</button>
-                        <button @click="removeFromCart(index)" class="text-red-500 hover:underline ml-3">Hapus</button>
+                            class="text-blue-500 hover:underline ml-2">Edit</button>
+                        <button @click="removeFromCart(index)" class="text-red-500 hover:underline ml-2">Hapus</button>
                     </div>
                 </div>
                
                 <div class="mt-3 pt-2 border-t">
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">Metode Pembayaran</span>
-                        <select v-model="paymentMethod" class="px-7 py-1 border rounded-lg">
+                        <select v-model="paymentMethod" class="px-4 lg:px-7 py-1 border rounded-lg">
                             <option v-for="mp in metodepembayaran" :key="mp.id" :value="mp.nama_mp">
                                 {{ mp.nama_mp }}
                             </option>
@@ -352,18 +341,18 @@ const print = async () => {
                 </div>
             </div>
 
-            <!-- Bagian Kanan - Products -->
-            <div class="flex-1 p-5">
-                <div class="bg-white rounded-xl p-5">
-                    <div class="flex flex-col md:flex-row items-center mb-4">
-                        <div class="flex items-center space-x-2 mb-4 md:mb-0">
+            <!-- Products Section - Modified for tablet responsiveness -->
+            <div class="flex-1 p-3 lg:p-5">
+                <div class="bg-white rounded-xl p-3 lg:p-5">
+                    <div class="flex flex-col sm:flex-row items-center mb-4 space-y-3 sm:space-y-0">
+                        <div class="flex items-center w-full sm:w-auto">
                             <input type="text" placeholder="Cari barang..."
-                                class="border border-gray-300 rounded-xl px-4 py-2 w-full md:w-64"
+                                class="border border-gray-300 rounded-xl px-4 py-2 w-full sm:w-64"
                                 v-model="searchQuery" />
                         </div>
-                        <div class="relative">
+                        <div class="relative w-full sm:w-auto">
                             <select v-model="sortOption"
-                                class="border border-gray-300 rounded-xl px-4 py-2 cursor-pointer pr-8 ml-3">
+                                class="border border-gray-300 rounded-xl px-4 py-2 cursor-pointer pr-8 sm:ml-3 w-full sm:w-auto">
                                 <option value="asc">A - Z</option>
                                 <option value="desc">Z - A</option>
                                 <option value="price_asc">Harga ter-tinggi</option>
@@ -371,83 +360,35 @@ const print = async () => {
                             </select>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 pr-2 overflow-y-auto" style="max-height: 63vh;">
+                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 pr-2 overflow-y-auto" style="max-height: 63vh;">
                         <div v-for="barang in filteredAndSortedProducts" :key="barang.id"
-                            class="border rounded-xl p-5 cursor-pointer hover:shadow-md transition-shadow w-full flex flex-col justify-center"
+                            class="border rounded-xl p-3 lg:p-5 cursor-pointer hover:shadow-md transition-shadow w-full flex flex-col justify-center"
                             @click="openProductModal(barang)">
-                            <div class="flex items-start gap-4">
-                                <div class="w-24 h-24 bg-gray-300 rounded-lg overflow-hidden flex-shrink-0">
+                            <div class="flex items-start gap-2 lg:gap-4">
+                                <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gray-300 rounded-lg overflow-hidden flex-shrink-0">
                                     <img src="" alt="">
                                 </div>
                                 <div class="flex flex-col flex-grow">
-                                    <h3 class="font-bold text-lg">
+                                    <h3 class="font-bold text-base lg:text-lg">
                                         {{ barang.nama }}
                                     </h3>
-                                    <p class="text-sm text-gray-600">
+                                    <p class="text-xs lg:text-sm text-gray-600">
                                         {{ barang.kategori }} | <span class="font-bold">{{ barang.kode }}</span>
                                     </p>
-                                    <p class="text-sm text-gray-600">
+                                    <p class="text-xs lg:text-sm text-gray-600">
                                         Stok: <span class="font-bold text-blue-600">{{ barang.stok }}</span>
                                         <span class="text-xs font-normal text-gray-600">{{ barang.satuan }}</span>
                                     </p>
-                                    <p class="font-bold text-lg pt-1 text-gray-600">
+                                    <p class="font-bold text-base lg:text-lg pt-1 text-gray-600">
                                         Rp {{ barang.harga_jual }}
-                                        <span class="text-sm text-blue-600 font-normal">/ {{ barang.satuan }}</span>
+                                        <span class="text-xs lg:text-sm text-blue-600 font-normal">/ {{ barang.satuan }}</span>
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
-            <div v-if="showModalCart" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                <div class="bg-white rounded-lg w-96 overflow-hidden">
-                    <div class="p-4 border-b">
-                        <div class="flex items-center space-x-4">
-                            <div>
-                                <h3 class="font-semibold text-lg">{{ selectedProduct?.nama }}</h3>
-                                <p class="text-gray-600">Rp {{ selectedProduct?.harga_jual.toLocaleString() }}</p>
-                                <p class="text-gray-600">Ket: {{ selectedProduct?.keterangan }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-4">
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
-                            <div class="flex items-center space-x-4">
-                                <button @click="decreaseQty" class="p-2 border rounded-lg hover:bg-gray-50">
-                                    <span class="text-xl font-semibold">-</span>
-                                </button>
-                                <span class="text-xl font-semibold">{{ quantity }}</span>
-                                <button @click="increaseQty" class="p-2 border rounded-lg hover:bg-gray-50">
-                                    <span class="text-xl font-semibold">+</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
-                            <textarea v-model="note"
-                                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                rows="3" placeholder="Add special instructions..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="p-4 bg-gray-50 flex justify-end space-x-2">
-                        <button @click="showModalCart = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
-                            Cancel
-                        </button>
-                        <button @click="saveCartChanges"
-                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                            Edit Cart
-                        </button>
-
-                    </div>
-                </div>
-            </div>
-            <!-- Product Modal -->
             <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                 <div class="bg-white rounded-lg w-96 overflow-hidden">
                     <div class="p-4 border-b">
