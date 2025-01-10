@@ -41,14 +41,11 @@ class BarangResource extends Resource
                     ->default(Auth::user()->bisnis_id),
                 Forms\Components\Hidden::make('cabangs_id')
                     ->default(Auth::user()->cabangs_id),
-                // Form\Components\FileUpload::make('upload')
-                //     ->directory('barang')
-                //     ->image()
-                //     ->required()
-                //     ->label('Foto Barang'),
-                // Forms\Components\TextInput::make('barcode')
-                //     ->placeholder('Barcode Barang')
-                //     ->maxLength(255),
+                Forms\Components\FileUpload::make('foto')
+                    ->disk('r2')
+                    ->directory('barang/foto')
+                    ->visibility('public')
+                    ->label('Foto Barang'),
                 Forms\Components\TextInput::make('kode')
                     ->placeholder('Kode Barang')
                     ->required()
