@@ -81,5 +81,4 @@ class BarangController extends Controller
         'message' => 'Checkout berhasil!'
     ]);
 }
-
 }
