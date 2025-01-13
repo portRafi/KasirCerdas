@@ -18,9 +18,12 @@ return new class extends Migration
             $table->string('kode_transaksi');
             $table->string('email_staff');
             $table->string('metode_pembayaran');
-            $table->decimal('total_harga', 10,2);
+            $table->decimal('total_harga_beli', 10,2);
+            $table->decimal('total_harga_jual', 10,2);
+            $table->decimal('total_harga_after_diskon', 10,2);
             $table->decimal('total_harga_after_pajak', 10,2);
-            $table->decimal('selisih_pajak', 10,2);
+            $table->decimal('total_harga', 10,2);
+            $table->decimal('total_pajak', 10,2);
             $table->decimal('keuntungan', 10,2);            
             $table->timestamps();
         });

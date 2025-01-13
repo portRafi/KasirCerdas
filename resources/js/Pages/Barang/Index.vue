@@ -81,17 +81,23 @@ const saveCartChanges = () => {
 
 const addToCart = () => {
     if (selectedProduct.value) {
+        const totalHargaPerItemAsli = selectedProduct.value.harga_beli * quantity.value;
         const totalHargaPerItem = selectedProduct.value.harga_jual;
         const totalDiskon = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
         const existingProductIndex = cart.value.findIndex(item => item.kode === selectedProduct.value.kode);
         const totalHargaSebelumDiskonPajak = totalHargaPerItem * quantity.value;
+        const totalHargaAfterDiskon = totalHargaSebelumDiskonPajak + totalDiskon;
         const totalPajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
+        const totalHargaAfterPajak = totalHargaSebelumDiskonPajak + totalPajak;
         const totalHarga = (totalHargaSebelumDiskonPajak - totalDiskon) + totalPajak;
 
         if (existingProductIndex !== -1) {
             cart.value[existingProductIndex].quantity += quantity.value;
             cart.value[existingProductIndex].total_harga += totalHargaSebelumDiskonPajak + totalPajak
             cart.value[existingProductIndex].total_harga_without_pajak_diskon += totalHargaSebelumDiskonPajak
+            cart.value[existingProductIndex].total_harga_after_diskon += totalHargaAfterDiskon
+            cart.value[existingProductIndex].total_harga_after_pajak += totalHargaAfterPajak
+            cart.value[existingProductIndex].total_harga_asli += totalHargaPerItemAsli
             cart.value[existingProductIndex].total_diskon = totalDiskon;
             cart.value[existingProductIndex].total_pajak += totalPajak
         } else {
@@ -105,6 +111,9 @@ const addToCart = () => {
                 harga_beli: selectedProduct.value.harga_beli,
                 total_harga: totalHarga,
                 total_harga_without_pajak_diskon: totalHargaSebelumDiskonPajak,
+                total_harga_after_diskon: totalHargaAfterDiskon,
+                total_harga_after_pajak: totalHargaAfterPajak,
+                total_harga_asli: totalHargaPerItemAsli,
                 total_diskon: totalDiskon,
                 total_pajak: totalPajak,
                 note: note.value,
