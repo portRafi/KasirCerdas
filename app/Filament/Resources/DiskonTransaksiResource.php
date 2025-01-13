@@ -69,6 +69,9 @@ class DiskonTransaksiResource extends Resource
                 Tables\Columns\TextColumn::make('jumlah_diskon')
                     ->formatStateUsing(fn ($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.')) 
                     ->sortable(),
+                Tables\Columns\TextColumn::make('minimum_pembelian')
+                    ->formatStateUsing(fn ($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.')) 
+                    ->sortable(),
                 Tables\Columns\ToggleColumn::make('is_Active'),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()

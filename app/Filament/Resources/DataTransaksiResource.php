@@ -76,18 +76,33 @@ class DataTransaksiResource extends Resource
                 Tables\Columns\TextColumn::make('metode_pembayaran')
                     ->label('Metode Pembayaran')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('total_harga')
-                    ->label('Total Harga')
+                Tables\Columns\TextColumn::make('total_harga_beli')
+                    ->label('Total Harga Beli')
+                    ->numeric()
+                    ->money('IDR')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('total_harga_jual')
+                    ->label('Total Harga Jual')
+                    ->numeric()
+                    ->money('IDR')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('total_harga_after_diskon')
+                    ->label('Total Harga Setelah Diskon')
                     ->numeric()
                     ->money('IDR')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_harga_after_pajak')
-                    ->label('Total Harga After Pajak')
+                    ->label('Total Harga Setelah Pajak')
                     ->numeric()
                     ->money('IDR')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('selisih_pajak')
-                    ->label('Selisih Pajak')
+                Tables\Columns\TextColumn::make('total_harga')
+                    ->label('Total Harga Bayar')
+                    ->numeric()
+                    ->money('IDR')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('total_pajak')
+                    ->label('Jumlah Pajak')
                     ->numeric()
                     ->money('IDR')
                     ->sortable(),

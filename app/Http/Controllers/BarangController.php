@@ -7,6 +7,7 @@ use App\Models\Pajak;
 use App\Models\BarangAfterCheckout;
 use App\Models\DataPajak;
 use App\Models\DataTransaksi;
+use App\Models\DiskonTransaksi;
 use Illuminate\Http\Request;
 use App\Models\MetodePembayaran;
 use Illuminate\Support\Facades\Auth;
@@ -31,6 +32,11 @@ class BarangController extends Controller
             ['bisnis_id', '=', Auth::user()->bisnis_id],
             ['cabangs_id', '=', Auth::user()->cabangs_id],
         ])->sum('jumlah_pajak');
+        $diskontransaksi = DiskonTransaksi::where([
+            ['bisnis_id', '=', Auth::user()->bisnis_id],
+            ['cabangs_id', '=', Auth::user()->cabangs_id],
+            ['is_Active', '=', true]
+        ]);
         $namaKasir = Auth::user()->name;
 
         return Inertia::render('Barang/Index', [
@@ -38,6 +44,7 @@ class BarangController extends Controller
             'metodepembayaran' => $metodepembayaran,
             'pajak' => $pajak,
             'namakasir' => $namaKasir,
+            'diskontransaksi' => $diskontransaksi,
         ]);
     }
     public function store(Request $request)
