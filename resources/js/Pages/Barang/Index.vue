@@ -9,7 +9,8 @@ const props = defineProps({
     metodepembayaran: Array,
     pajak: Number,
     namakasir: Array,
-    diskontransaksi: Number,
+    diskontransaksi_getjumlah: Number,
+    diskontransaksi_minimalpembelian: Number,
 })
 
 const paymentMethod = ref('');
@@ -66,7 +67,6 @@ const editProductCart = (item, index) => {
     note.value = item.note;
     showModalCart.value = true;
 };
-
 const saveCartChanges = () => {
     cart.value[selectedIndex.value].quantity = quantity.value;
     cart.value[selectedIndex.value].note = note.value;
@@ -80,8 +80,9 @@ const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.to
 const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
 const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
 const calculateDiskonBarang = () => cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
-const calculateDiskonTransaksi = () => cart.value.reduce((sum, item) => sum + item.total_diskon_transaksi, 0);
+const calculateDiskonTransaksi = () => cart.value.reduce((sum, item) => sum + (item.total_diskon_transaksi || 0), 0);
 
+let diskonTransaksiApplied = false;
 const addToCart = () => {
     if (selectedProduct.value) {
         const totalHargaPerItemAsli = selectedProduct.value.harga_beli * quantity.value;
@@ -89,21 +90,27 @@ const addToCart = () => {
         const existingProductIndex = cart.value.findIndex(item => item.kode === selectedProduct.value.kode);
         const totalHargaSebelumDiskonPajak = totalHargaPerItem * quantity.value;
         const totalPajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
-        const totalHargaAfterPajak = totalHargaSebelumDiskonPajak + totalPajak;
         const totalDiskon = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
-        const totalDiskonTransaksi = (props.diskontransaksi <= 100) ? totalHargaSebelumDiskonPajak * (props.diskontransaksi / 100) : props.diskontransaksi;
+        const bisaDiskonGa = !diskonTransaksiApplied && totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && props.diskontransaksi_getjumlah <= 100;
+        const totalDiskonTransaksi = bisaDiskonGa ? totalHargaSebelumDiskonPajak * (props.diskontransaksi_getjumlah / 100) : (diskonTransaksiApplied ? 0 : props.diskontransaksi_getjumlah);
+
+        console.log('totalHargaSebelumDiskonPajak:', totalHargaSebelumDiskonPajak);
+        console.log('props.diskontransaksi_minimalpembelian:', props.diskontransaksi_minimalpembelian);
+        console.log('props.diskontransaksi_getjumlah:', props.diskontransaksi_getjumlah);
+        console.log('diskonTransaksiApplied:', diskonTransaksiApplied);
+
         const totalHargaAfterDiskon = totalHargaSebelumDiskonPajak - totalDiskon;
-        const totalHarga = (totalHargaSebelumDiskonPajak - totalDiskon) + totalPajak;
+        const totalHarga = (totalHargaSebelumDiskonPajak - totalDiskon - totalDiskonTransaksi) + totalPajak;
 
         if (existingProductIndex !== -1) {
             cart.value[existingProductIndex].quantity += quantity.value;
             cart.value[existingProductIndex].total_harga += totalHargaSebelumDiskonPajak + totalPajak;
             cart.value[existingProductIndex].total_harga_without_pajak_diskon += totalHargaSebelumDiskonPajak;
             cart.value[existingProductIndex].total_harga_after_diskon += totalHargaAfterDiskon;
-            cart.value[existingProductIndex].total_harga_after_pajak += totalHargaAfterPajak;
+            cart.value[existingProductIndex].total_harga_after_pajak += totalHargaAfterDiskon + totalPajak;
             cart.value[existingProductIndex].total_harga_asli += totalHargaPerItemAsli;
             cart.value[existingProductIndex].total_diskon = totalDiskon;
-            // cart.value[existingProductIndex].total_diskon_transaksi = totalDiskonTransaksi;  
+            cart.value[existingProductIndex].total_diskon_transaksi += (diskonTransaksiApplied ? 0 : totalDiskonTransaksi);
             cart.value[existingProductIndex].total_pajak += totalPajak;
         } else {
             cart.value.push({
@@ -117,32 +124,31 @@ const addToCart = () => {
                 total_harga: totalHarga,
                 total_harga_without_pajak_diskon: totalHargaSebelumDiskonPajak,
                 total_harga_after_diskon: totalHargaAfterDiskon,
-                total_harga_after_pajak: totalHargaAfterPajak,
+                total_harga_after_pajak: totalHargaAfterDiskon + totalPajak,
                 total_harga_asli: totalHargaPerItemAsli,
                 total_diskon: totalDiskon,
-                // total_diskon_transaksi: totalDiskonTransaksi,
+                total_diskon_transaksi: totalDiskonTransaksi,
                 total_pajak: totalPajak,
                 note: note.value,
             });
+
+            if (!diskonTransaksiApplied) {
+                diskonTransaksiApplied = true;
+            }
         }
 
+        // Close the modal
         showModal.value = false;
         console.log(cart);
     }
 };
 
 
-// const increaseQty = (barang) => {
-//     selectedProduct.value = barang;
-//     if ( quantity.value <= selectedProduct?.stok) {
-//         quantity.value++    
-//     }
-// };
-
 const formatCurrency = (value) => {
     if (!value) return "0";
     return Number(value).toLocaleString('id-ID');
 };
+
 
 
 const increaseQty = () => {
@@ -154,6 +160,19 @@ const increaseQty = () => {
 };
 
 const decreaseQty = () => {
+    if (quantity.value > 1) {
+        quantity.value--;
+    }
+};
+const increaseQty2 = () => {
+    if (quantity.value < selectedProduct.value?.stok) {
+        quantity.value++;
+    } else {
+        console.log("Stok tidak cukup.");
+    }
+};
+
+const decreaseQty2 = () => {
     if (quantity.value > 1) {
         quantity.value--;
     }
@@ -306,7 +325,6 @@ const print = async () => {
 
     <AuthenticatedLayout>
         <div class="flex flex-col lg:flex-row h-[calc(100vh-150px)] bg-gray-100 overflow-hidden">
-            <!-- Cart Section - Modified for tablet responsiveness -->
             <div class="w-full lg:w-1/4 bg-white p-4 flex flex-col h-full rounded-b-xl">
                 <div class="overflow-y-auto h-[75%]">
                     <div v-for="(item, index) in cart" :key="index"
@@ -317,7 +335,7 @@ const print = async () => {
                                 <span v-if="item.note" class="text-sm text-gray-500 italic">Note: {{ item.note }}</span>
                             </p>
                             <p class="text-gray-600 text-sm">
-                                {{ item.quantity }} x Rp {{ item.harga_jual.toLocaleString() }}
+                                {{ item.quantity }} x Rp {{ formatCurrency(item.harga_jual) }}
                             </p>
                         </div>
                         <p class="font-medium">Rp {{ item.total_harga_without_pajak_diskon.toLocaleString() }}</p>
@@ -351,7 +369,8 @@ const print = async () => {
                         </div>
                         <div class="flex justify-between mb-2 text-sm">
                             <span class="text-gray-600">Diskon Transaksi</span>
-                            <span class="text-gray-600">- Rp {{ calculateDiskonTransaksi().toLocaleString() }}</span>
+                            <!-- <span class="text-gray-600">- Rp {{ calculateDiskonTransaksi() }}</span> -->
+                            <span class="text-gray-600">- Rp {{ calculateDiskonTransaksi() }}</span>
                         </div>
                         <div class="flex justify-between border-t pt-2">
                             <span class="text-gray-600 text-base">Total</span>
@@ -404,7 +423,8 @@ const print = async () => {
                                         {{ barang.kategori }} | <span class="font-bold">{{ barang.kode }}</span>
                                     </p>
                                     <p class="text-xs lg:text-sm text-gray-600">
-                                        Stok: <span class="font-bold text-blue-600">{{ barang.stok }}</span>
+                                        Stok: <span class="font-bold text-blue-600 mr-1">{{ formatCurrency(barang.stok)
+                                            }}</span>
                                         <span class="text-xs font-normal text-gray-600">{{ barang.satuan }}</span>
                                     </p>
                                     <p class="font-bold text-base lg:text-lg pt-1 text-gray-600">
@@ -415,6 +435,89 @@ const print = async () => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="showModalCart" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div class="bg-white rounded-lg w-96 overflow-hidden">
+                    <div class="p-4 border-b">
+                        <div class="flex items-center space-x-4">
+                            <div>
+                                <h3 class="font-semibold text-lg">{{ selectedProduct?.nama }}</h3>
+                                <p class="text-gray-600">Rp {{ selectedProduct?.harga_jual.toLocaleString() }}</p>
+                                <p class="text-gray-600">Ket: {{ selectedProduct?.keterangan }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                            <div class="flex items-center space-x-4">
+                                <button @click="decreaseQty2" class="p-2 border rounded-lg hover:bg-gray-50"></button>
+                                <span class="text-xl font-semibold jumlah">{{ quantity }}</span>
+                                <button @click="increaseQty2" class="p-2 border rounded-lg hover:bg-gray-50">
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                            <textarea v-model="note"
+                                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                rows="3" placeholder="Add special instructions..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 flex justify-end space-x-2">
+                        <button @click="showModalCart = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
+                            Cancel
+                        </button>
+                        <button @click="saveCartChanges"
+                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                            Edit Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div v-if="showModalCart" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div class="bg-white rounded-lg w-96 overflow-hidden">
+                    <div class="p-4 border-b">
+                        <div class="flex items-center space-x-4">
+                            <div>
+                                <h3 class="font-semibold text-lg">{{ selectedProduct?.nama }}</h3>
+                                <p class="text-gray-600">Rp {{ selectedProduct?.harga_jual.toLocaleString() }}</p>
+                                <p class="text-gray-600">Ket: {{ selectedProduct?.keterangan }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                            <div class="flex items-center space-x-4">
+                                <button @click="decreaseQty2" class="p-2 border rounded-lg hover:bg-gray-50"></button>
+                                <span class="text-xl font-semibold jumlah">{{ quantity }}</span>
+                                <button @click="increaseQty2" class="p-2 border rounded-lg hover:bg-gray-50">
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                            <textarea v-model="note"
+                                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                rows="3" placeholder="Add special instructions..."></textarea>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 flex justify-end space-x-2">
+                        <button @click="showModalCart = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
+                            Cancel
+                        </button>
+                        <button @click="saveCartChanges"
+                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                            Edit Cart
+                        </button>
                     </div>
                 </div>
             </div>
@@ -448,7 +551,6 @@ const print = async () => {
                                 rows="3" placeholder="Add special instructions..."></textarea>
                         </div>
                     </div>
-
                     <div class="p-4 bg-gray-50 flex justify-end space-x-2">
                         <button @click="showModal = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
                             Cancel
