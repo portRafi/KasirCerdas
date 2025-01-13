@@ -51,11 +51,6 @@ const filteredAndSortedProducts = computed(() => {
     return filteredProducts;
 });
 
-const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
-const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
-const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
-const calculateDiskonBarang = () => cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
-const calculateDiskonTransaksi = () => cart.value.reduce((sum, item) => sum + item.total_diskon_transaksi, 0);
 
 const openProductModal = (barang) => {
     selectedProduct.value = barang;
@@ -81,6 +76,12 @@ const saveCartChanges = () => {
     showModalCart.value = false;
 };
 
+const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
+const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
+const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
+const calculateDiskonBarang = () => cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
+const calculateDiskonTransaksi = () => cart.value.reduce((sum, item) => sum + item.total_diskon_transaksi, 0);
+
 const addToCart = () => {
     if (selectedProduct.value) {
         const totalHargaPerItemAsli = selectedProduct.value.harga_beli * quantity.value;
@@ -91,8 +92,8 @@ const addToCart = () => {
         const totalHargaAfterPajak = totalHargaSebelumDiskonPajak + totalPajak;
         const totalDiskon = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
         const totalDiskonTransaksi = (props.diskontransaksi <= 100) ? totalHargaSebelumDiskonPajak * (props.diskontransaksi / 100) : props.diskontransaksi;
-        const totalHargaAfterDiskon = totalHargaSebelumDiskonPajak + totalDiskon;
-        const totalHarga = ((totalHargaSebelumDiskonPajak - totalDiskon) - totalDiskonTransaksi) + totalPajak;
+        const totalHargaAfterDiskon = totalHargaSebelumDiskonPajak - totalDiskon;
+        const totalHarga = (totalHargaSebelumDiskonPajak - totalDiskon) + totalPajak;
 
         if (existingProductIndex !== -1) {
             cart.value[existingProductIndex].quantity += quantity.value;
@@ -102,7 +103,7 @@ const addToCart = () => {
             cart.value[existingProductIndex].total_harga_after_pajak += totalHargaAfterPajak;
             cart.value[existingProductIndex].total_harga_asli += totalHargaPerItemAsli;
             cart.value[existingProductIndex].total_diskon = totalDiskon;
-            cart.value[existingProductIndex].total_diskon_transaksi = totalDiskonTransaksi;  
+            // cart.value[existingProductIndex].total_diskon_transaksi = totalDiskonTransaksi;  
             cart.value[existingProductIndex].total_pajak += totalPajak;
         } else {
             cart.value.push({
@@ -119,7 +120,7 @@ const addToCart = () => {
                 total_harga_after_pajak: totalHargaAfterPajak,
                 total_harga_asli: totalHargaPerItemAsli,
                 total_diskon: totalDiskon,
-                total_diskon_transaksi: totalDiskonTransaksi,
+                // total_diskon_transaksi: totalDiskonTransaksi,
                 total_pajak: totalPajak,
                 note: note.value,
             });
@@ -137,6 +138,12 @@ const addToCart = () => {
 //         quantity.value++    
 //     }
 // };
+
+const formatCurrency = (value) => {
+    if (!value) return "0";
+    return Number(value).toLocaleString('id-ID');
+};
+
 
 const increaseQty = () => {
     if (quantity.value < selectedProduct.value?.stok) {
@@ -401,7 +408,7 @@ const print = async () => {
                                         <span class="text-xs font-normal text-gray-600">{{ barang.satuan }}</span>
                                     </p>
                                     <p class="font-bold text-base lg:text-lg pt-1 text-gray-600">
-                                        Rp {{ barang.harga_jual }}
+                                        Rp {{ formatCurrency(barang.harga_jual) }}
                                         <span class="text-xs lg:text-sm text-blue-600 font-normal">/ {{ barang.satuan
                                             }}</span>
                                     </p>
