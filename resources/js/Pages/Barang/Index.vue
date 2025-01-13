@@ -9,6 +9,7 @@ const props = defineProps({
     metodepembayaran: Array,
     pajak: Number,
     namakasir: Array,
+    diskontransaksi: Number,
 })
 
 const paymentMethod = ref('');
@@ -54,6 +55,7 @@ const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.to
 const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
 const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
 const calculateDiskonBarang = () => cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
+const calculateDiskonTransaksi = () => cart.value.reduce((sum, item) => sum + item.total_diskon_transaksi, 0);
 
 const openProductModal = (barang) => {
     selectedProduct.value = barang;
@@ -81,19 +83,27 @@ const saveCartChanges = () => {
 
 const addToCart = () => {
     if (selectedProduct.value) {
+        const totalHargaPerItemAsli = selectedProduct.value.harga_beli * quantity.value;
         const totalHargaPerItem = selectedProduct.value.harga_jual;
-        const totalDiskon = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
         const existingProductIndex = cart.value.findIndex(item => item.kode === selectedProduct.value.kode);
         const totalHargaSebelumDiskonPajak = totalHargaPerItem * quantity.value;
         const totalPajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
-        const totalHarga = (totalHargaSebelumDiskonPajak - totalDiskon) + totalPajak;
+        const totalHargaAfterPajak = totalHargaSebelumDiskonPajak + totalPajak;
+        const totalDiskon = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
+        const totalDiskonTransaksi = (props.diskontransaksi <= 100) ? totalHargaSebelumDiskonPajak * (props.diskontransaksi / 100) : props.diskontransaksi;
+        const totalHargaAfterDiskon = totalHargaSebelumDiskonPajak + totalDiskon;
+        const totalHarga = ((totalHargaSebelumDiskonPajak - totalDiskon) - totalDiskonTransaksi) + totalPajak;
 
         if (existingProductIndex !== -1) {
             cart.value[existingProductIndex].quantity += quantity.value;
-            cart.value[existingProductIndex].total_harga += totalHargaSebelumDiskonPajak + totalPajak
-            cart.value[existingProductIndex].total_harga_without_pajak_diskon += totalHargaSebelumDiskonPajak
+            cart.value[existingProductIndex].total_harga += totalHargaSebelumDiskonPajak + totalPajak;
+            cart.value[existingProductIndex].total_harga_without_pajak_diskon += totalHargaSebelumDiskonPajak;
+            cart.value[existingProductIndex].total_harga_after_diskon += totalHargaAfterDiskon;
+            cart.value[existingProductIndex].total_harga_after_pajak += totalHargaAfterPajak;
+            cart.value[existingProductIndex].total_harga_asli += totalHargaPerItemAsli;
             cart.value[existingProductIndex].total_diskon = totalDiskon;
-            cart.value[existingProductIndex].total_pajak += totalPajak
+            cart.value[existingProductIndex].total_diskon_transaksi = totalDiskonTransaksi;  
+            cart.value[existingProductIndex].total_pajak += totalPajak;
         } else {
             cart.value.push({
                 kode: selectedProduct.value.kode,
@@ -105,7 +115,11 @@ const addToCart = () => {
                 harga_beli: selectedProduct.value.harga_beli,
                 total_harga: totalHarga,
                 total_harga_without_pajak_diskon: totalHargaSebelumDiskonPajak,
+                total_harga_after_diskon: totalHargaAfterDiskon,
+                total_harga_after_pajak: totalHargaAfterPajak,
+                total_harga_asli: totalHargaPerItemAsli,
                 total_diskon: totalDiskon,
+                total_diskon_transaksi: totalDiskonTransaksi,
                 total_pajak: totalPajak,
                 note: note.value,
             });
@@ -115,6 +129,7 @@ const addToCart = () => {
         console.log(cart);
     }
 };
+
 
 // const increaseQty = (barang) => {
 //     selectedProduct.value = barang;
@@ -265,7 +280,7 @@ const print = async () => {
 
     try {
         for (let text of texts) {
-            const encoder = new TextEncoder();  
+            const encoder = new TextEncoder();
             const encodedText = encoder.encode(text);
             await writer.value.write(encodedText);
         }
@@ -279,6 +294,7 @@ const print = async () => {
 </script>
 
 <template>
+
     <Head title="Dashboard Kasir" />
 
     <AuthenticatedLayout>
@@ -303,7 +319,7 @@ const print = async () => {
                         <button @click="removeFromCart(index)" class="text-red-500 hover:underline ml-2">Hapus</button>
                     </div>
                 </div>
-               
+
                 <div class="mt-3 pt-2 border-t">
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">Metode Pembayaran</span>
@@ -325,6 +341,10 @@ const print = async () => {
                         <div class="flex justify-between mb-2 text-sm">
                             <span class="text-gray-600">Diskon Barang</span>
                             <span class="text-gray-600">- Rp {{ calculateDiskonBarang().toLocaleString() }}</span>
+                        </div>
+                        <div class="flex justify-between mb-2 text-sm">
+                            <span class="text-gray-600">Diskon Transaksi</span>
+                            <span class="text-gray-600">- Rp {{ calculateDiskonTransaksi().toLocaleString() }}</span>
                         </div>
                         <div class="flex justify-between border-t pt-2">
                             <span class="text-gray-600 text-base">Total</span>
@@ -365,7 +385,8 @@ const print = async () => {
                             class="border rounded-xl p-3 lg:p-5 cursor-pointer hover:shadow-md transition-shadow w-full flex flex-col justify-center"
                             @click="openProductModal(barang)">
                             <div class="flex items-start gap-2 lg:gap-4">
-                                <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gray-300 rounded-lg overflow-hidden flex-shrink-0">
+                                <div
+                                    class="w-20 h-20 lg:w-24 lg:h-24 bg-gray-300 rounded-lg overflow-hidden flex-shrink-0">
                                     <img src="" alt="">
                                 </div>
                                 <div class="flex flex-col flex-grow">
@@ -381,7 +402,8 @@ const print = async () => {
                                     </p>
                                     <p class="font-bold text-base lg:text-lg pt-1 text-gray-600">
                                         Rp {{ barang.harga_jual }}
-                                        <span class="text-xs lg:text-sm text-blue-600 font-normal">/ {{ barang.satuan }}</span>
+                                        <span class="text-xs lg:text-sm text-blue-600 font-normal">/ {{ barang.satuan
+                                            }}</span>
                                     </p>
                                 </div>
                             </div>
