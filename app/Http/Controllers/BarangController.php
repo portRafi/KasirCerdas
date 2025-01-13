@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use App\Models\MetodePembayaran;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Symfony\Component\Mime\Part\DataPart;
 
 class BarangController extends Controller
 {
@@ -50,7 +49,7 @@ class BarangController extends Controller
             'pajak' => $pajak,
             'namakasir' => $namaKasir,
             'diskontransaksi_getjumlah' => $diskontransaksi_getjumlah,
-            'diskontransaksi_minimalpembelian' => $diskontransaksi_minimalpembelian,
+            'diskontransaksi_minimalpembelian' => $diskontransaksi_minimalpembelian, 
         ]);
     }
     public function store(Request $request)

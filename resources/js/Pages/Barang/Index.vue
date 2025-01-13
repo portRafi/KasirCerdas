@@ -80,9 +80,8 @@ const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.to
 const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
 const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
 const calculateDiskonBarang = () => cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
-const calculateDiskonTransaksi = () => cart.value.reduce((sum, item) => sum + (item.total_diskon_transaksi || 0), 0);
+const calculateDiskonTransaksi = () => cart.value.reduce((sum, item) => sum + item.total_diskon_transaksi, 0);
 
-let diskonTransaksiApplied = false;
 const addToCart = () => {
     if (selectedProduct.value) {
         const totalHargaPerItemAsli = selectedProduct.value.harga_beli * quantity.value;
@@ -91,13 +90,12 @@ const addToCart = () => {
         const totalHargaSebelumDiskonPajak = totalHargaPerItem * quantity.value;
         const totalPajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
         const totalDiskon = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
-        const bisaDiskonGa = !diskonTransaksiApplied && totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && props.diskontransaksi_getjumlah <= 100;
-        const totalDiskonTransaksi = bisaDiskonGa ? totalHargaSebelumDiskonPajak * (props.diskontransaksi_getjumlah / 100) : (diskonTransaksiApplied ? 0 : props.diskontransaksi_getjumlah);
+        const totalBelanjaSebelumDiskonPajak = cart.value.reduce((total, item) => total + item.total_harga_without_pajak_diskon, totalHargaSebelumDiskonPajak);
+        const totalDiskonTransaksi = (totalBelanjaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) ? props.diskontransaksi_getjumlah : 0;
 
-        console.log('totalHargaSebelumDiskonPajak:', totalHargaSebelumDiskonPajak);
+        console.log('totalBelanjaSebelumDiskonPajak:', totalBelanjaSebelumDiskonPajak);
         console.log('props.diskontransaksi_minimalpembelian:', props.diskontransaksi_minimalpembelian);
         console.log('props.diskontransaksi_getjumlah:', props.diskontransaksi_getjumlah);
-        console.log('diskonTransaksiApplied:', diskonTransaksiApplied);
 
         const totalHargaAfterDiskon = totalHargaSebelumDiskonPajak - totalDiskon;
         const totalHarga = (totalHargaSebelumDiskonPajak - totalDiskon - totalDiskonTransaksi) + totalPajak;
@@ -110,7 +108,7 @@ const addToCart = () => {
             cart.value[existingProductIndex].total_harga_after_pajak += totalHargaAfterDiskon + totalPajak;
             cart.value[existingProductIndex].total_harga_asli += totalHargaPerItemAsli;
             cart.value[existingProductIndex].total_diskon = totalDiskon;
-            cart.value[existingProductIndex].total_diskon_transaksi += (diskonTransaksiApplied ? 0 : totalDiskonTransaksi);
+            cart.value[existingProductIndex].total_diskon_transaksi = totalDiskonTransaksi;
             cart.value[existingProductIndex].total_pajak += totalPajak;
         } else {
             cart.value.push({
@@ -131,17 +129,12 @@ const addToCart = () => {
                 total_pajak: totalPajak,
                 note: note.value,
             });
-
-            if (!diskonTransaksiApplied) {
-                diskonTransaksiApplied = true;
-            }
         }
-
-        // Close the modal
         showModal.value = false;
         console.log(cart);
     }
 };
+
 
 
 const formatCurrency = (value) => {
@@ -369,8 +362,7 @@ const print = async () => {
                         </div>
                         <div class="flex justify-between mb-2 text-sm">
                             <span class="text-gray-600">Diskon Transaksi</span>
-                            <!-- <span class="text-gray-600">- Rp {{ calculateDiskonTransaksi() }}</span> -->
-                            <span class="text-gray-600">- Rp {{ calculateDiskonTransaksi() }}</span>
+                            <span class="text-gray-600">- Rp {{ calculateDiskonTransaksi().toLocaleString() }}</span>
                         </div>
                         <div class="flex justify-between border-t pt-2">
                             <span class="text-gray-600 text-base">Total</span>
