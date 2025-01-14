@@ -72,33 +72,38 @@ const saveCartChanges = () => {
     const selectedItem = cart.value[selectedIndex.value];
     const stok = selectedItem.stok;
     const totalHargaSebelumDiskonPajak = quantity.value * selectedItem.harga_jual;
-    if (quantity.value > (selectedItem.quantity + stok)) {
+    const totalPajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
+    const totalBelanjaSebelumDiskonPajak = cart.value.reduce((total, item) => total + item.total_harga_without_pajak_diskon, totalHargaSebelumDiskonPajak);
+    const totalDiskonTransaksi = (totalBelanjaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && !isDiskonTransaksiActive)
+        ? (isDiskonTransaksiActive = true, props.diskontransaksi_getjumlah)
+        : 0;
+
+    if (quantity.value > stok) {
         alert('Quantity di keranjang tidak boleh melebihi stok');
         return;
     }
+
     if (quantity.value === selectedItem.quantity) {
-        alert('jumlah tidak boleh sama')
+        alert('jumlah tidak boleh sama');
         return;
     }
-    if (totalHargaSebelumDiskonPajak < props.diskontransaksi_minimalpembelian) {
+
+    if (totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) {
+        selectedItem.total_diskon_transaksi = isDiskonTransaksiActive ? props.diskontransaksi_getjumlah : 0;
+    } else {
         selectedItem.total_diskon_transaksi = 0;
         isDiskonTransaksiActive = false;
-    } else {
-        selectedItem.total_diskon_transaksi = isDiskonTransaksiActive ? props.diskontransaksi_getjumlah : 0;
     }
-    // console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAA', stok);
-    
+
+    selectedItem.stok = stok - quantity.value;
     selectedItem.quantity = quantity.value;
-    selectedItem.stok = quantity.value - selectedItem.quantity;
     selectedItem.note = note.value;
     selectedItem.total_harga_without_pajak_diskon = totalHargaSebelumDiskonPajak;
     selectedItem.total_pajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
-    selectedItem.total_harga = 
-        (totalHargaSebelumDiskonPajak - selectedItem.total_diskon - selectedItem.total_diskon_transaksi) +
-        selectedItem.total_pajak;
+    selectedItem.total_harga = (totalHargaSebelumDiskonPajak + totalPajak) - totalDiskonTransaksi;
+
     showModalCart.value = false;
 };
-
 
 
 const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
@@ -124,9 +129,8 @@ const addToCart = () => {
             const existingItem = cart.value[existingProductIndex];
             if (existingItem.quantity + quantity.value > selectedProduct.value.stok) {
                 alert('Quantity di keranjang gabisa melebihi stok');
-                return; 
+                return;
             }
-
             existingItem.total_harga += (totalHargaSebelumDiskonPajak + totalPajak) - totalDiskonTransaksi;
             existingItem.quantity += quantity.value;
             existingItem.total_harga_without_pajak_diskon += totalHargaSebelumDiskonPajak;
@@ -207,11 +211,9 @@ const removeFromCart = (index) => {
         if (totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) {
             isDiskonTransaksiActive = true;
             cart.value.splice(index, 1);
-            // console.log('Total harga di atas minimal pembelian, isDiskonTransaksiActive');
         } else {
             isDiskonTransaksiActive = false;
             cart.value.splice(index, 1);
-            // console.log('Total harga di bawah minimal pembelian, isDiskonTransaksiActive');
         }
 
         cart.value.forEach(item => {
