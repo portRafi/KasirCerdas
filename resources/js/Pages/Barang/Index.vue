@@ -28,6 +28,8 @@ const deviceName = ref('');
 const printerStatusClass = ref('badge bg-danger');
 const searchQuery = ref('');
 const sortOption = ref('asc');
+var isDiskonTransaksiActive = false;
+
 
 const filteredAndSortedProducts = computed(() => {
     let filteredProducts = props.barangs.filter(barang => {
@@ -51,7 +53,6 @@ const filteredAndSortedProducts = computed(() => {
 
     return filteredProducts;
 });
-
 
 const openProductModal = (barang) => {
     selectedProduct.value = barang;
@@ -81,10 +82,11 @@ const saveCartChanges = () => {
     }
     if (totalHargaSebelumDiskonPajak < props.diskontransaksi_minimalpembelian) {
         selectedItem.total_diskon_transaksi = 0;
+        isDiskonTransaksiActive = false;
     } else {
         selectedItem.total_diskon_transaksi = isDiskonTransaksiActive ? props.diskontransaksi_getjumlah : 0;
     }
-    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAA', stok);
+    // console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAA', stok);
     
     selectedItem.quantity = quantity.value;
     selectedItem.stok = quantity.value - selectedItem.quantity;
@@ -104,27 +106,19 @@ const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_h
 const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
 const calculateDiskonBarang = () => cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
 const calculateDiskonTransaksi = () => cart.value.reduce((sum, item) => sum + item.total_diskon_transaksi, 0);
-var isDiskonTransaksiActive = false;
 
 const addToCart = () => {
     if (selectedProduct.value) {
         const totalHargaPerItemAsli = selectedProduct.value.harga_beli * quantity.value;
         const totalHargaPerItem = selectedProduct.value.harga_jual;
-        const existingProductIndex = cart.value.findIndex(item => item.kode === selectedProduct.value.kode);
         const totalHargaSebelumDiskonPajak = totalHargaPerItem * quantity.value;
         const totalPajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
         const totalDiskon = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
         const totalBelanjaSebelumDiskonPajak = cart.value.reduce((total, item) => total + item.total_harga_without_pajak_diskon, totalHargaSebelumDiskonPajak);
-        const totalDiskonTransaksi = (!isDiskonTransaksiActive && totalBelanjaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) ? (isDiskonTransaksiActive = true, props.diskontransaksi_getjumlah) : 0;
-        const existingTotalDiskonTransaksi = (totalBelanjaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) ? props.diskontransaksi_getjumlah : 0;
-
-        console.log('totalBelanjaSebelumDiskonPajak:', totalBelanjaSebelumDiskonPajak);
-        console.log('props.diskontransaksi_minimalpembelian:', props.diskontransaksi_minimalpembelian);
-        console.log('props.diskontransaksi_getjumlah:', props.diskontransaksi_getjumlah);
-        console.log('isDiskonTransaksiActive:', isDiskonTransaksiActive);
-
+        const totalDiskonTransaksi = (totalBelanjaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && !isDiskonTransaksiActive) ? (isDiskonTransaksiActive = true, props.diskontransaksi_getjumlah) : 0;
         const totalHargaAfterDiskon = totalHargaSebelumDiskonPajak - totalDiskon;
         const totalHarga = (totalHargaSebelumDiskonPajak - totalDiskon - totalDiskonTransaksi) + totalPajak;
+        const existingProductIndex = cart.value.findIndex(item => item.kode === selectedProduct.value.kode);
 
         if (existingProductIndex !== -1) {
             const existingItem = cart.value[existingProductIndex];
@@ -132,16 +126,18 @@ const addToCart = () => {
                 alert('Quantity di keranjang gabisa melebihi stok');
                 return; 
             }
+
+            existingItem.total_harga += (totalHargaSebelumDiskonPajak + totalPajak) - totalDiskonTransaksi;
             existingItem.quantity += quantity.value;
-            existingItem.total_harga += totalHargaSebelumDiskonPajak + totalPajak;
             existingItem.total_harga_without_pajak_diskon += totalHargaSebelumDiskonPajak;
             existingItem.total_harga_after_diskon += totalHargaAfterDiskon;
             existingItem.total_harga_after_pajak += totalHargaAfterDiskon + totalPajak;
             existingItem.total_harga_asli += totalHargaPerItemAsli;
             existingItem.total_diskon = totalDiskon;
-            existingItem.total_diskon_transaksi = existingTotalDiskonTransaksi;
+            existingItem.total_diskon_transaksi = totalDiskonTransaksi;
             existingItem.total_pajak += totalPajak;
-            existingItem.stok = selectedProduct.value.stok - existingItem.quantity; 
+            existingItem.stok = selectedProduct.value.stok - existingItem.quantity;
+
         } else {
             if (quantity.value > selectedProduct.value.stok) {
                 alert('Quantity di keranjang gabisa melebihi stok');
@@ -164,12 +160,13 @@ const addToCart = () => {
                 total_diskon_transaksi: totalDiskonTransaksi,
                 total_pajak: totalPajak,
                 note: note.value,
-                stok: selectedProduct.value.stok - quantity.value, 
+                stok: selectedProduct.value.stok - quantity.value,
             });
         }
+
         showModal.value = false;
         console.log(cart);
-        console.log(selectedProduct.value.stok);
+        console.log('isDTactive?', isDiskonTransaksiActive);
     }
 };
 
@@ -178,8 +175,6 @@ const formatCurrency = (value) => {
     if (!value) return "0";
     return Number(value).toLocaleString('id-ID');
 };
-
-
 
 const increaseQty = () => {
     quantity.value++
@@ -212,11 +207,11 @@ const removeFromCart = (index) => {
         if (totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) {
             isDiskonTransaksiActive = true;
             cart.value.splice(index, 1);
-            console.log('Total harga di atas minimal pembelian, isDiskonTransaksiActive');
+            // console.log('Total harga di atas minimal pembelian, isDiskonTransaksiActive');
         } else {
             isDiskonTransaksiActive = false;
             cart.value.splice(index, 1);
-            console.log('Total harga di bawah minimal pembelian, isDiskonTransaksiActive');
+            // console.log('Total harga di bawah minimal pembelian, isDiskonTransaksiActive');
         }
 
         cart.value.forEach(item => {
