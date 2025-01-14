@@ -52,7 +52,6 @@ const filteredAndSortedProducts = computed(() => {
     return filteredProducts;
 });
 
-
 const openProductModal = (barang) => {
     selectedProduct.value = barang;
     quantity.value = 1;
@@ -135,14 +134,10 @@ const addToCart = () => {
     }
 };
 
-
-
 const formatCurrency = (value) => {
     if (!value) return "0";
     return Number(value).toLocaleString('id-ID');
 };
-
-
 
 const increaseQty = () => {
     if (quantity.value < selectedProduct.value?.stok) {
@@ -214,7 +209,6 @@ function generateRandomString() {
     const randomPart = Math.random().toString(36).substring(2, 7);
     return prefix + randomPart;
 }
-
 
 const connect = async () => {
     if (printer.value && writer.value) {
@@ -378,7 +372,7 @@ const print = async () => {
                     </button>
                 </div>
             </div>
-
+            
             <!-- Products Section - Modified for tablet responsiveness -->
             <div class="flex-1 p-3 lg:p-5">
                 <div class="bg-white rounded-xl p-3 lg:p-5">
@@ -396,7 +390,7 @@ const print = async () => {
                                 <option value="price_asc">Harga ter-tinggi</option>
                                 <option value="price_desc">Harga ter-rendah</option>
                             </select>
-                        </div>
+                        </div>w
                     </div>
                     <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 pr-2 overflow-y-auto" style="max-height: 63vh;">
                         <div v-for="barang in filteredAndSortedProducts" :key="barang.id"
