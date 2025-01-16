@@ -21,6 +21,8 @@ const selectedProduct = ref(null);
 const selectedIndex = ref(null);
 const quantity = ref(1);
 const note = ref('');
+const keterangan = ref('');
+const satuan = ref('');
 const printer = ref(null);
 const writer = ref(null);
 const printerStatus = ref('OFF');
@@ -66,6 +68,8 @@ const editProductCart = (item, index) => {
     selectedIndex.value = index;
     quantity.value = item.quantity;
     note.value = item.note;
+    satuan.value = item.satuan;
+    keterangan.value = item.value;
     showModalCart.value = true;
 };
 const saveCartChanges = () => {
@@ -99,10 +103,11 @@ const saveCartChanges = () => {
     selectedItem.stok = stok - quantity.value;
     selectedItem.quantity = quantity.value;
     selectedItem.note = note.value;
+    selectedItem.satuan = satuan.value;
+    selectedItem.keterangan = keterangan.value;
     selectedItem.total_harga_without_pajak_diskon = totalHargaSebelumDiskonPajak;
     selectedItem.total_pajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
     selectedItem.total_harga = (totalHargaSebelumDiskonPajak + totalPajak) - totalDiskonTransaksi;
-
     showModalCart.value = false;
 };
 
@@ -165,7 +170,8 @@ const addToCart = () => {
                 total_diskon: totalDiskon,
                 total_diskon_transaksi: totalDiskonTransaksi,
                 total_pajak: totalPajak,
-                note: note.value,
+                satuan: selectedProduct.value.satuan,
+                keterangan: selectedProduct.value.keterangan,
                 stok: selectedProduct.value.stok - quantity.value,
             });
         }
@@ -243,7 +249,6 @@ const checkout = async () => {
 
     try {
         const response = await axios.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
-
         if (response.data.success) {
             alert('Checkout berhasil!');
             window.location.reload();
@@ -364,10 +369,10 @@ const print = async () => {
 
     <Head title="Dashboard Kasir" />
 
-    <AuthenticatedLayout>
-        <div class="flex flex-col lg:flex-row h-[calc(100vh-150px)] bg-gray-100 overflow-hidden">
-            <div class="w-full lg:w-1/4 bg-white p-4 flex flex-col h-full rounded-b-xl">
-                <div class="overflow-y-auto h-[75%]">
+    <AuthenticatedLayout class="h-screen overflow-hidden">
+    <div class="overflow-hidden flex flex-col lg:flex-row h-screen bg-gray-100">
+            <div class="w-full lg:w-1/4 bg-white p-4 flex flex-col min-h-[90%] rounded-b-xl">
+                <div class="overflow-y-auto h-[48%]">
                     <div v-for="(item, index) in cart" :key="index"
                         class="flex items-center justify-between py-2 border-b">
                         <div class="flex-1">
@@ -429,7 +434,7 @@ const print = async () => {
 
             <!-- Products Section - Modified for tablet responsiveness -->
             <div class="flex-1 p-3 lg:p-5">
-                <div class="bg-white rounded-xl p-3 lg:p-5">
+                <div class="bg-white rounded-xl p-3 lg:p-5 h-[90%]">
                     <div class="flex flex-col sm:flex-row items-center mb-4 space-y-3 sm:space-y-0">
                         <div class="flex items-center w-full sm:w-auto">
                             <input type="text" placeholder="Cari barang..."
@@ -446,7 +451,7 @@ const print = async () => {
                             </select>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 pr-2 overflow-y-auto" style="max-height: 63vh;">
+                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 pr-2 overflow-y-auto max-h-[89%]">
                         <div v-for="barang in filteredAndSortedProducts" :key="barang.id"
                             class="border rounded-xl p-3 lg:p-5 cursor-pointer hover:shadow-md transition-shadow w-full flex flex-col justify-center"
                             @click="openProductModal(barang)">
@@ -484,7 +489,8 @@ const print = async () => {
                         <div class="flex items-center space-x-4">
                             <div>
                                 <h3 class="font-semibold text-lg">{{ selectedProduct?.nama }}</h3>
-                                <p class="text-gray-600">Rp {{ selectedProduct?.harga_jual.toLocaleString() }}</p>
+                                <p class="text-gray-600">Rp <span class="font-bold">{{ formatCurrency(selectedProduct?.harga_jual) }} <span class="font-normal">/ {{  selectedProduct?.satuan }}</span></span></p>
+                                <p class="text-gray-600">Stok: <span class="font-bold">{{ formatCurrency(selectedProduct?.stok) }} {{ selectedProduct?.satuan}} </span></p>
                                 <p class="text-gray-600">Ket: {{ selectedProduct?.keterangan }}</p>
                             </div>
                         </div>
@@ -494,10 +500,9 @@ const print = async () => {
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
                             <div class="flex items-center space-x-4">
-                                <button @click="decreaseQty2" class="p-2 border rounded-lg hover:bg-gray-50"></button>
+                                <button @click="decreaseQty2" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> - </button>
                                 <span class="text-xl font-semibold jumlah">{{ quantity }}</span>
-                                <button @click="increaseQty2" class="p-2 border rounded-lg hover:bg-gray-50">
-                                </button>
+                                <button @click="increaseQty2" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> + </button>
                             </div>
                         </div>
 
@@ -509,47 +514,6 @@ const print = async () => {
                         </div>
                     </div>
 
-                    <div class="p-4 bg-gray-50 flex justify-end space-x-2">
-                        <button @click="showModalCart = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
-                            Cancel
-                        </button>
-                        <button @click="saveCartChanges"
-                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                            Edit Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div v-if="showModalCart" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                <div class="bg-white rounded-lg w-96 overflow-hidden">
-                    <div class="p-4 border-b">
-                        <div class="flex items-center space-x-4">
-                            <div>
-                                <h3 class="font-semibold text-lg">{{ selectedProduct?.nama }}</h3>
-                                <p class="text-gray-600">Rp {{ selectedProduct?.harga_jual.toLocaleString() }}</p>
-                                <p class="text-gray-600">Ket: {{ selectedProduct?.keterangan }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-4">
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
-                            <div class="flex items-center space-x-4">
-                                <button @click="decreaseQty2" class="p-2 border rounded-lg hover:bg-gray-50"></button>
-                                <span class="text-xl font-semibold jumlah">{{ quantity }}</span>
-                                <button @click="increaseQty2" class="p-2 border rounded-lg hover:bg-gray-50">
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
-                            <textarea v-model="note"
-                                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                rows="3" placeholder="Add special instructions..."></textarea>
-                        </div>
-                    </div>
                     <div class="p-4 bg-gray-50 flex justify-end space-x-2">
                         <button @click="showModalCart = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
                             Cancel
@@ -567,7 +531,8 @@ const print = async () => {
                         <div class="flex items-center space-x-4">
                             <div>
                                 <h3 class="font-semibold text-lg">{{ selectedProduct?.nama }}</h3>
-                                <p class="text-gray-600">Rp {{ selectedProduct?.harga_jual.toLocaleString() }}</p>
+                                <p class="text-gray-600">Rp <span class="font-bold">{{ formatCurrency(selectedProduct?.harga_jual) }} <span class="font-normal">/ {{  selectedProduct?.satuan }}</span></span></p>
+                                <p class="text-gray-600">Stok: <span class="font-bold">{{ formatCurrency(selectedProduct?.stok) }} {{ selectedProduct?.satuan}} </span></p>
                                 <p class="text-gray-600">Ket: {{ selectedProduct?.keterangan }}</p>
                             </div>
                         </div>
@@ -577,10 +542,9 @@ const print = async () => {
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
                             <div class="flex items-center space-x-4">
-                                <button @click="decreaseQty" class="p-2 border rounded-lg hover:bg-gray-50"></button>
+                                <button @click="decreaseQty" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> - </button>
                                 <span class="text-xl font-semibold jumlah">{{ quantity }}</span>
-                                <button @click="increaseQty" class="p-2 border rounded-lg hover:bg-gray-50">
-                                </button>
+                                <button @click="increaseQty" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> + </button>
                             </div>
                         </div>
 

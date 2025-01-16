@@ -73,18 +73,6 @@ class BarangController extends Controller
         }
 
         foreach ($request->cart as $item) {
-            // DataTransaksi::create([
-            //     'bisnis_id' => Auth::user()->bisnis_id,
-            //     'cabangs_id' => Auth::user()->cabangs_id,
-            //     'kode_transaksi' => $randomString,
-            //     'email_staff' => $emailStaff,
-            //     'metode_pembayaran' => $metodePembayaran,
-            //     'totoal_harga' => $totalHarga,
-            //     'total_harga_after_pajak' => $totalHargaAfterPajak,
-            //     'selisih_pajak' => $jumlahPajak,
-            //     'keuntungan' => $keuntungan
-            // ]);
-
             DataTransaksi::create([
                 'bisnis_id' => Auth::user()->bisnis_id,
                 'cabangs_id' => Auth::user()->cabangs_id,
