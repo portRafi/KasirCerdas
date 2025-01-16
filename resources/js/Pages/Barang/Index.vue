@@ -40,7 +40,6 @@ const printerStatusClass = ref('badge bg-danger');
 const searchQuery = ref('');
 const sortOption = ref('asc');
 var isDiskonTransaksiActive = false;
-// const isPrinterActive = false;
 
 
 const filteredAndSortedProducts = computed(() => {
@@ -378,9 +377,11 @@ const print = async () => {
     texts.push(
         printable.Align.left(printable.Font.normal(`Subtotal\t: Rp ${calculateSubtotal().toLocaleString()}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Tax\t: Rp ${calculateSubtotal().toLocaleString()}`)),
+        printable.Align.left(printable.Font.normal(`Tax\t: Rp ${calculateTotalPajak().toLocaleString()}`)),
         printable.Keyboard.enter(1),
         printable.Align.left(printable.Font.normal(`Diskon\t: Rp ${calculateDiskonBarang().toLocaleString()}`)),
+        printable.Keyboard.enter(1),
+        printable.Align.left(printable.Font.normal(`Diskon Transaksi\t: Rp ${calculateDiskonTransaksi().toLocaleString()}`)),
         printable.Keyboard.enter(1),
         printable.Align.left(printable.Font.normal(`Total\t: Rp ${calculateTotalPajak().toLocaleString()}`)),
         printable.Keyboard.enter(2),
@@ -443,11 +444,36 @@ const print = async () => {
             <div class="mt-3 pt-2 border-t">
                 <div class="flex justify-between items-center">
                     <span class="text-gray-600">Metode Pembayaran</span>
-                    <select v-model="paymentMethod" class="px-4 lg:px-7 py-1 border rounded-lg">
+                    <!-- <select v-model="paymentMethod" class="px-4 lg:px-7 py-1 border rounded-lg">
                         <option v-for="mp in metodepembayaran" :key="mp.id" :value="mp.nama_mp">
                             {{ mp.nama_mp }}
                         </option>
-                    </select>
+                    </select> -->
+                    <span class="inline-flex rounded-md">
+                        <Dropdown align="right" width="60" height="1" class="border rounded-lg">
+                            <template #trigger>
+                                <span class="inline-flex rounded-md">
+                                    <button type="button"
+                                        class="inline-flex items-center px-6 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                        {{ metodepembayaran.length > 0 ? metodepembayaran[0].nama_mp : 'Tidak ada metode pembayaran' }}
+                                        <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </span>
+                            </template>
+
+                            <template #content>
+                                <DropdownLink class="w-[110px] flex justify-center" v-for="mp in metodepembayaran" :key="mp.id"
+                                    :href="route('metodepembayaran.edit', mp.id)">
+                                    {{ mp.nama_mp }}
+                                </DropdownLink>
+                            </template>
+                        </Dropdown>
+                    </span>
                 </div>
                 <div class="mt-2">
                     <div class="flex justify-between mb-2 text-base">
