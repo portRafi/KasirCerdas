@@ -369,10 +369,10 @@ const print = async () => {
 
     <Head title="Dashboard Kasir" />
 
-    <AuthenticatedLayout>
-        <div class="flex flex-col lg:flex-row h-[calc(100vh-150px)] bg-gray-100 overflow-hidden">
-            <div class="w-full lg:w-1/4 bg-white p-4 flex flex-col h-full rounded-b-xl">
-                <div class="overflow-y-auto h-[75%]">
+    <AuthenticatedLayout class="h-screen overflow-hidden">
+    <div class="overflow-hidden flex flex-col lg:flex-row h-screen bg-gray-100">
+            <div class="w-full lg:w-1/4 bg-white p-4 flex flex-col min-h-[90%] rounded-b-xl">
+                <div class="overflow-y-auto h-[48%]">
                     <div v-for="(item, index) in cart" :key="index"
                         class="flex items-center justify-between py-2 border-b">
                         <div class="flex-1">
@@ -434,7 +434,7 @@ const print = async () => {
 
             <!-- Products Section - Modified for tablet responsiveness -->
             <div class="flex-1 p-3 lg:p-5">
-                <div class="bg-white rounded-xl p-3 lg:p-5">
+                <div class="bg-white rounded-xl p-3 lg:p-5 h-[90%]">
                     <div class="flex flex-col sm:flex-row items-center mb-4 space-y-3 sm:space-y-0">
                         <div class="flex items-center w-full sm:w-auto">
                             <input type="text" placeholder="Cari barang..."
@@ -451,7 +451,7 @@ const print = async () => {
                             </select>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 pr-2 overflow-y-auto" style="max-height: 63vh;">
+                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 pr-2 overflow-y-auto max-h-[89%]">
                         <div v-for="barang in filteredAndSortedProducts" :key="barang.id"
                             class="border rounded-xl p-3 lg:p-5 cursor-pointer hover:shadow-md transition-shadow w-full flex flex-col justify-center"
                             @click="openProductModal(barang)">
@@ -500,9 +500,9 @@ const print = async () => {
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
                             <div class="flex items-center space-x-4">
-                                <button @click="decreaseQty" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> - </button>
+                                <button @click="decreaseQty2" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> - </button>
                                 <span class="text-xl font-semibold jumlah">{{ quantity }}</span>
-                                <button @click="increaseQty" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> + </button>
+                                <button @click="increaseQty2" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> + </button>
                             </div>
                         </div>
 
