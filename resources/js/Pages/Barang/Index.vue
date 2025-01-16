@@ -1,8 +1,12 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+// import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
+import 'primeicons/primeicons.css'
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import Dropdown from '@/Components/Dropdown.vue';
+import DropdownLink from '@/Components/DropdownLink.vue';
 
 const props = defineProps({
     barangs: Array,
@@ -12,6 +16,11 @@ const props = defineProps({
     diskontransaksi_getjumlah: Number,
     diskontransaksi_minimalpembelian: Number,
 })
+
+onMounted(() => {
+    const isPrinterActive = false;
+    printeractive(isPrinterActive);
+});
 
 const paymentMethod = ref('');
 const cart = ref([]);
@@ -269,9 +278,17 @@ function generateRandomString() {
     return prefix + randomPart;
 }
 
+<<<<<<< HEAD
+=======
+
+let isPrinterActive = false;
+
+>>>>>>> 8c967805d7b77da39a6b1c75531bb048836a5fe1
 const connect = async () => {
     if (printer.value && writer.value) {
         alert('Printer sudah terhubung!');
+        isPrinterActive = true;
+        printeractive(isPrinterActive);
         return;
     }
 
@@ -288,11 +305,35 @@ const connect = async () => {
         writer.value = printer.value.writable.getWriter();
         printerStatus.value = 'CONNECTED';
         printerStatusClass.value = 'badge bg-primary';
+
+        isPrinterActive = true;
+        printeractive(isPrinterActive);
+
     } catch (error) {
         console.error('Error saat menghubungkan ke printer:', error);
         alert('Gagal menghubungkan ke printer.');
     }
 };
+
+function printeractive(isPrinterActive) {
+    const iconContainer = document.getElementById('printer-icon');
+
+    if (iconContainer) {
+        const icon = document.createElement('i');
+        icon.classList.add('pi', 'pi-print');
+
+        if (isPrinterActive) {
+            icon.style.color = 'green';
+        } else {
+            icon.style.color = 'red';
+        }
+
+        iconContainer.innerHTML = '';
+        iconContainer.appendChild(icon);
+    } else {
+        console.error('Element with id "printer-icon" not found.');
+    }
+}
 
 const print = async () => {
     if (!printer.value || !writer.value) {
@@ -340,9 +381,11 @@ const print = async () => {
     texts.push(
         printable.Align.left(printable.Font.normal(`Subtotal\t: Rp ${calculateSubtotal().toLocaleString()}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Tax\t: Rp ${calculateSubtotal().toLocaleString()}`)),
+        printable.Align.left(printable.Font.normal(`Tax\t: Rp ${calculateTotalPajak().toLocaleString()}`)),
         printable.Keyboard.enter(1),
         printable.Align.left(printable.Font.normal(`Diskon\t: Rp ${calculateDiskonBarang().toLocaleString()}`)),
+        printable.Keyboard.enter(1),
+        printable.Align.left(printable.Font.normal(`Diskon Transaksi\t: Rp ${calculateDiskonTransaksi().toLocaleString()}`)),
         printable.Keyboard.enter(1),
         printable.Align.left(printable.Font.normal(`Total\t: Rp ${calculateTotalPajak().toLocaleString()}`)),
         printable.Keyboard.enter(2),
@@ -369,73 +412,85 @@ const print = async () => {
 
     <Head title="Dashboard Kasir" />
 
-    <AuthenticatedLayout class="h-screen overflow-hidden">
+    <!-- <AuthenticatedLayout class="h-screen overflow-hidden"> -->
     <div class="overflow-hidden flex flex-col lg:flex-row h-screen bg-gray-100">
-            <div class="w-full lg:w-1/4 bg-white p-4 flex flex-col min-h-[90%] rounded-b-xl">
-                <div class="overflow-y-auto h-[48%]">
-                    <div v-for="(item, index) in cart" :key="index"
-                        class="flex items-center justify-between py-2 border-b">
-                        <div class="flex-1">
-                            <p class="font-medium text-sm">
-                                {{ item.nama }}
-                                <span v-if="item.note" class="text-sm text-gray-500 italic">Note: {{ item.note }}</span>
-                            </p>
-                            <p class="text-gray-600 text-sm">
-                                {{ item.quantity }} x Rp {{ formatCurrency(item.harga_jual) }}
-                            </p>
-                        </div>
-                        <p class="font-medium">Rp {{ item.total_harga_without_pajak_diskon.toLocaleString() }}</p>
-                        <button @click="editProductCart(item, index)"
-                            class="text-blue-500 hover:underline ml-2">Edit</button>
-                        <button @click="removeFromCart(index)" class="text-red-500 hover:underline ml-2">Hapus</button>
+        <div class="w-full lg:w-1/4 bg-white p-4 pt-0 flex flex-col min-h-[90%] rounded-b-xl">
+            <div class="overflow-y-auto flex-grow max-h-[70%]">
+                <div class="flex pt-6 pb-5 items-center justify-left border-b">
+                    <div class="shrink-0 flex items-center justify-center mr-3">
+                        <ApplicationLogo class="block h-8 w-auto fill-current text-gray-800" />
+                    </div>
+                    <div class="hidden sm:flex text-center">
+                        KasirCerdas | Ionbit
                     </div>
                 </div>
 
-                <div class="mt-3 pt-2 border-t">
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Metode Pembayaran</span>
-                        <select v-model="paymentMethod" class="px-4 lg:px-7 py-1 border rounded-lg">
-                            <option v-for="mp in metodepembayaran" :key="mp.id" :value="mp.nama_mp">
-                                {{ mp.nama_mp }}
-                            </option>
-                        </select>
+                <div v-for="(item, index) in cart" :key="index" class="flex items-center justify-between py-2 border-b">
+                    <div class="flex-1">
+                        <p class="font-medium text-sm">
+                            {{ item.nama }}
+                            <span v-if="item.note" class="text-sm text-gray-500 italic">Note: {{ item.note }}</span>
+                        </p>
+                        <p class="text-gray-600 text-sm">
+                            {{ item.quantity }} x Rp {{ formatCurrency(item.harga_jual) }}
+                        </p>
                     </div>
-                    <div class="mt-2">
-                        <div class="flex justify-between mb-2 text-base">
-                            <span class="text-gray-600">Subtotal</span>
-                            <span class="font-medium">Rp {{ calculateSubtotal().toLocaleString() }}</span>
-                        </div>
-                        <div class="flex justify-between mb-2 text-sm border-t pt-2">
-                            <span class="text-gray-600">Total Pajak</span>
-                            <span class="text-gray-600">Rp {{ calculateTotalPajak().toLocaleString() }}</span>
-                        </div>
-                        <div class="flex justify-between mb-2 text-sm">
-                            <span class="text-gray-600">Diskon Barang</span>
-                            <span class="text-gray-600">- Rp {{ calculateDiskonBarang().toLocaleString() }}</span>
-                        </div>
-                        <div class="flex justify-between mb-2 text-sm">
-                            <span class="text-gray-600">Diskon Transaksi</span>
-                            <span class="text-gray-600">- Rp {{ calculateDiskonTransaksi().toLocaleString() }}</span>
-                        </div>
-                        <div class="flex justify-between border-t pt-2">
-                            <span class="text-gray-600 text-base">Total</span>
-                            <span class="text-base font-semibold">Rp {{ calculateTotal().toLocaleString() }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-4 gap-2 mt-4">
-                    <button @click="checkout"
-                        class="col-span-4 p-2 bg-blue-500 text-white font-semibold hover:bg-blue-600 rounded-xl">
-                        Checkout
+                    <p class="font-medium">Rp {{ item.total_harga_without_pajak_diskon.toLocaleString() }}</p>
+                    <button @click="editProductCart(item, index)" class="text-blue-500 hover:underline ml-3">
+                        <i class="pi pi-pen-to-square" style="font-size: 20px"></i>
+                    </button>
+                    <button @click="removeFromCart(index)" class="text-red-500 hover:underline ml-3">
+                        <i class="pi pi-trash" style="font-size: 20px"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Products Section - Modified for tablet responsiveness -->
-            <div class="flex-1 p-3 lg:p-5">
-                <div class="bg-white rounded-xl p-3 lg:p-5 h-[90%]">
-                    <div class="flex flex-col sm:flex-row items-center mb-4 space-y-3 sm:space-y-0">
+            <div class="mt-3 pt-2 border-t">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Metode Pembayaran</span>
+                    <select v-model="paymentMethod" class="px-4 lg:px-7 py-1 border rounded-lg">
+                        <option v-for="mp in metodepembayaran" :key="mp.id" :value="mp.nama_mp">
+                            {{ mp.nama_mp }}
+                        </option>
+                    </select>
+                </div>
+                <div class="mt-2">
+                    <div class="flex justify-between mb-2 text-base">
+                        <span class="text-gray-600">Subtotal</span>
+                        <span class="font-medium">Rp {{ calculateSubtotal().toLocaleString() }}</span>
+                    </div>
+                    <div class="flex justify-between mb-2 text-sm border-t pt-2">
+                        <span class="text-gray-600">Total Pajak</span>
+                        <span class="text-gray-600">Rp {{ calculateTotalPajak().toLocaleString() }}</span>
+                    </div>
+                    <div class="flex justify-between mb-2 text-sm">
+                        <span class="text-gray-600">Diskon Barang</span>
+                        <span class="text-gray-600">- Rp {{ calculateDiskonBarang().toLocaleString() }}</span>
+                    </div>
+                    <div class="flex justify-between mb-2 text-sm">
+                        <span class="text-gray-600">Diskon Transaksi</span>
+                        <span class="text-gray-600">- Rp {{ calculateDiskonTransaksi().toLocaleString() }}</span>
+                    </div>
+                    <div class="flex justify-between border-t pt-2">
+                        <span class="text-gray-600 text-base">Total</span>
+                        <span class="text-base font-semibold">Rp {{ calculateTotal().toLocaleString() }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-4 gap-2 mt-4">
+                <button @click="checkout"
+                    class="col-span-4 p-2 bg-blue-500 text-white font-semibold hover:bg-blue-600 rounded-xl mb-6">
+                    Checkout
+                </button>
+            </div>
+        </div>
+
+        <!-- Products Section - Modified for tablet responsiveness -->
+        <div class="flex-1 p-3 lg:p-5">
+            <div class="bg-white rounded-xl p-3 lg:p-5 h-[100%]">
+                <div class="flex flex-col sm:flex-row items-center justify-between mb-4 space-y-3 sm:space-y-0">
+                    <div class="flex">
                         <div class="flex items-center w-full sm:w-auto">
                             <input type="text" placeholder="Cari barang..."
                                 class="border border-gray-300 rounded-xl px-4 py-2 w-full sm:w-64"
@@ -451,121 +506,164 @@ const print = async () => {
                             </select>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 pr-2 overflow-y-auto max-h-[89%]">
-                        <div v-for="barang in filteredAndSortedProducts" :key="barang.id"
-                            class="border rounded-xl p-3 lg:p-5 cursor-pointer hover:shadow-md transition-shadow w-full flex flex-col justify-center"
-                            @click="openProductModal(barang)">
-                            <div class="flex items-start gap-2 lg:gap-4">
-                                <div
-                                    class="w-20 h-20 lg:w-24 lg:h-24 bg-gray-300 rounded-lg overflow-hidden flex-shrink-0">
-                                    <img src="" alt="">
-                                </div>
-                                <div class="flex flex-col flex-grow">
-                                    <h3 class="font-bold text-base lg:text-lg">
-                                        {{ barang.nama }}
-                                    </h3>
-                                    <p class="text-xs lg:text-sm text-gray-600">
-                                        {{ barang.kategori }} | <span class="font-bold">{{ barang.kode }}</span>
-                                    </p>
-                                    <p class="text-xs lg:text-sm text-gray-600">
-                                        Stok: <span class="font-bold text-blue-600 mr-1">{{ formatCurrency(barang.stok)
-                                            }}</span>
-                                        <span class="text-xs font-normal text-gray-600">{{ barang.satuan }}</span>
-                                    </p>
-                                    <p class="font-bold text-base lg:text-lg pt-1 text-gray-600">
-                                        Rp {{ formatCurrency(barang.harga_jual) }}
-                                        <span class="text-xs lg:text-sm text-blue-600 font-normal">/ {{ barang.satuan
-                                            }}</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="flex items-center">
+                        <span class="inline-flex rounded-md">
+                            <Dropdown align="right" width="48">
+                                <template #trigger>
+                                    <span class="inline-flex rounded-md">
+                                        <button type="button"
+                                            class="inline-flex items-center px-3 py-2 border border-transparent text-normal leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                            {{ $page.props.auth.user.name }}
+
+                                            <svg class="ms-2 -me-0.5 h-6 w-6" xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </span>
+                                </template>
+
+                                <template #content>
+                                    <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
+                                    <DropdownLink :href="route('logout')" method="post" as="button">Log Out
+                                    </DropdownLink>
+                                    <DropdownLink as="button" @click.prevent="connect">Connect Bluetooth
+                                    </DropdownLink>
+                                </template>
+                            </Dropdown>
+                        </span>
+                        <i id="printer-icon" style="color: red; font-size: 21px"></i>
                     </div>
                 </div>
-            </div>
-            <div v-if="showModalCart" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                <div class="bg-white rounded-lg w-96 overflow-hidden">
-                    <div class="p-4 border-b">
-                        <div class="flex items-center space-x-4">
-                            <div>
-                                <h3 class="font-semibold text-lg">{{ selectedProduct?.nama }}</h3>
-                                <p class="text-gray-600">Rp <span class="font-bold">{{ formatCurrency(selectedProduct?.harga_jual) }} <span class="font-normal">/ {{  selectedProduct?.satuan }}</span></span></p>
-                                <p class="text-gray-600">Stok: <span class="font-bold">{{ formatCurrency(selectedProduct?.stok) }} {{ selectedProduct?.satuan}} </span></p>
-                                <p class="text-gray-600">Ket: {{ selectedProduct?.keterangan }}</p>
+
+
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 pr-2 overflow-y-auto max-h-[92%]">
+                    <div v-for="barang in filteredAndSortedProducts" :key="barang.id"
+                        class="border rounded-xl p-3 lg:p-5 cursor-pointer hover:shadow-md transition-shadow w-full flex flex-col justify-center"
+                        @click="openProductModal(barang)">
+                        <div class="flex items-start gap-2 lg:gap-4">
+                            <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gray-300 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src="" alt="">
+                            </div>
+                            <div class="flex flex-col flex-grow">
+                                <h3 class="font-bold text-base lg:text-lg">
+                                    {{ barang.nama }}
+                                </h3>
+                                <p class="text-xs lg:text-sm text-gray-600">
+                                    {{ barang.kategori }} | <span class="font-bold">{{ barang.kode }}</span>
+                                </p>
+                                <p class="text-xs lg:text-sm text-gray-600">
+                                    Stok: <span class="font-bold text-blue-600 mr-1">{{ formatCurrency(barang.stok)
+                                        }}</span>
+                                    <span class="text-xs font-normal text-gray-600">{{ barang.satuan }}</span>
+                                </p>
+                                <p class="font-bold text-base lg:text-lg pt-1 text-gray-600">
+                                    Rp {{ formatCurrency(barang.harga_jual) }}
+                                    <span class="text-xs lg:text-sm text-blue-600 font-normal">/ {{ barang.satuan
+                                        }}</span>
+                                </p>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="p-4">
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
-                            <div class="flex items-center space-x-4">
-                                <button @click="decreaseQty2" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> - </button>
-                                <span class="text-xl font-semibold jumlah">{{ quantity }}</span>
-                                <button @click="increaseQty2" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> + </button>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
-                            <textarea v-model="note"
-                                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                rows="3" placeholder="Add special instructions..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="p-4 bg-gray-50 flex justify-end space-x-2">
-                        <button @click="showModalCart = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
-                            Cancel
-                        </button>
-                        <button @click="saveCartChanges"
-                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                            Edit Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                <div class="bg-white rounded-lg w-96 overflow-hidden">
-                    <div class="p-4 border-b">
-                        <div class="flex items-center space-x-4">
-                            <div>
-                                <h3 class="font-semibold text-lg">{{ selectedProduct?.nama }}</h3>
-                                <p class="text-gray-600">Rp <span class="font-bold">{{ formatCurrency(selectedProduct?.harga_jual) }} <span class="font-normal">/ {{  selectedProduct?.satuan }}</span></span></p>
-                                <p class="text-gray-600">Stok: <span class="font-bold">{{ formatCurrency(selectedProduct?.stok) }} {{ selectedProduct?.satuan}} </span></p>
-                                <p class="text-gray-600">Ket: {{ selectedProduct?.keterangan }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-4">
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
-                            <div class="flex items-center space-x-4">
-                                <button @click="decreaseQty" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> - </button>
-                                <span class="text-xl font-semibold jumlah">{{ quantity }}</span>
-                                <button @click="increaseQty" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> + </button>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
-                            <textarea v-model="note"
-                                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                rows="3" placeholder="Add special instructions..."></textarea>
-                        </div>
-                    </div>
-                    <div class="p-4 bg-gray-50 flex justify-end space-x-2">
-                        <button @click="showModal = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
-                            Cancel
-                        </button>
-                        <button @click="addToCart"
-                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                            Add to Cart
-                        </button>
                     </div>
                 </div>
             </div>
         </div>
-    </AuthenticatedLayout>
+        <div v-if="showModalCart" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white rounded-lg w-96 overflow-hidden">
+                <div class="p-4 border-b">
+                    <div class="flex items-center space-x-4">
+                        <div>
+                            <h3 class="font-semibold text-lg">{{ selectedProduct?.nama }}</h3>
+                            <p class="text-gray-600">Rp <span class="font-bold">{{
+                                formatCurrency(selectedProduct?.harga_jual) }} <span class="font-normal">/ {{
+                                        selectedProduct?.satuan }}</span></span></p>
+                            <p class="text-gray-600">Stok: <span class="font-bold">{{
+                                formatCurrency(selectedProduct?.stok) }} {{ selectedProduct?.satuan }} </span>
+                            </p>
+                            <p class="text-gray-600">Ket: {{ selectedProduct?.keterangan }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                        <div class="flex items-center space-x-4">
+                            <button @click="decreaseQty2" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> -
+                            </button>
+                            <span class="text-xl font-semibold jumlah">{{ quantity }}</span>
+                            <button @click="increaseQty2" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> +
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                        <textarea v-model="note"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            rows="3" placeholder="Add special instructions..."></textarea>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-gray-50 flex justify-end space-x-2">
+                    <button @click="showModalCart = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
+                        Cancel
+                    </button>
+                    <button @click="saveCartChanges"
+                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                        Edit Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white rounded-lg w-96 overflow-hidden">
+                <div class="p-4 border-b">
+                    <div class="flex items-center space-x-4">
+                        <div>
+                            <h3 class="font-semibold text-lg">{{ selectedProduct?.nama }}</h3>
+                            <p class="text-gray-600">Rp <span class="font-bold">{{
+                                formatCurrency(selectedProduct?.harga_jual) }} <span class="font-normal">/ {{
+                                        selectedProduct?.satuan }}</span></span></p>
+                            <p class="text-gray-600">Stok: <span class="font-bold">{{
+                                formatCurrency(selectedProduct?.stok) }} {{ selectedProduct?.satuan }} </span>
+                            </p>
+                            <p class="text-gray-600">Ket: {{ selectedProduct?.keterangan }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                        <div class="flex items-center space-x-4">
+                            <button @click="decreaseQty" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> -
+                            </button>
+                            <span class="text-xl font-semibold jumlah">{{ quantity }}</span>
+                            <button @click="increaseQty" class="px-4 py-2 border rounded-lg hover:bg-gray-50"> +
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                        <textarea v-model="note"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            rows="3" placeholder="Add special instructions..."></textarea>
+                    </div>
+                </div>
+                <div class="p-4 bg-gray-50 flex justify-end space-x-2">
+                    <button @click="showModal = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
+                        Cancel
+                    </button>
+                    <button @click="addToCart" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- </AuthenticatedLayout> -->
 </template>
