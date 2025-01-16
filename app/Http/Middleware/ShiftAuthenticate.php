@@ -30,7 +30,7 @@ class ShiftAuthenticate extends Middleware
         /** @var Model $user */
         $user = $guard->user();
 
-        // if ($user->hasRole('kasir')) {
+        // if ($user->roles === 'kasir') {
         //     $shift1 = $user->shift === '1'; // Shift pagi
         //     $shift2 = $user->shift === '2'; // Shift sore
 
@@ -74,8 +74,7 @@ class ShiftAuthenticate extends Middleware
         //     } else {
         //         abort(404, 'Shift tidak valid.');
         //     }
-
-        //     // return redirect()->route('kasir.dashboard');
+        //     // Inertia::location(route('pos'));     
         // }
 
         $panel = Filament::getCurrentPanel();
