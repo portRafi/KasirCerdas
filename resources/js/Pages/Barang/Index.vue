@@ -1,7 +1,7 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+// import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import 'primeicons/primeicons.css'
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
@@ -16,6 +16,11 @@ const props = defineProps({
     diskontransaksi_getjumlah: Number,
     diskontransaksi_minimalpembelian: Number,
 })
+
+onMounted(() => {
+    const isPrinterActive = false;
+    printeractive(isPrinterActive);
+});
 
 const paymentMethod = ref('');
 const cart = ref([]);
@@ -35,6 +40,7 @@ const printerStatusClass = ref('badge bg-danger');
 const searchQuery = ref('');
 const sortOption = ref('asc');
 var isDiskonTransaksiActive = false;
+// const isPrinterActive = false;
 
 
 const filteredAndSortedProducts = computed(() => {
@@ -273,9 +279,13 @@ function generateRandomString() {
 }
 
 
+let isPrinterActive = false;
+
 const connect = async () => {
     if (printer.value && writer.value) {
         alert('Printer sudah terhubung!');
+        isPrinterActive = true;
+        printeractive(isPrinterActive);
         return;
     }
 
@@ -292,11 +302,35 @@ const connect = async () => {
         writer.value = printer.value.writable.getWriter();
         printerStatus.value = 'CONNECTED';
         printerStatusClass.value = 'badge bg-primary';
+
+        isPrinterActive = true;
+        printeractive(isPrinterActive);
+
     } catch (error) {
         console.error('Error saat menghubungkan ke printer:', error);
         alert('Gagal menghubungkan ke printer.');
     }
 };
+
+function printeractive(isPrinterActive) {
+    const iconContainer = document.getElementById('printer-icon');
+
+    if (iconContainer) {
+        const icon = document.createElement('i');
+        icon.classList.add('pi', 'pi-print');
+
+        if (isPrinterActive) {
+            icon.style.color = 'green';
+        } else {
+            icon.style.color = 'red';
+        }
+
+        iconContainer.innerHTML = '';
+        iconContainer.appendChild(icon);
+    } else {
+        console.error('Element with id "printer-icon" not found.');
+    }
+}
 
 const print = async () => {
     if (!printer.value || !writer.value) {
@@ -449,7 +483,7 @@ const print = async () => {
 
         <!-- Products Section - Modified for tablet responsiveness -->
         <div class="flex-1 p-3 lg:p-5">
-            <div class="bg-white rounded-xl p-3 lg:p-5 h-[90%]">
+            <div class="bg-white rounded-xl p-3 lg:p-5 h-[100%]">
                 <div class="flex flex-col sm:flex-row items-center justify-between mb-4 space-y-3 sm:space-y-0">
                     <div class="flex">
                         <div class="flex items-center w-full sm:w-auto">
@@ -467,44 +501,40 @@ const print = async () => {
                             </select>
                         </div>
                     </div>
-                    <span class="inline-flex rounded-md">
-                        <Dropdown align="right" width="48">
-                            <template #trigger>
-                                <span class="inline-flex rounded-md">
-                                    <button type="button"
-                                        class="inline-flex items-center px-3 py-2 border border-transparent text-normal leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                        {{ $page.props.auth.user.name }}
+                    <div class="flex items-center">
+                        <span class="inline-flex rounded-md">
+                            <Dropdown align="right" width="48">
+                                <template #trigger>
+                                    <span class="inline-flex rounded-md">
+                                        <button type="button"
+                                            class="inline-flex items-center px-3 py-2 border border-transparent text-normal leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                            {{ $page.props.auth.user.name }}
 
-                                        <svg class="ms-2 -me-0.5 h-6 w-6" xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </span>
-                            </template>
+                                            <svg class="ms-2 -me-0.5 h-6 w-6" xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </span>
+                                </template>
 
-                            <template #content>
-                                <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
-                                <DropdownLink :href="route('logout')" method="post" as="button">Log Out
-                                </DropdownLink>
-                                <DropdownLink as="button" @click.prevent="connect">Connect Bluetooth
-                                </DropdownLink>
-                                <div v-if="printerStatus === 'CONNECTED'">
-                                    <p>Status: {{ printerStatus }}</p>
-                                    <p>Device: {{ deviceName }}</p>
-                                </div>
-                                <div v-if="printerStatus === 'DISCONNECTED'">
-                                    <p>Status: Not connected</p>
-                                </div>
-                            </template>
-                        </Dropdown>
-                    </span>
+                                <template #content>
+                                    <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
+                                    <DropdownLink :href="route('logout')" method="post" as="button">Log Out
+                                    </DropdownLink>
+                                    <DropdownLink as="button" @click.prevent="connect">Connect Bluetooth
+                                    </DropdownLink>
+                                </template>
+                            </Dropdown>
+                        </span>
+                        <i id="printer-icon" style="color: red; font-size: 21px"></i>
+                    </div>
                 </div>
 
 
-                <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 pr-2 overflow-y-auto max-h-[89%]">
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 pr-2 overflow-y-auto max-h-[92%]">
                     <div v-for="barang in filteredAndSortedProducts" :key="barang.id"
                         class="border rounded-xl p-3 lg:p-5 cursor-pointer hover:shadow-md transition-shadow w-full flex flex-col justify-center"
                         @click="openProductModal(barang)">
