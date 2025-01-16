@@ -95,6 +95,8 @@ class BarangController extends Controller
                 'total_harga_jual' => $item['total_harga_without_pajak_diskon'],
                 'total_harga_after_diskon' => $item['total_harga_after_diskon'],
                 'total_harga_after_pajak' => $item['total_harga_after_pajak'],
+                'total_diskon_transaksi' => $item['total_diskon_transaksi'],
+                'total_diskon' => $item['total_diskon'],
                 'total_harga' => $item['total_harga'],
                 'total_pajak' => $item['total_pajak'],
                 'keuntungan' => $item['total_harga_after_diskon'] - $item['total_harga_asli']
