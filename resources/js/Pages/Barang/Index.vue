@@ -278,12 +278,7 @@ function generateRandomString() {
     return prefix + randomPart;
 }
 
-<<<<<<< HEAD
-=======
-
 let isPrinterActive = false;
-
->>>>>>> 8c967805d7b77da39a6b1c75531bb048836a5fe1
 const connect = async () => {
     if (printer.value && writer.value) {
         alert('Printer sudah terhubung!');
