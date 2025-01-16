@@ -43,22 +43,24 @@ var isDiskonTransaksiActive = false;
 
 
 const filteredAndSortedProducts = computed(() => {
-    let filteredProducts = props.barangs.filter(barang => {
-        const query = searchQuery.value.toLowerCase();
-        return (
-            barang.nama.toLowerCase().includes(query) ||
-            barang.kategori.toLowerCase().includes(query) ||
-            barang.kode.toLowerCase().includes(query)
-        );
-    });
+    const filteredProducts = Array.isArray(props.barangs)
+        ? props.barangs.filter(barang => {
+            const query = searchQuery.value.toLowerCase();
+            return (
+                barang.nama.toLowerCase().includes(query) ||
+                barang.kategori.toLowerCase().includes(query) ||
+                barang.kode.toLowerCase().includes(query)
+            );
+        })
+        : [];
 
     if (sortOption.value === 'asc') {
         filteredProducts.sort((a, b) => a.nama.localeCompare(b.nama));
     } else if (sortOption.value === 'desc') {
         filteredProducts.sort((a, b) => b.nama.localeCompare(a.nama));
-    } else if (sortOption.value === 'price_desc') {
-        filteredProducts.sort((a, b) => a.harga_jual - b.harga_jual);
     } else if (sortOption.value === 'price_asc') {
+        filteredProducts.sort((a, b) => a.harga_jual - b.harga_jual);
+    } else if (sortOption.value === 'price_desc') {
         filteredProducts.sort((a, b) => b.harga_jual - a.harga_jual);
     }
 
@@ -532,7 +534,6 @@ const print = async () => {
                         <i id="printer-icon" style="color: red; font-size: 21px"></i>
                     </div>
                 </div>
-
 
                 <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 pr-2 overflow-y-auto max-h-[92%]">
                     <div v-for="barang in filteredAndSortedProducts" :key="barang.id"

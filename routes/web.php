@@ -26,12 +26,11 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Index');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [BarangController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
-
-Route::get('/pos', [\App\Http\Controllers\BarangController::class, 'index']);
+Route::get('/pos', [\App\Http\Controllers\BarangController::class, 'index'])->name('pos');
 Route::resource('/barangs', BarangController::class);
 Route::resource('/metodepembayaran', BarangController::class);
 Route::resource('/pajak', BarangController::class);
