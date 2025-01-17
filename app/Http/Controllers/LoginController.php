@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class LoginController extends Controller
@@ -15,6 +14,5 @@ class LoginController extends Controller
         } else {
             return Inertia::location('/pos'); 
         }
-
     }
 }

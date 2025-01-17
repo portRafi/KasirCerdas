@@ -112,10 +112,18 @@ class BarangController extends Controller
                 'metode_pembayaran' => $request->metode_pembayaran,
             ]);
         }
-
         return response()->json([
             'success' => true,
             'message' => 'Checkout berhasil!'
+        ]);
+        
+        $barangs = Barang::where([
+            ['bisnis_id', '=', Auth::user()->bisnis_id],
+            ['cabangs_id', '=', Auth::user()->cabangs_id],
+            ['stok', '>=', 1]
+        ])->get();
+        return Inertia::render('Barang/Index', [
+            'barangs' => $barangs,
         ]);
     }
 }

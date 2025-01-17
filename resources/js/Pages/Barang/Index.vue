@@ -43,16 +43,14 @@ var isDiskonTransaksiActive = false;
 
 
 const filteredAndSortedProducts = computed(() => {
-    const filteredProducts = Array.isArray(props.barangs)
-        ? props.barangs.filter(barang => {
-            const query = searchQuery.value.toLowerCase();
-            return (
-                barang.nama.toLowerCase().includes(query) ||
-                barang.kategori.toLowerCase().includes(query) ||
-                barang.kode.toLowerCase().includes(query)
-            );
-        })
-        : [];
+    const filteredProducts = Array.isArray(props.barangs) ? props.barangs.filter(barang => {
+        const query = searchQuery.value.toLowerCase();
+        return (
+            barang.nama.toLowerCase().includes(query) ||
+            barang.kategori.toLowerCase().includes(query) ||
+            barang.kode.toLowerCase().includes(query)
+        );
+    }) : [];
 
     if (sortOption.value === 'asc') {
         filteredProducts.sort((a, b) => a.nama.localeCompare(b.nama));
@@ -63,7 +61,6 @@ const filteredAndSortedProducts = computed(() => {
     } else if (sortOption.value === 'price_desc') {
         filteredProducts.sort((a, b) => b.harga_jual - a.harga_jual);
     }
-
     return filteredProducts;
 });
 
@@ -74,59 +71,67 @@ const openProductModal = (barang) => {
     showModal.value = true;
 };
 
-const editProductCart = (item, index) => {
-    selectedProduct.value = item;
-    selectedIndex.value = index;
-    quantity.value = item.quantity;
-    note.value = item.note;
-    satuan.value = item.satuan;
-    keterangan.value = item.value;
-    showModalCart.value = true;
-};
-const saveCartChanges = () => {
-    const selectedItem = cart.value[selectedIndex.value];
-    const stok = selectedItem.stok;
-    const totalHargaSebelumDiskonPajak = quantity.value * selectedItem.harga_jual;
-    const totalPajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
-    const totalBelanjaSebelumDiskonPajak = cart.value.reduce((total, item) => total + item.total_harga_without_pajak_diskon, totalHargaSebelumDiskonPajak);
-    const totalDiskonTransaksi = (totalBelanjaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && !isDiskonTransaksiActive)
-        ? (isDiskonTransaksiActive = true, props.diskontransaksi_getjumlah)
-        : 0;
+// const editProductCart = (item, index) => {
+//     selectedProduct.value = item;
+//     selectedIndex.value = index;
+//     quantity.value = item.quantity;
+//     note.value = item.note;
+//     satuan.value = item.satuan;
+//     keterangan.value = item.value;
+//     showModalCart.value = true;
+// };
+// const saveCartChanges = () => {
+//     const selectedItem = cart.value[selectedIndex.value];
+//     const stok = selectedItem.stok;
+//     const totalHargaSebelumDiskonPajak = quantity.value * selectedItem.harga_jual;
+//     const totalPajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
+//     const totalBelanjaSebelumDiskonPajak = cart.value.reduce((total, item) => total + item.total_harga_without_pajak_diskon, totalHargaSebelumDiskonPajak);
+//     const totalDiskonTransaksi = (totalBelanjaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && !isDiskonTransaksiActive)
+//         ? (isDiskonTransaksiActive = true, props.diskontransaksi_getjumlah)
+//         : 0;
 
-    if (quantity.value > stok) {
-        alert('Quantity di keranjang tidak boleh melebihi stok');
-        return;
-    }
+//     if (quantity.value > stok) {
+//         alert('Quantity di keranjang tidak boleh melebihi stok');
+//         return;
+//     }
 
-    if (quantity.value === selectedItem.quantity) {
-        alert('jumlah tidak boleh sama');
-        return;
-    }
+//     if (quantity.value === selectedItem.quantity) {
+//         alert('jumlah tidak boleh sama');
+//         return;
+//     }
 
-    if (totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) {
-        selectedItem.total_diskon_transaksi = isDiskonTransaksiActive ? props.diskontransaksi_getjumlah : 0;
-    } else {
-        selectedItem.total_diskon_transaksi = 0;
-        isDiskonTransaksiActive = false;
-    }
+//     if (totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) {
+//         selectedItem.total_diskon_transaksi = isDiskonTransaksiActive ? props.diskontransaksi_getjumlah : 0;
+//     } else {
+//         selectedItem.total_diskon_transaksi = 0;
+//         isDiskonTransaksiActive = false;
+//     }
 
-    selectedItem.stok = stok - quantity.value;
-    selectedItem.quantity = quantity.value;
-    selectedItem.note = note.value;
-    selectedItem.satuan = satuan.value;
-    selectedItem.keterangan = keterangan.value;
-    selectedItem.total_harga_without_pajak_diskon = totalHargaSebelumDiskonPajak;
-    selectedItem.total_pajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
-    selectedItem.total_harga = (totalHargaSebelumDiskonPajak + totalPajak) - totalDiskonTransaksi;
-    showModalCart.value = false;
-};
+//     selectedItem.stok = stok - quantity.value;
+//     selectedItem.quantity = quantity.value;
+//     selectedItem.note = note.value;
+//     selectedItem.satuan = satuan.value;
+//     selectedItem.keterangan = keterangan.value;
+//     selectedItem.total_harga_without_pajak_diskon = totalHargaSebelumDiskonPajak;
+//     selectedItem.total_pajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
+//     selectedItem.total_harga = (totalHargaSebelumDiskonPajak + totalPajak) - totalDiskonTransaksi;
+//     showModalCart.value = false;
+// };
 
 
 const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
 const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
 const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
 const calculateDiskonBarang = () => cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
-const calculateDiskonTransaksi = () => cart.value.reduce((sum, item) => sum + item.total_diskon_transaksi, 0);
+const calculateDiskonTransaksi = () => {
+    const item = cart.value.find(item => item.total_diskon_transaksi > 0);
+    if (item) {
+        return item.total_diskon_transaksi;
+    } else {
+        console.log('No item with diskon transaksi greater than 0');
+        return 0;
+    }
+};
 
 const addToCart = () => {
     if (selectedProduct.value) {
@@ -147,14 +152,13 @@ const addToCart = () => {
                 alert('Quantity di keranjang gabisa melebihi stok');
                 return;
             }
-            existingItem.total_harga += (totalHargaSebelumDiskonPajak + totalPajak) - totalDiskonTransaksi;
+            existingItem.total_harga += (totalHargaSebelumDiskonPajak + totalPajak) 
             existingItem.quantity += quantity.value;
             existingItem.total_harga_without_pajak_diskon += totalHargaSebelumDiskonPajak;
             existingItem.total_harga_after_diskon += totalHargaAfterDiskon;
             existingItem.total_harga_after_pajak += totalHargaAfterDiskon + totalPajak;
             existingItem.total_harga_asli += totalHargaPerItemAsli;
             existingItem.total_diskon = totalDiskon;
-            existingItem.total_diskon_transaksi = totalDiskonTransaksi;
             existingItem.total_pajak += totalPajak;
             existingItem.stok = selectedProduct.value.stok - existingItem.quantity;
 
@@ -187,7 +191,25 @@ const addToCart = () => {
 
         showModal.value = false;
         console.log(cart);
-        console.log('isDTactive?', isDiskonTransaksiActive);
+        // const calculateTotalForCart = () => {
+        //     const totalDiskon = cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
+        //     const totalPajak = cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
+        //     const totalDiskonTransaksi = cart.value.reduce((sum, item) => sum + item.total_diskon_transaksi, 0);
+        //     const totalHarga = cart.value.reduce((sum, item) => sum + item.total_harga, 0);
+        //     const totalDiskonBarang = cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
+        //     const totalHargasblmdskntrnsks = cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
+
+        //     console.log('Total harga sblm diskon transaksi: ', totalHargasblmdskntrnsks);
+        //     console.log('Total diskon: ', totalDiskon);
+        //     console.log('Total pajak: ', totalPajak);
+        //     console.log('Total diskon barang: ', totalDiskonBarang);
+        //     console.log('Total diskon transaksi: ', totalDiskonTransaksi);
+        //     console.log('Total harga: ', totalHarga);
+        //     console.log('const calculatedt: ', calculateDiskonTransaksi());
+        //     console.log('isDTactive?', isDiskonTransaksiActive);
+        // };
+
+        // calculateTotalForCart();
     }
 };
 
@@ -206,15 +228,31 @@ const decreaseQty = () => {
         quantity.value--;
     }
 };
-const increaseQty2 = () => {
-    quantity.value++
-};
+// const increaseQty2 = () => {
+//     quantity.value++
+// };
 
-const decreaseQty2 = () => {
-    if (quantity.value > 1) {
-        quantity.value--;
-    }
-};
+// const decreaseQty2 = () => {
+//     if (quantity.value > 1) {
+//         quantity.value--;
+//     }
+// };
+
+// const removeFromCart = (index) => {
+//     if (cart.value.length > 0) {
+//         const calculateSubtotal2 = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
+//         const totalHargaWithoutPajakDiskon = calculateSubtotal2();
+//         if (totalHargaWithoutPajakDiskon >= props.diskontransaksi_minimalpembelian) {
+//             isDiskonTransaksiActive = true;
+//             cart.value.splice(index, 1);
+//             console.log(totalHargaWithoutPajakDiskon);
+//         } else {
+//             isDiskonTransaksiActive = false;
+//             console.log(totalHargaWithoutPajakDiskon);
+//             cart.value.splice(index, 1);
+//         }
+//     }
+// };
 
 const removeFromCart = (index) => {
     if (cart.value.length > 0) {
@@ -225,19 +263,43 @@ const removeFromCart = (index) => {
             return total;
         }, 0);
 
-        if (totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) {
+        // if (totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) {
+        //     isDiskonTransaksiActive = true;
+        //     cart.value.splice(index, 1);
+        //     console.log(totalHargaSebelumDiskonPajak);
+        //     console.log('isDTactive?', isDiskonTransaksiActive);
+        //     console.log('YANG PERTAMA KEITUNG');
+        // }
+        if (totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && isDiskonTransaksiActive) {
             isDiskonTransaksiActive = true;
             cart.value.splice(index, 1);
-        } else {
-            isDiskonTransaksiActive = false;
-            cart.value.splice(index, 1);
-        }
+            console.log(totalHargaSebelumDiskonPajak);
+            console.log('isDTactive?', isDiskonTransaksiActive);
+            console.log('YANG KEDUA KEITUNG');
 
-        cart.value.forEach(item => {
-            item.total_diskon_transaksi = isDiskonTransaksiActive ? props.diskontransaksi_getjumlah : 0;
-        });
+        } else if (totalHargaSebelumDiskonPajak < props.diskontransaksi_minimalpembelian && !isDiskonTransaksiActive) {
+            isDiskonTransaksiActive = false;
+            cart.value.forEach(item => {
+                item.total_diskon_transaksi = 0
+            });
+            cart.value.splice(index, 1);
+            console.log(totalHargaSebelumDiskonPajak);
+            console.log('isDTactive?', isDiskonTransaksiActive);
+            console.log('YANG KETIGA KEITUNG');
+
+        } else if (totalHargaSebelumDiskonPajak < props.diskontransaksi_minimalpembelian && isDiskonTransaksiActive) {
+            isDiskonTransaksiActive = false;
+            cart.value.forEach(item => {
+                item.total_diskon_transaksi = 0
+            });
+            cart.value.splice(index, 1);
+            console.log(totalHargaSebelumDiskonPajak);
+            console.log('isDTactive?', isDiskonTransaksiActive);
+            console.log('YANG KEEMPAT KEITUNG');
+        }
     }
 };
+let isPrinterActive = false;
 
 
 const checkout = async () => {
@@ -259,9 +321,13 @@ const checkout = async () => {
 
     try {
         const response = await axios.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
-        if (response.data.success) {
+        if (response.data.success && isPrinterActive) {
             alert('Checkout berhasil!');
+            // print()
             window.location.reload();
+        } else if (!isPrinterActive && response.data.success) {
+            alert('Printer Mati, nyalakan terlebih dahulu.');
+            return;
         } else {
             alert('Terjadi kesalahan. Silakan coba lagi.');
         }
@@ -274,13 +340,10 @@ const checkout = async () => {
 };
 
 function generateRandomString() {
-    const prefix = 'kc_';
+    const prefix = 'KC_';
     const randomPart = Math.random().toString(36).substring(2, 7);
     return prefix + randomPart;
 }
-
-
-let isPrinterActive = false;
 
 const connect = async () => {
     if (printer.value && writer.value) {
@@ -377,15 +440,15 @@ const print = async () => {
     });
 
     texts.push(
-        printable.Align.left(printable.Font.normal(`Subtotal\t: Rp ${calculateSubtotal().toLocaleString()}`)),
+        printable.Align.left(printable.Font.normal(`Subtotal\t: Rp ${ formatCurrency(calculateSubtotal())}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Tax\t: Rp ${calculateTotalPajak().toLocaleString()}`)),
+        printable.Align.left(printable.Font.normal(`Tax\t: Rp ${ formatCurrency(calculateTotalPajak())}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Diskon\t: Rp ${calculateDiskonBarang().toLocaleString()}`)),
+        printable.Align.left(printable.Font.normal(`Diskon\t: Rp ${ formatCurrency(calculateDiskonBarang())}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Diskon Transaksi\t: Rp ${calculateDiskonTransaksi().toLocaleString()}`)),
+        printable.Align.left(printable.Font.normal(`Diskon Transaksi\t: Rp ${ formatCurrency(calculateDiskonTransaksi())}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Total\t: Rp ${calculateTotalPajak().toLocaleString()}`)),
+        printable.Align.left(printable.Font.normal(`Total\t: Rp ${ formatCurrency(calculateTotalPajak())}`)),
         printable.Keyboard.enter(2),
         printable.Align.center(printable.Font.normal('Terima Kasih')),
         printable.Align.reset()
@@ -433,10 +496,10 @@ const print = async () => {
                             {{ item.quantity }} x Rp {{ formatCurrency(item.harga_jual) }}
                         </p>
                     </div>
-                    <p class="font-medium">Rp {{ item.total_harga_without_pajak_diskon.toLocaleString() }}</p>
-                    <button @click="editProductCart(item, index)" class="text-blue-500 hover:underline ml-3">
+                    <p class="font-medium">Rp {{ formatCurrency(item.total_harga_without_pajak_diskon) }}</p>
+                    <!-- <button @click="editProductCart(item, index)" class="text-blue-500 hover:underline ml-3">
                         <i class="pi pi-pen-to-square" style="font-size: 20px"></i>
-                    </button>
+                    </button> -->
                     <button @click="removeFromCart(index)" class="text-red-500 hover:underline ml-3">
                         <i class="pi pi-trash" style="font-size: 20px"></i>
                     </button>
@@ -455,23 +518,23 @@ const print = async () => {
                 <div class="mt-2">
                     <div class="flex justify-between mb-2 text-base">
                         <span class="text-gray-600">Subtotal</span>
-                        <span class="font-medium">Rp {{ calculateSubtotal().toLocaleString() }}</span>
+                        <span class="font-medium">Rp {{ formatCurrency(calculateSubtotal()) }}</span>
                     </div>
                     <div class="flex justify-between mb-2 text-sm border-t pt-2">
                         <span class="text-gray-600">Total Pajak</span>
-                        <span class="text-gray-600">Rp {{ calculateTotalPajak().toLocaleString() }}</span>
+                        <span class="text-gray-600">Rp {{ formatCurrency(calculateTotalPajak()) }}</span>
                     </div>
                     <div class="flex justify-between mb-2 text-sm">
                         <span class="text-gray-600">Diskon Barang</span>
-                        <span class="text-gray-600">- Rp {{ calculateDiskonBarang().toLocaleString() }}</span>
+                        <span class="text-gray-600">- Rp {{ formatCurrency(calculateDiskonBarang()) }}</span>
                     </div>
                     <div class="flex justify-between mb-2 text-sm">
                         <span class="text-gray-600">Diskon Transaksi</span>
-                        <span class="text-gray-600">- Rp {{ calculateDiskonTransaksi().toLocaleString() }}</span>
+                        <span class="text-gray-600">- Rp {{ formatCurrency(calculateDiskonTransaksi()) }}</span>
                     </div>
                     <div class="flex justify-between border-t pt-2">
                         <span class="text-gray-600 text-base">Total</span>
-                        <span class="text-base font-semibold">Rp {{ calculateTotal().toLocaleString() }}</span>
+                        <span class="text-base font-semibold">Rp {{ formatCurrency(calculateTotal()) }}</span>
                     </div>
                 </div>
             </div>
@@ -479,7 +542,7 @@ const print = async () => {
             <div class="grid grid-cols-4 gap-2 mt-4">
                 <button @click="checkout"
                     class="col-span-4 p-2 bg-blue-500 text-white font-semibold hover:bg-blue-600 rounded-xl mb-6">
-                    Checkout
+                    Checkout ( Rp.<span>{{ formatCurrency(calculateTotal()) }}</span> )
                 </button>
             </div>
         </div>
@@ -567,7 +630,7 @@ const print = async () => {
                 </div>
             </div>
         </div>
-        <div v-if="showModalCart" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <!-- <div v-if="showModalCart" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div class="bg-white rounded-lg w-96 overflow-hidden">
                 <div class="p-4 border-b">
                     <div class="flex items-center space-x-4">
@@ -614,7 +677,7 @@ const print = async () => {
                     </button>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div class="bg-white rounded-lg w-96 overflow-hidden">
                 <div class="p-4 border-b">
