@@ -155,7 +155,7 @@ const addToCart = () => {
             existingItem.total_harga_after_diskon += totalHargaAfterDiskon;
             existingItem.total_harga_after_pajak += totalHargaAfterDiskon + totalPajak;
             existingItem.total_harga_asli += totalHargaPerItemAsli;
-            existingItem.total_diskon = totalDiskon;
+            existingItem.total_diskon = totalDiskon;    
             existingItem.total_diskon_transaksi = totalDiskonTransaksi;
             existingItem.total_pajak += totalPajak;
             existingItem.stok = selectedProduct.value.stok - existingItem.quantity;
