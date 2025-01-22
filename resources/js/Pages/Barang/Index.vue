@@ -510,11 +510,8 @@ const print = async () => {
         <div class="w-full lg:w-1/4 bg-white p-4 pt-0 flex flex-col min-h-[90%] rounded-b-xl">
             <div class="overflow-y-auto flex-grow max-h-[70%]">
                 <div class="flex pt-6 pb-5 items-center justify-left border-b">
-                    <div class="shrink-0 flex items-center justify-center mr-3">
-                        <ApplicationLogo class="block h-8 w-auto fill-current text-gray-800" />
-                    </div>
                     <div class="hidden sm:flex text-center">
-                        KasirCerdas | Ionbit
+                        <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo" class="w-auto h-[35px]">
                     </div>
                 </div>
 
@@ -594,8 +591,8 @@ const print = async () => {
                                 class="border border-gray-300 rounded-xl px-4 py-2 cursor-pointer pr-8 sm:ml-3 w-full sm:w-auto">
                                 <option value="asc">A - Z</option>
                                 <option value="desc">Z - A</option>
-                                <option value="price_asc">Harga ter-tinggi</option>
-                                <option value="price_desc">Harga ter-rendah</option>
+                                <option value="price_asc">Harga ter-rendah</option>
+                                <option value="price_desc">Harga ter-tinggi</option>
                             </select>
                         </div>
                     </div>
