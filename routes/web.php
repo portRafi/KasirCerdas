@@ -39,10 +39,7 @@ Route::get('/dashboard', [BarangController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
     
-Route::get('/demo', function() {
-    return Inertia::render('Demo');
-})->name('demo');
-
+Route::get('/demo', [\App\Http\Controllers\DummyController::class, 'index'])->name('demo');
 Route::get('/pos', [\App\Http\Controllers\BarangController::class, 'index'])->name('pos');
 Route::resource('/barangs', BarangController::class);
 Route::resource('/metodepembayaran', BarangController::class);

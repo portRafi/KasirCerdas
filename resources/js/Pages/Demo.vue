@@ -7,64 +7,7 @@ const props = defineProps({
     barangs: Array,
     metodepembayaran: Array,
     pajak: Number,
-});
-
-const barangsDummy = [
-    {
-        id: 1,
-        kode: 'P001',
-        kategori: 'Elektronik',
-        nama: 'Smartphone XYZ',
-        harga_jual: 5000000,
-        harga_beli: 4500000,
-        stok: 100,
-    },
-    {
-        id: 2,
-        kode: 'P002',
-        kategori: 'Elektronik',
-        nama: 'Laptop ABC',
-        harga_jual: 12000000,
-        harga_beli: 10000000,
-        stok: 50,
-    },
-    {
-        id: 3,
-        kode: 'P003',
-        kategori: 'Peralatan Rumah Tangga',
-        nama: 'Blender 3000',
-        harga_jual: 750000,
-        harga_beli: 600000,
-        stok: 200,
-    },
-    {
-        id: 4,
-        kode: 'P004',
-        kategori: 'Peralatan Rumah Tangga',
-        nama: 'Vacuum Cleaner X',
-        harga_jual: 2500000,
-        harga_beli: 2000000,
-        stok: 30,
-    },
-    {
-        id: 5,
-        kode: 'P005',
-        kategori: 'Elektronik',
-        nama: 'Headphone Pro',
-        harga_jual: 1500000,
-        harga_beli: 1200000,
-        stok: 150,
-    },
-];
-
-const metodePembayaranDummy = ['Cash', 'Credit Card', 'Bank Transfer', 'E-Wallet'];
-
-const pajakDummy = 13;
-
-defineEmits(['updateBarangs', 'updateMetodePembayaran', 'updatePajak']);
-props.barangs = barangsDummy;
-props.metodepembayaran = metodePembayaranDummy;
-props.pajak = pajakDummy;
+})
 
 const paymentMethod = ref('');
 const cart = ref([]);
@@ -75,18 +18,15 @@ const note = ref('');
 const searchQuery = ref('');
 const sortOption = ref('asc');
 
-
 const filteredAndSortedProducts = computed(() => {
-    const filteredProducts = Array.isArray(props.barangs)
-        ? props.barangs.filter((barang) => {
-            const query = searchQuery.value.toLowerCase();
-            return (
-                barang.nama.toLowerCase().includes(query) ||
-                barang.kategori.toLowerCase().includes(query) ||
-                barang.kode.toLowerCase().includes(query)
-            );
-        })
-        : [];
+    const filteredProducts = Array.isArray(props.barangs) ? props.barangs.filter(barang => {
+        const query = searchQuery.value.toLowerCase();
+        return (
+            barang.nama.toLowerCase().includes(query) ||
+            barang.kategori.toLowerCase().includes(query) ||
+            barang.kode.toLowerCase().includes(query)
+        );
+    }) : [];
 
     if (sortOption.value === 'asc') {
         filteredProducts.sort((a, b) => a.nama.localeCompare(b.nama));
@@ -97,9 +37,9 @@ const filteredAndSortedProducts = computed(() => {
     } else if (sortOption.value === 'price_desc') {
         filteredProducts.sort((a, b) => b.harga_jual - a.harga_jual);
     }
-
     return filteredProducts;
 });
+
 const openProductModal = (barang) => {
     selectedProduct.value = barang;
     quantity.value = 1;
@@ -164,6 +104,7 @@ const addToCart = () => {
                 stok: selectedProduct.value.stok - quantity.value,
             });
         }
+
         showModal.value = false;
         console.log(cart);
     }
@@ -201,13 +142,14 @@ const checkout = async () => {
     }
 
     alert('checkout berhasil (DEMO)')
+    cart.value = [];
 };
 
 </script>
 
 <template>
 
-    <Head title="Kasir Demo" />
+    <Head title="Dashboard Kasir Demo" />
     <div class="overflow-hidden flex flex-col lg:flex-row h-screen bg-gray-100">
         <div class="w-full lg:w-1/4 bg-white p-4 pt-0 flex flex-col min-h-[90%] rounded-b-xl">
             <div class="overflow-y-auto flex-grow max-h-[70%]">
@@ -303,7 +245,7 @@ const checkout = async () => {
                         @click="openProductModal(barang)">
                         <div class="flex items-start gap-2 lg:gap-4">
                             <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gray-300 rounded-lg overflow-hidden flex-shrink-0">
-                                <img src="" alt="Product Image" />
+                                <img src="" alt="">
                             </div>
                             <div class="flex flex-col flex-grow">
                                 <h3 class="font-bold text-base lg:text-lg">
@@ -325,7 +267,6 @@ const checkout = async () => {
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
