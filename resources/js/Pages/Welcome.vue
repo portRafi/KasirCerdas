@@ -23,11 +23,11 @@ defineProps({
 <template>
 
     <Head title="Welcome" />
-    <div class="flex flex-col items-center justify-center bg-blue-500 text-white py-24">
+    <!-- <div class="flex flex-col items-center justify-center bg-blue-500 text-white py-24">
     <h1 class="text-4xl font-bold">Selamat Datang di Kasir Cerdas</h1>
     <p class="text-lg mt-4">Aplikasi Kasir Online Terbaik</p>
-</div>
-    <div class="flex flex-col min-h-screen bg-white selection:text-white">
+</div> -->
+    <div class="flex flex-col min-h-screen bg-white selection:bg-white selection:text-blue-500">
         <div class="flex flex-row justify-between items-center w-full pb-[65px] pt-6 px-9">
             <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo" class="w-auto h-[35px]">
             <nav class="flex flex-row items-center space-x-8 justify-center w-full">
