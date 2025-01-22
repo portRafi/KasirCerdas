@@ -108,7 +108,7 @@ defineProps({
       <div class="text-center md:text-left md:w-1/2">
         <h1 class="text-2xl font-bold text-gray-800 mb-4">Pemberdayaan Bisnis</h1>
         <p class="text-gray-600 text-base leading-relaxed">
-          Moka adalah aplikasi kasir online yang memudahkan penjualan dan proses operasional usaha Anda.
+          KasirCerdas adalah aplikasi kasir online yang memudahkan penjualan dan proses operasional usaha Anda.
         </p>
       </div>
     </div>
