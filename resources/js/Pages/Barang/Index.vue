@@ -374,7 +374,6 @@ function generateRandomString() {
 }
 
 
-let isPrinterActive = false;
 
 
 const connect = async () => {
@@ -497,7 +496,7 @@ const print = async () => {
         console.error('Error saat mencetak:', error);
         alert('Gagal mencetak.');
     }
-
+};
 };
 </script>
 

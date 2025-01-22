@@ -23,7 +23,10 @@ defineProps({
 <template>
 
     <Head title="Welcome" />
-
+    <div class="flex flex-col items-center justify-center bg-blue-500 text-white py-24">
+    <h1 class="text-4xl font-bold">Selamat Datang di Kasir Cerdas</h1>
+    <p class="text-lg mt-4">Aplikasi Kasir Online Terbaik</p>
+</div>
     <div class="flex flex-col min-h-screen bg-white selection:text-white">
         <div class="flex flex-row justify-between items-center w-full pb-[65px] pt-6 px-9">
             <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo" class="w-auto h-[35px]">
@@ -49,7 +52,6 @@ defineProps({
                     </a>
                 </template>
             </div>
-
         </div>
         <div class="flex justify-center items-center cursor-pointer pb-10">
             <a :href="route('demo')"
@@ -91,9 +93,32 @@ defineProps({
                 <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
             </div>
         </div>
-
-
     </div>
+    
+    <div class="container mx-auto px-12 py-8 text-center text-gray-800 bg-white rounded-lg shadow-lg mt-8 mb-8 space-y-6 "> 
+    <div class="flex flex-col md:flex-row items-center gap-8">
+      <!-- Placeholder Gambar -->
+      <div class="flex flex-row w-full h-auto px-9 space-x-4 justify-center pb-20">
+            <img src="assets/fotoapp_kiri.png" alt="fotoapp" class="w-auto h-auto max-w-full min-w-[150px] rounded-xl ">
+            <img src="assets/fotoapp_tengah.png" alt="fotoapp"
+                class="w-auto h-auto max-w-full min-w-[150px] rounded-xl border-2 border-gray-100">
+        </div>
+
+      <!-- Bagian Teks -->
+      <div class="text-center md:text-left md:w-1/2">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Pemberdayaan Bisnis</h1>
+        <p class="text-gray-600 text-base leading-relaxed">
+          Moka adalah aplikasi kasir online yang memudahkan penjualan dan proses operasional usaha Anda.
+        </p>
+      </div>
+    </div>
+  </div>
+
+
+    <div class="flex flex-col items-center justify-center w-full h-20 bg-blue-500 text-white">
+        <p class="text-center">© 2025 KasirCerdas. All rights reserved.</p>
+    </div>
+    
 </template>
 
 <style>
