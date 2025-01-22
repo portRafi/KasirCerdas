@@ -478,11 +478,8 @@ const print = async () => {
         <div class="w-full lg:w-1/4 bg-white p-4 pt-0 flex flex-col min-h-[90%] rounded-b-xl">
             <div class="overflow-y-auto flex-grow max-h-[70%]">
                 <div class="flex pt-6 pb-5 items-center justify-left border-b">
-                    <div class="shrink-0 flex items-center justify-center mr-3">
-                        <ApplicationLogo class="block h-8 w-auto fill-current text-gray-800" />
-                    </div>
                     <div class="hidden sm:flex text-center">
-                        KasirCerdas | Ionbit
+                        <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo" class="w-auto h-[35px]">
                     </div>
                 </div>
 

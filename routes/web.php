@@ -31,10 +31,17 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+Route::get('/2', function() {
+    return Inertia::render('Welcome2');
+});
 
 Route::get('/dashboard', [BarangController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+    
+Route::get('/demo', function() {
+    return Inertia::render('Demo');
+})->name('demo');
 
 Route::get('/pos', [\App\Http\Controllers\BarangController::class, 'index'])->name('pos');
 Route::resource('/barangs', BarangController::class);
