@@ -32,7 +32,7 @@ defineProps({
                 <a href="#" class="text-gray-400 text-lg hover:text-blue-500 transition-colors">Layanan</a>
                 <a href="#" class="text-gray-400 text-lg hover:text-blue-500 transition-colors">Ulasan</a>
                 <a href="#" class="text-gray-400 text-lg hover:text-blue-500 transition-colors">Tentang</a>
-                <a href="#" class="text-gray-400 text-lg hover:text-blue-500 transition-colors">Demo</a>
+                <a :href="route('demo')" class="text-gray-400 text-lg hover:text-blue-500 transition-colors">Demo</a>
             </nav>
             <div v-if="canLogin" class=" text-end">
                 <template v-if="$page.props.auth.user">

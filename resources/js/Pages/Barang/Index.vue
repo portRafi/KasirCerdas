@@ -123,15 +123,26 @@ const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.to
 const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
 const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
 const calculateDiskonBarang = () => cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
+// const calculateDiskonTransaksi = () => {
+//     const item = cart.value.find(item => item.total_diskon_transaksi > 0);
+//     if (item) {
+//         return item.total_diskon_transaksi;
+//     } else {
+//         console.log('No item with diskon transaksi greater than 0');
+//         return 0;
+//     }
+// };
+
 const calculateDiskonTransaksi = () => {
-    const item = cart.value.find(item => item.total_diskon_transaksi > 0);
-    if (item) {
-        return item.total_diskon_transaksi;
+    const itemWithDiskon = cart.value.find(item => item.total_diskon_transaksi > 0);
+    if (itemWithDiskon) {
+        return itemWithDiskon.total_diskon_transaksi;
     } else {
         console.log('No item with diskon transaksi greater than 0');
         return 0;
     }
 };
+
 
 const addToCart = () => {
     if (selectedProduct.value) {
@@ -141,9 +152,10 @@ const addToCart = () => {
         const totalPajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
         const totalDiskon = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
         const totalBelanjaSebelumDiskonPajak = cart.value.reduce((total, item) => total + item.total_harga_without_pajak_diskon, totalHargaSebelumDiskonPajak);
-        const totalDiskonTransaksi = (totalBelanjaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && !isDiskonTransaksiActive) ? (isDiskonTransaksiActive = true, props.diskontransaksi_getjumlah) : 0;
+        const totalDiskonTransaksiEx = (totalBelanjaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && !isDiskonTransaksiActive) ? (isDiskonTransaksiActive = true, props.diskontransaksi_getjumlah) : 0;
+        // const totalDiskonTransaksi = (totalBelanjaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) ? (isDiskonTransaksiActive = true, props.diskontransaksi_getjumlah) : 0;
         const totalHargaAfterDiskon = totalHargaSebelumDiskonPajak - totalDiskon;
-        const totalHarga = (totalHargaSebelumDiskonPajak - totalDiskon - totalDiskonTransaksi) + totalPajak;
+        const totalHarga = (totalHargaSebelumDiskonPajak - totalDiskon - totalDiskonTransaksiEx) + totalPajak;
         const existingProductIndex = cart.value.findIndex(item => item.kode === selectedProduct.value.kode);
 
         if (existingProductIndex !== -1) {
@@ -152,8 +164,9 @@ const addToCart = () => {
                 alert('Quantity di keranjang gabisa melebihi stok');
                 return;
             }
-            existingItem.total_harga += (totalHargaSebelumDiskonPajak + totalPajak) 
+            existingItem.total_harga += (totalHargaSebelumDiskonPajak + totalPajak)
             existingItem.quantity += quantity.value;
+            existingItem.total_diskon_transaksi += totalDiskonTransaksiEx;
             existingItem.total_harga_without_pajak_diskon += totalHargaSebelumDiskonPajak;
             existingItem.total_harga_after_diskon += totalHargaAfterDiskon;
             existingItem.total_harga_after_pajak += totalHargaAfterDiskon + totalPajak;
@@ -181,7 +194,7 @@ const addToCart = () => {
                 total_harga_after_pajak: totalHargaAfterDiskon + totalPajak,
                 total_harga_asli: totalHargaPerItemAsli,
                 total_diskon: totalDiskon,
-                total_diskon_transaksi: totalDiskonTransaksi,
+                total_diskon_transaksi: totalDiskonTransaksiEx,
                 total_pajak: totalPajak,
                 satuan: selectedProduct.value.satuan,
                 keterangan: selectedProduct.value.keterangan,
@@ -191,6 +204,8 @@ const addToCart = () => {
 
         showModal.value = false;
         console.log(cart);
+        console.log(totalDiskonTransaksiEx);
+
         // const calculateTotalForCart = () => {
         //     const totalDiskon = cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
         //     const totalPajak = cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
@@ -254,51 +269,58 @@ const decreaseQty = () => {
 //     }
 // };
 
+let isCooldown = false;
+
 const removeFromCart = (index) => {
+    if (isCooldown) {
+        console.log('Harap tunggu sebelum menghapus item berikutnya.');
+        return;
+    }
+
     if (cart.value.length > 0) {
-        const totalHargaSebelumDiskonPajak = cart.value.reduce((total, item, idx) => {
-            if (idx !== index) {
-                return total + item.total_harga_without_pajak_diskon;
-            }
-            return total;
+        isCooldown = true;
+        console.log('Cooldown dimulai...');
+
+        const totalHargaSebelumDiskonPajak = cart.value.reduce((total, item) => {
+            return total + item.total_harga_without_pajak_diskon;
         }, 0);
 
-        // if (totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) {
-        //     isDiskonTransaksiActive = true;
-        //     cart.value.splice(index, 1);
-        //     console.log(totalHargaSebelumDiskonPajak);
-        //     console.log('isDTactive?', isDiskonTransaksiActive);
-        //     console.log('YANG PERTAMA KEITUNG');
-        // }
-        if (totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && isDiskonTransaksiActive) {
-            isDiskonTransaksiActive = true;
-            cart.value.splice(index, 1);
-            console.log(totalHargaSebelumDiskonPajak);
-            console.log('isDTactive?', isDiskonTransaksiActive);
-            console.log('YANG KEDUA KEITUNG');
 
-        } else if (totalHargaSebelumDiskonPajak < props.diskontransaksi_minimalpembelian && !isDiskonTransaksiActive) {
-            isDiskonTransaksiActive = false;
-            cart.value.forEach(item => {
-                item.total_diskon_transaksi = 0
-            });
-            cart.value.splice(index, 1);
-            console.log(totalHargaSebelumDiskonPajak);
-            console.log('isDTactive?', isDiskonTransaksiActive);
-            console.log('YANG KETIGA KEITUNG');
+        if (totalHargaSebelumDiskonPajak < props.diskontransaksi_minimalpembelian) {
+            if (isDiskonTransaksiActive) {
+                isDiskonTransaksiActive = false;
+                cart.value.forEach(item => {
+                    item.total_diskon_transaksi = 0;
+                });
+            }
+        } else {
+            let foundItem = false;
 
-        } else if (totalHargaSebelumDiskonPajak < props.diskontransaksi_minimalpembelian && isDiskonTransaksiActive) {
-            isDiskonTransaksiActive = false;
-            cart.value.forEach(item => {
-                item.total_diskon_transaksi = 0
+            cart.value.forEach((item) => {
+                if (!foundItem && item.total_harga_without_pajak_diskon >= props.diskontransaksi_minimalpembelian) {
+                    item.total_diskon_transaksi = props.diskontransaksi_getjumlah;
+                    foundItem = true;
+                } else {
+                    item.total_diskon_transaksi = 0;
+                }
             });
-            cart.value.splice(index, 1);
-            console.log(totalHargaSebelumDiskonPajak);
-            console.log('isDTactive?', isDiskonTransaksiActive);
-            console.log('YANG KEEMPAT KEITUNG');
+
+            if (!foundItem) {
+                isDiskonTransaksiActive = false;
+            }
         }
+
+        console.log('isDiskonTransaksiActive:', isDiskonTransaksiActive);
+
+        setTimeout(() => {
+            isCooldown = false;
+            console.log('Cooldown selesai, Anda dapat menghapus barang lagi.');
+        }, 1000);
+    } else {
+        console.log('Keranjang kosong, tidak ada yang bisa dihapus.');
     }
 };
+
 let isPrinterActive = false;
 
 
@@ -440,15 +462,15 @@ const print = async () => {
     });
 
     texts.push(
-        printable.Align.left(printable.Font.normal(`Subtotal\t: Rp ${ formatCurrency(calculateSubtotal())}`)),
+        printable.Align.left(printable.Font.normal(`Subtotal\t: Rp ${formatCurrency(calculateSubtotal())}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Tax\t: Rp ${ formatCurrency(calculateTotalPajak())}`)),
+        printable.Align.left(printable.Font.normal(`Tax\t: Rp ${formatCurrency(calculateTotalPajak())}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Diskon\t: Rp ${ formatCurrency(calculateDiskonBarang())}`)),
+        printable.Align.left(printable.Font.normal(`Diskon\t: Rp ${formatCurrency(calculateDiskonBarang())}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Diskon Transaksi\t: Rp ${ formatCurrency(calculateDiskonTransaksi())}`)),
+        printable.Align.left(printable.Font.normal(`Diskon Transaksi\t: Rp ${formatCurrency(calculateDiskonTransaksi())}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Total\t: Rp ${ formatCurrency(calculateTotalPajak())}`)),
+        printable.Align.left(printable.Font.normal(`Total\t: Rp ${formatCurrency(calculateTotalPajak())}`)),
         printable.Keyboard.enter(2),
         printable.Align.center(printable.Font.normal('Terima Kasih')),
         printable.Align.reset()
