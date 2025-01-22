@@ -273,18 +273,19 @@ let isCooldown = false;
 
 const removeFromCart = (index) => {
     if (isCooldown) {
-        console.log('Harap tunggu sebelum menghapus item berikutnya.');
+        console.log('cooldown');
         return;
     }
 
     if (cart.value.length > 0) {
         isCooldown = true;
-        console.log('Cooldown dimulai...');
-
+        const removedItem = cart.value.splice(index, 1)[0];
         const totalHargaSebelumDiskonPajak = cart.value.reduce((total, item) => {
             return total + item.total_harga_without_pajak_diskon;
         }, 0);
 
+        console.log('Barang dihapus:', removedItem);
+        console.log('Total harga setelah penghapusan:', totalHargaSebelumDiskonPajak);
 
         if (totalHargaSebelumDiskonPajak < props.diskontransaksi_minimalpembelian) {
             if (isDiskonTransaksiActive) {
