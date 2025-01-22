@@ -227,8 +227,8 @@ const checkout = async () => {
                                 class="border border-gray-300 rounded-xl px-4 py-2 cursor-pointer pr-8 sm:ml-3 w-full sm:w-auto">
                                 <option value="asc">A - Z</option>
                                 <option value="desc">Z - A</option>
-                                <option value="price_asc">Harga ter-tinggi</option>
-                                <option value="price_desc">Harga ter-rendah</option>
+                                <option value="price_asc">Harga ter-rendah</option>
+                                <option value="price_desc">Harga ter-tinggi</option>
                             </select>
                         </div>
                     </div>
