@@ -1,5 +1,6 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import { ref, onMounted, onUnmounted } from "vue";
 import 'primeicons/primeicons.css'
 
 defineProps({
@@ -18,24 +19,36 @@ defineProps({
         required: true,
     },
 });
+
+const isScrolled = ref(false);
+
+const handleScroll = () => {
+    isScrolled.value = window.scrollY > 0;
+};
+
+onMounted(() => {
+    window.addEventListener("scroll", handleScroll);
+});
+
+onUnmounted(() => {
+    window.removeEventListener("scroll", handleScroll);
+});
+
 </script>
 
 <template>
 
     <Head title="Welcome" />
-    <!-- <div class="flex flex-col items-center justify-center bg-blue-500 text-white py-24">
-    <h1 class="text-4xl font-bold">Selamat Datang di Kasir Cerdas</h1>
-    <p class="text-lg mt-4">Aplikasi Kasir Online Terbaik</p>
-</div> -->
     <div class="flex flex-col min-h-screen bg-white selection:bg-white selection:text-blue-500">
-        <div class="flex flex-row justify-between items-center w-full pb-[65px] pt-6 px-9">
-            <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo" class="w-auto h-[35px]">
+        <div :class="[ 'fixed flex flex-row justify-between items-center w-full pb-5 mb-[25px] px-9 top-0 z-50 transition-[box-shadow,padding] duration-300 ease-in-out', {'backdrop-blur-lg': isScrolled }]" :style="{ paddingTop: isScrolled ? '18px' : '28px' }">
+            <!-- <div id="navbar" class="fixed flex flex-row justify-between items-center w-full pb-5 mb-[25px] pt-7 px-9 bg-white top-0 z-50 transition-shadow duration-300"> -->
+            <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo" class="w-auto h-[35px] mb-[1px]">
             <nav class="flex flex-row items-center space-x-8 justify-center w-full">
-                <a href="#" class="text-gray-400 text-lg hover:text-blue-500 transition-colors">Fitur</a>
-                <a href="#" class="text-gray-400 text-lg hover:text-blue-500 transition-colors">Layanan</a>
-                <a href="#" class="text-gray-400 text-lg hover:text-blue-500 transition-colors">Ulasan</a>
-                <a href="#" class="text-gray-400 text-lg hover:text-blue-500 transition-colors">Tentang</a>
-                <a :href="route('demo')" class="text-gray-400 text-lg hover:text-blue-500 transition-colors">Demo</a>
+                <a href="#" :class="[ 'text-gray-400 text-lg hover:text-blue-500 transition-colors', { 'text-slate-500': isScrolled }]">Beranda</a>
+                <a href="#" :class="[ 'text-gray-400 text-lg hover:text-blue-500 transition-colors', { 'text-slate-500': isScrolled } ]">Fitur</a>
+                <a href="#" :class="[ 'text-gray-400 text-lg hover:text-blue-500 transition-colors', { 'text-slate-500': isScrolled }]">Layanan</a>
+                <a href="#" :class="[ 'text-gray-400 text-lg hover:text-blue-500 transition-colors', { 'text-slate-500': isScrolled }]">Ulasan</a>
+                <a :href="route('demo')" :class="[ 'text-gray-400 text-lg hover:text-blue-500 transition-colors', { 'text-slate-500': isScrolled } ]">Demo</a>
             </nav>
             <div v-if="canLogin" class=" text-end">
                 <template v-if="$page.props.auth.user">
@@ -53,7 +66,7 @@ defineProps({
                 </template>
             </div>
         </div>
-        <div class="flex justify-center items-center cursor-pointer pb-10">
+        <div class="flex justify-center items-center cursor-pointer pb-5 mt-[140px]">
             <a :href="route('demo')"
                 class="flex justify-between items-center bg-blue-100 w-auto h-[47px] rounded-3xl pl-2 pr-4">
                 <i class="pi pi-spin pi-link bg-blue-500 px-2 py-2 rounded-full"
@@ -61,6 +74,7 @@ defineProps({
                 <p class="text-blue-500 font-bold ml-3">Demo - KasirCerdas</p>
             </a>
         </div>
+
         <div class="slogan text-center text-slate-900 text-6xl pb-20">
             <h3>Kunci Utama untuk Meningkatkan <br> Efektivitas Penjualan</h3>
         </div>
@@ -94,31 +108,34 @@ defineProps({
             </div>
         </div>
     </div>
-    
-    <div class="container mx-auto px-12 py-8 text-center text-gray-800 bg-white rounded-lg shadow-lg mt-8 mb-8 space-y-6 "> 
-    <div class="flex flex-col md:flex-row items-center gap-8">
-      <!-- Placeholder Gambar -->
-      <div class="flex flex-row w-full h-auto px-9 space-x-4 justify-center pb-20">
-            <img src="assets/fotoapp_kiri.png" alt="fotoapp" class="w-auto h-auto max-w-full min-w-[150px] rounded-xl ">
-            <img src="assets/fotoapp_tengah.png" alt="fotoapp"
-                class="w-auto h-auto max-w-full min-w-[150px] rounded-xl border-2 border-gray-100">
-        </div>
 
-      <!-- Bagian Teks -->
-      <div class="text-center md:text-left md:w-1/2">
-        <h1 class="text-2xl font-bold text-gray-800 mb-4">Pemberdayaan Bisnis</h1>
-        <p class="text-gray-600 text-base leading-relaxed">
-          KasirCerdas adalah aplikasi kasir online yang memudahkan penjualan dan proses operasional usaha Anda.
-        </p>
-      </div>
+    <div
+        class="container mx-auto px-12 py-8 text-center text-gray-800 bg-white rounded-lg shadow-lg mt-8 mb-8 space-y-6 ">
+        <div class="flex flex-col md:flex-row items-center gap-8">
+            <!-- Placeholder Gambar -->
+            <div class="flex flex-row w-full h-auto px-9 space-x-4 justify-center pb-20">
+                <img src="assets/fotoapp_kiri.png" alt="fotoapp"
+                    class="w-auto h-auto max-w-full min-w-[150px] rounded-xl ">
+                <img src="assets/fotoapp_tengah.png" alt="fotoapp"
+                    class="w-auto h-auto max-w-full min-w-[150px] rounded-xl border-2 border-gray-100">
+            </div>
+
+            <!-- Bagian Teks -->
+            <div class="text-center md:text-left md:w-1/2">
+                <h1 class="text-2xl font-bold text-gray-800 mb-4">Pemberdayaan Bisnis</h1>
+                <p class="text-gray-600 text-base leading-relaxed">
+                    KasirCerdas adalah aplikasi kasir online yang memudahkan penjualan dan proses operasional usaha
+                    Anda.
+                </p>
+            </div>
+        </div>
     </div>
-  </div>
 
 
     <div class="flex flex-col items-center justify-center w-full h-20 bg-blue-500 text-white">
         <p class="text-center">© 2025 KasirCerdas. All rights reserved.</p>
     </div>
-    
+
 </template>
 
 <style>
