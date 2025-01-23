@@ -74,15 +74,12 @@ onBeforeUnmount(() => {
             :style="{ paddingTop: isScrolled ? '18px' : '28px' }">
             <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo" class="w-auto h-[35px] mb-[1px]">
             <nav class="flex flex-row items-center space-x-8 justify-center w-full">
-                <a href="#beranda" @click.prevent="scrollToSection('beranda')"
-                    :class="['text-gray-400 text-lg hover:text-blue-500 transition-colors', { 'text-slate-500': isScrolled, 'border-b-2 rounded-md border-blue-500 text-blue-500': activeSection === 'beranda' }]">Beranda</a>
-                <a href="#fitur" @click.prevent="scrollToSection('fitur')"
-                    :class="['text-gray-400 text-lg hover:text-blue-500 transition-colors', { 'text-slate-500': isScrolled, 'border-b-2 rounded-md border-blue-500 text-blue-500': activeSection === 'fitur' }]">Fitur</a>
-                <a href="#layanan" @click.prevent="scrollToSection('layanan')"
-                    :class="['text-gray-400 text-lg hover:text-blue-500 transition-colors', { 'text-slate-500': isScrolled, 'border-b-2 rounded-md border-blue-500 text-blue-500': activeSection === 'layanan' }]">Layanan</a>
-                <a :href="route('demo')"
-                    :class="['text-gray-400 text-lg hover:text-blue-500 transition-colors', { 'text-slate-500': isScrolled }]">Demo</a>
+                <a href="#beranda" @click.prevent="scrollToSection('beranda')" :class="[ 'text-lg hover:text-blue-500 transition-colors', { 'border-b-2 rounded-md border-blue-500 text-blue-500': activeSection === 'beranda', 'text-blue-500': activeSection === 'beranda' || (isScrolled && activeSection === 'beranda'), 'text-slate-500': isScrolled && activeSection !== 'beranda' } ]">Beranda</a>
+                <a href="#fitur" @click.prevent="scrollToSection('fitur')" :class="[ 'text-lg hover:text-blue-500 transition-colors', { 'border-b-2 rounded-md border-blue-500 text-blue-500': activeSection === 'fitur', 'text-blue-500': activeSection === 'fitur' || (isScrolled && activeSection === 'fitur'), 'text-slate-500': isScrolled && activeSection !== 'fitur', 'text-gray-400': !isScrolled } ]">Fitur</a>
+                <a href="#layanan" @click.prevent="scrollToSection('layanan')" :class="[ 'text-lg hover:text-blue-500 transition-colors', { 'border-b-2 rounded-md border-blue-500 text-blue-500': activeSection === 'layanan', 'text-blue-500': activeSection === 'layanan' || (isScrolled && activeSection === 'layanan'), 'text-slate-500': isScrolled && activeSection !== 'layanan', 'text-gray-400': !isScrolled }]">Layanan</a>
+                <a :href="route('demo')" :class="[  'text-gray-400 text-lg hover:text-blue-500 transition-colors', { 'text-slate-500': isScrolled } ]">Demo</a>
             </nav>
+
             <div v-if="canLogin" class=" text-end">
                 <template v-if="$page.props.auth.user">
                     <a :href="route('pos')"
