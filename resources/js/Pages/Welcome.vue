@@ -1,6 +1,6 @@
 <script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { Head } from '@inertiajs/vue3';
-import { ref, onMounted, onBeforeUnmount } from "vue";
 import 'primeicons/primeicons.css';
 
 defineProps({
@@ -20,10 +20,9 @@ defineProps({
     },
 });
 
-const activeSection = ref('beranda'); // Default to 'beranda' on initial load
-const isScrolled = ref(false); // Track if the page is scrolled down
+const activeSection = ref('beranda');
+const isScrolled = ref(false);
 
-// Handle scroll event to check if the section is in view
 const handleScroll = () => {
     isScrolled.value = window.scrollY > 0;
 
@@ -33,8 +32,11 @@ const handleScroll = () => {
     sections.forEach((section) => {
         const element = document.getElementById(section);
         const rect = element.getBoundingClientRect();
+
         if (rect.top <= 0 && rect.bottom >= 0) {
-            activeSection.value = section;
+            if (activeSection.value !== section) {
+                activeSection.value = section;
+            }
             foundActive = true;
         }
     });
@@ -44,26 +46,25 @@ const handleScroll = () => {
     }
 };
 
-// Smooth scroll to a section
 const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
+
     window.scrollTo({
-        top: section.offsetTop - 60, // Adjust the scroll offset for the fixed header
+        top: section.offsetTop - -30,
         behavior: 'smooth',
     });
+
+    activeSection.value = sectionId;
 };
 
-// Add scroll event listener on mount
 onMounted(() => {
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
 });
 
-// Clean up event listener on unmount
 onBeforeUnmount(() => {
-    window.removeEventListener("scroll", handleScroll);
+    window.removeEventListener('scroll', handleScroll);
 });
 </script>
-
 
 <template>
 
@@ -73,11 +74,11 @@ onBeforeUnmount(() => {
             :style="{ paddingTop: isScrolled ? '18px' : '28px' }">
             <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo" class="w-auto h-[35px] mb-[1px]">
             <nav class="flex flex-row items-center space-x-8 justify-center w-full">
-                <a href="#beranda" @click="scrollToSection('beranda')"
+                <a href="#beranda" @click.prevent="scrollToSection('beranda')"
                     :class="['text-gray-400 text-lg hover:text-blue-500 transition-colors', { 'text-slate-500': isScrolled, 'border-b-2 rounded-md border-blue-500 text-blue-500': activeSection === 'beranda' }]">Beranda</a>
-                <a href="#fitur" @click="scrollToSection('fitur')"
+                <a href="#fitur" @click.prevent="scrollToSection('fitur')"
                     :class="['text-gray-400 text-lg hover:text-blue-500 transition-colors', { 'text-slate-500': isScrolled, 'border-b-2 rounded-md border-blue-500 text-blue-500': activeSection === 'fitur' }]">Fitur</a>
-                <a href="#layanan" @click="scrollToSection('layanan')"
+                <a href="#layanan" @click.prevent="scrollToSection('layanan')"
                     :class="['text-gray-400 text-lg hover:text-blue-500 transition-colors', { 'text-slate-500': isScrolled, 'border-b-2 rounded-md border-blue-500 text-blue-500': activeSection === 'layanan' }]">Layanan</a>
                 <a :href="route('demo')"
                     :class="['text-gray-400 text-lg hover:text-blue-500 transition-colors', { 'text-slate-500': isScrolled }]">Demo</a>
@@ -142,7 +143,7 @@ onBeforeUnmount(() => {
             </div>
         </section>
         <section id="fitur" class="w-auto h-auto">
-            <div class="slogan text-center text-slate-900 text-4xl pb-20 mt-40 flex flex-col">
+            <div class="slogan text-center text-slate-900 text-4xl pb-20 mt-52 flex flex-col">
                 <h3>Rasakan Pengalaman</h3>
                 <h3 class="text-zinc-400 pt-1">Kasir Yang Modern Bersama Kami</h3>
             </div>
@@ -186,7 +187,7 @@ onBeforeUnmount(() => {
             </div>
         </section>
         <section id="layanan" class="layanan w-auto h-auto">
-            <div class="slogan text-center text-slate-900 text-4xl mt-40 pb-20 flex flex-col">
+            <div class="slogan text-center text-slate-900 text-4xl mt-52 pb-20 flex flex-col">
                 <h3>Tumbuhkan Bisnismu</h3>
                 <h3 class="text-zinc-400 pt-1">Buat Pelanggan Terkesan</h3>
             </div>
