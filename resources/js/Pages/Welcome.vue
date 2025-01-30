@@ -43,6 +43,7 @@ const handleScroll = () => {
 
     if (!foundActive) {
         activeSection.value = '';
+        
     }
 };
 
@@ -52,18 +53,24 @@ const scrollToSection = (sectionId) => {
     window.scrollTo({
         top: section.offsetTop - -30,
         behavior: 'smooth',
+
     });
 
     activeSection.value = sectionId;
+
+    isScrolled.value = window.scrollY > 0;
 };
 
 onMounted(() => {
     window.addEventListener('scroll', handleScroll);
+
 });
 
 onBeforeUnmount(() => {
     window.removeEventListener('scroll', handleScroll);
+
 });
+
 </script>
 
 <template>
@@ -77,7 +84,8 @@ onBeforeUnmount(() => {
                 <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo" class="w-auto h-[30px] md:h-[35px] mb-[1px]">
                 <!-- Mobile Menu Button -->
                 <button @click="toggleMenu" class="md:hidden text-blue-500">
-                    <i class="pi pi-bars text-xl"></i>
+                    <i class="pi pi-bars text-xl"
+                        style="font-size: 27px; color: rgba(87, 138, 234, 255)"></i>
                 </button>
             </div>
 
@@ -150,6 +158,24 @@ onBeforeUnmount(() => {
             <!-- Logo Scroll -->
             <div class="flex overflow-hidden w-full h-40">
                 <div class="infinite-scroll flex justify-center items-center">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
                     <!-- ... (Logo scroll content remains the same) ... -->
                 </div>
             </div>
@@ -238,10 +264,9 @@ onBeforeUnmount(() => {
                             <i class="pi pi-chart-pie bg-blue-50 flex rounded-full w-16 h-16 md:w-20 md:h-20 mb-6 md:mb-10"
                                 style="font-size: 28px; color: rgba(87, 138, 234, 255); display: flex; justify-content: center; align-items: center;"></i>
                             <h3 class="text-slate-900 text-2xl md:text-3xl text-left mb-4">Pemantauan Penjualan untuk<br>Keputusan Bisnis yang Lebih Baik</h3>
-                            <p class="text-zinc-500 text-base
-
-md:text-lg">Pemantauan penjualan yang memungkinkan Anda untuk melihat data penjualan secara real-time, memantau penjualan harian, mingguan, bulanan, dan tahunan, serta melihat data penjualan produk terlaris dan yang paling menguntungkan.</p>
+                            <p class="text-zinc-500 text-base md:text-lg">Pemantauan penjualan yang memungkinkan Anda untuk melihat data penjualan secara real-time, memantau penjualan harian, mingguan, bulanan, dan tahunan, serta melihat data penjualan produk terlaris dan yang paling menguntungkan.</p>
                         </div>
+                        
                     </div>
                 </div>
             </div>
