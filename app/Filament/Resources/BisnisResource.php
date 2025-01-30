@@ -85,6 +85,24 @@ class BisnisResource extends Resource
             //
         ];
     }
+    public static function canCreate(): bool {
+        if (!auth()->user()->hasRole('super_admin')) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        if (auth()->user()->hasRole('admin_bisnis')) {
+            return true;
+        }
+        else if (auth()->user()->hasRole('super_admin')) {
+            return true;
+        }
+        return false;
+    }
 
     public static function getPages(): array
     {

@@ -59,7 +59,10 @@ class BarangResource extends Resource
                 Forms\Components\Select::make('kategori')
                     ->placeholder('Kategori Barang')
                     ->preload()
-                    ->options(Kategori::all()->pluck('nama', 'nama'))
+                    ->options(Kategori::where([
+                        ['bisnis_id', '=', Auth::user()->bisnis_id],
+                        ['cabangs_id', '=', Auth::user()->cabangs_id]
+                    ])->pluck('nama', 'nama'))
                     ->required(),
                 Forms\Components\TextInput::make('harga_beli')
                     ->placeholder('Harga Beli')
