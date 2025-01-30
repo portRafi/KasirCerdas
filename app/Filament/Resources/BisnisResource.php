@@ -88,9 +88,8 @@ class BisnisResource extends Resource
     public static function canCreate(): bool {
         if (!auth()->user()->hasRole('super_admin')) {
             return false;
-        } else {
-            return true;
-        }
+        } 
+        return true;
     }
 
     public static function shouldRegisterNavigation(): bool
