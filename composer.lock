@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "925d530e4012b3d1be73446aeea35a30",
+    "content-hash": "40eb5ae0f5f47b64051ea5eebd2a03c2",
     "packages": [
         {
             "name": "alperenersoy/filament-export",

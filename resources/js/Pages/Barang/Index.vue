@@ -1,10 +1,8 @@
 <script setup>
-// import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import 'primeicons/primeicons.css'
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 
@@ -288,7 +286,6 @@ const removeFromCart = (index) => {
 
 let isPrinterActive = false;
 
-
 const checkout = async () => {
     if (!paymentMethod.value) {
         alert('Silakan pilih metode pembayaran terlebih dahulu.');
@@ -308,13 +305,21 @@ const checkout = async () => {
 
     try {
         const response = await axios.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
-        if (response.data.success && isPrinterActive) {
+        if (response.data.success) {
             alert('Checkout berhasil!');
             // print()
-            window.location.reload();
-        } else if (!isPrinterActive && response.data.success) {
+            // window.location.reload();
+        } else if (response.data.success) {
             alert('Printer Mati, nyalakan terlebih dahulu.');
             return;
+        // const response = await axios.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
+        // if (response.data.success && isPrinterActive) {
+        //     alert('Checkout berhasil!');
+        //     // print()
+        //     window.location.reload();
+        // } else if (!isPrinterActive && response.data.success) {
+        //     alert('Printer Mati, nyalakan terlebih dahulu.');
+        //     return;
         } else {
             alert('Terjadi kesalahan. Silakan coba lagi.');
         }
@@ -569,15 +574,14 @@ const print = async () => {
                                         </button>
                                     </span>
                                 </template>
-
                                 <template #content>
-                                    <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
+                                    <DropdownLink :href="route('profile.edit')">Profile</DropdownLink>
                                     <DropdownLink :href="route('logout')" method="post" as="button">Log Out
                                     </DropdownLink>
-                                    <DropdownLink as="button" @click.prevent="connect">Connect Bluetooth
-                                    </DropdownLink>
+                                    <DropdownLink as="button" @click.prevent="connect">Connect Bluetooth</DropdownLink>
                                 </template>
                             </Dropdown>
+
                         </span>
                         <i id="printer-icon" style="color: red; font-size: 21px"></i>
                     </div>
