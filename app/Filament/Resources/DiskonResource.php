@@ -52,21 +52,31 @@ class DiskonResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->query(
-            Diskon::where([
-                ['bisnis_id', '=', Auth::user()->bisnis_id],
-                ['cabangs_id', '=', Auth::user()->cabangs_id]
-            ])
-        )
-        ->poll('5s')
+            ->query(function () {
+                $query = Diskon::query();
+                if (Auth::user()->hasRole('admin_cabang')) {
+                    $query->where([
+                        ['bisnis_id', '=', Auth::user()->bisnis_id],
+                        ['cabangs_id', '=', Auth::user()->cabangs_id]
+                    ]);
+                } else if (Auth::user()->hasRole('admin_bisnis')) {
+                    $query->where([
+                        ['bisnis_id', '=', Auth::user()->bisnis_id]
+                    ]);
+                } else if (Auth::user()->hasRole('super_admin')) {
+                    $query->get();
+                }
+                return $query;
+            })
+            ->poll('5s')
             ->columns([
                 Tables\Columns\TextColumn::make('tipe_diskon')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama_diskon')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('jumlah_diskon')
-                    ->numeric() 
-                    ->formatStateUsing(fn ($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.'))
+                    ->numeric()
+                    ->formatStateUsing(fn($state) => $state <= 100 ? "$state%" : "IDR " . number_format($state, 0, ',', '.'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('stok_diskon')
                     ->sortable(),

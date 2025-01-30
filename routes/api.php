@@ -21,9 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware('auth:sanctum')->get('/userinfo', function () {
     $user = Auth::user();
-    if (!$user) {
-        return response()->json(['error' => 'Unauthorized'], 401);
-    }
     return response()->json([
         'user' => $user,
         'bisnis' => $user->bisnis ?? 'Bisnis tidak ditemukan',

@@ -34,7 +34,7 @@ class DataShiftResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\TimePicker::make('shift_start')
-                    ->seconds(false)    
+                    ->seconds(false)
                     ->label('Jam Shift Dimulai')
                     ->required(),
                 Forms\Components\TimePicker::make('shift_end')
@@ -48,10 +48,22 @@ class DataShiftResource extends Resource
     {
         return $table
             ->poll('5s')
-            ->query(DataShift::where([
-                ['bisnis_id', '=', Auth::user()->bisnis_id],
-                ['cabangs_id', '=', Auth::user()->cabangs_id],
-            ]))
+            ->query(function () {
+                $query = DataShift::query();
+                if (Auth::user()->hasRole('admin_cabang')) {
+                    $query->where([
+                        ['bisnis_id', '=', Auth::user()->bisnis_id],
+                        ['cabangs_id', '=', Auth::user()->cabangs_id]
+                    ]);
+                } else if (Auth::user()->hasRole('admin_bisnis')) {
+                    $query->where([
+                        ['bisnis_id', '=', Auth::user()->bisnis_id]
+                    ]);
+                } else if (Auth::user()->hasRole('super_admin')) {
+                    $query->get();
+                }
+                return $query;
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('shift')
                     ->label('Shift'),
@@ -73,15 +85,16 @@ class DataShiftResource extends Resource
             ]);
     }
 
-    public static  function canCreate():bool {
+    public static  function canCreate(): bool
+    {
         $shiftCount = DataShift::where('bisnis_id', Auth::user()->bisnis_id)
             ->where('cabangs_id', Auth::user()->cabangs_id)
             ->count();
 
         if ($shiftCount >= 2) {
-            return(false);
+            return (false);
         } else {
-            return(true);   
+            return (true);
         }
     }
     public static function getRelations(): array

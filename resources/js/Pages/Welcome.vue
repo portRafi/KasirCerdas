@@ -43,6 +43,7 @@ const handleScroll = () => {
 
     if (!foundActive) {
         activeSection.value = '';
+        
     }
 };
 
@@ -52,18 +53,24 @@ const scrollToSection = (sectionId) => {
     window.scrollTo({
         top: section.offsetTop - -30,
         behavior: 'smooth',
+
     });
 
     activeSection.value = sectionId;
+
+    isScrolled.value = window.scrollY > 0;
 };
 
 onMounted(() => {
     window.addEventListener('scroll', handleScroll);
+
 });
 
 onBeforeUnmount(() => {
     window.removeEventListener('scroll', handleScroll);
+
 });
+
 </script>
 
 <template>
@@ -77,7 +84,8 @@ onBeforeUnmount(() => {
                 <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo" class="w-auto h-[30px] md:h-[35px] mb-[1px]">
                 <!-- Mobile Menu Button -->
                 <button @click="toggleMenu" class="md:hidden text-blue-500">
-                    <i class="pi pi-bars text-xl"></i>
+                    <i class="pi pi-bars text-xl"
+                        style="font-size: 27px; color: rgba(87, 138, 234, 255)"></i>
                 </button>
             </div>
 
@@ -150,6 +158,24 @@ onBeforeUnmount(() => {
             <!-- Logo Scroll -->
             <div class="flex overflow-hidden w-full h-40">
                 <div class="infinite-scroll flex justify-center items-center">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
+                    <img src="assets/ionbit.png" alt="ionbitlogo" class="h-[24px] mr-20">
+                    <img src="assets/starbhak.png" alt="starbhaklogo" class="h-[65px] mt-4 mr-20">
                     <!-- ... (Logo scroll content remains the same) ... -->
                 </div>
             </div>
@@ -238,15 +264,119 @@ onBeforeUnmount(() => {
                             <i class="pi pi-chart-pie bg-blue-50 flex rounded-full w-16 h-16 md:w-20 md:h-20 mb-6 md:mb-10"
                                 style="font-size: 28px; color: rgba(87, 138, 234, 255); display: flex; justify-content: center; align-items: center;"></i>
                             <h3 class="text-slate-900 text-2xl md:text-3xl text-left mb-4">Pemantauan Penjualan untuk<br>Keputusan Bisnis yang Lebih Baik</h3>
-                            <p class="text-zinc-500 text-base
-
-md:text-lg">Pemantauan penjualan yang memungkinkan Anda untuk melihat data penjualan secara real-time, memantau penjualan harian, mingguan, bulanan, dan tahunan, serta melihat data penjualan produk terlaris dan yang paling menguntungkan.</p>
+                            <p class="text-zinc-500 text-base md:text-lg">Pemantauan penjualan yang memungkinkan Anda untuk melihat data penjualan secara real-time, memantau penjualan harian, mingguan, bulanan, dan tahunan, serta melihat data penjualan produk terlaris dan yang paling menguntungkan.</p>
                         </div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+            <footer class="bg-white w-full">
+        <!-- Main Footer Content -->
+        <div class="mx-auto max-w-7xl px-4 md:px-9 pt-16 pb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Brand Section -->
+                <div class="space-y-6">
+                    <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo" class="h-8 w-auto">
+                    <p class="text-gray-500 text-sm">
+                        Solusi kasir modern untuk mengembangkan bisnis Anda dengan teknologi yang efisien dan mudah digunakan.
+                    </p>
+                    <!-- Social Media Links -->
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-blue-500 transition-colors">
+                            <i class="pi pi-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-blue-500 transition-colors">
+                            <i class="pi pi-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-blue-500 transition-colors">
+                            <i class="pi pi-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-blue-500 transition-colors">
+                            <i class="pi pi-linkedin text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-gray-900 font-semibold mb-6">Tautan Cepat</h3>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="#beranda" class="text-gray-500 hover:text-blue-500 transition-colors">Beranda</a>
+                        </li>
+                        <li>
+                            <a href="#fitur" class="text-gray-500 hover:text-blue-500 transition-colors">Fitur</a>
+                        </li>
+                        <li>
+                            <a href="#layanan" class="text-gray-500 hover:text-blue-500 transition-colors">Layanan</a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-500 hover:text-blue-500 transition-colors">Demo</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="text-gray-900 font-semibold mb-6">Hubungi Kami</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start space-x-3">
+                            <i class="pi pi-map-marker text-blue-500 mt-1"></i>
+                            <span class="text-gray-500">Jl. Cilangkap RT01/14 No.04, Tapos, Depok, Jawa Barat, Indonesia</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i class="pi pi-phone text-blue-500"></i>
+                            <span class="text-gray-500">+62 821-2345-6789</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i class="pi pi-envelope text-blue-500"></i>
+                            <span class="text-gray-500">@hello@ionbit.id</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h3 class="text-gray-900 font-semibold mb-6">Newsletter</h3>
+                    <p class="text-gray-500 mb-4">Berlangganan untuk mendapatkan informasi terbaru.</p>
+                    <form @submit.prevent="subscribeNewsletter" class="space-y-4">
+                        <input 
+                            type="email" 
+                            placeholder="Masukkan email Anda"
+                            class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-blue-500"
+                            v-model="email"
+                        >
+                        <button 
+                            type="submit"
+                            class="w-full bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                        >
+                            Berlangganan
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="border-t border-gray-100">
+            <div class="mx-auto max-w-7xl px-4 md:px-9 py-6">
+                <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                    <p class="text-gray-500 text-sm text-center md:text-left">
+                        © {{ new Date().getFullYear() }} KasirCerdas. All rights reserved.
+                    </p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-500 hover:text-blue-500 transition-colors text-sm">Kebijakan Privasi</a>
+                        <a href="#" class="text-gray-500 hover:text-blue-500 transition-colors text-sm">Syarat & Ketentuan</a>
                     </div>
                 </div>
             </div>
+        </div>
+    </footer>
         </section>
+        
     </div>
+    
 </template>
 
 <style>

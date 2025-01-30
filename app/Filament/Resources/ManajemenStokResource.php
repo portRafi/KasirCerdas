@@ -38,13 +38,24 @@ class ManajemenStokResource extends Resource
     {
         return $table
             ->poll('15s')
-            ->query(
-                Barang::where([
-                    ['bisnis_id', '=', Auth::user()->bisnis_id],
-                    ['cabangs_id', '=', Auth::user()->cabangs_id],
-                    ['stok', '=', 0],
-                ])
-            )
+            ->query(function () {
+                $query = Barang::query();
+                if (Auth::user()->hasRole('admin_cabang')) {
+                    $query->where([
+                        ['bisnis_id', '=', Auth::user()->bisnis_id],
+                        ['cabangs_id', '=', Auth::user()->cabangs_id],
+                        ['stok', '=', 0]
+                    ]);
+                } else if (Auth::user()->hasRole('admin_bisnis')) {
+                    $query->where([
+                        ['bisnis_id', '=', Auth::user()->bisnis_id],
+                        ['stok', '=', 0]
+                    ]);
+                } else if (Auth::user()->hasRole('super_admin')) {
+                    $query->where('stok', '=', 0); 
+                }
+                return $query;
+            })
             ->heading('Hanya bisa ubah stok')
             ->columns([
                 Tables\Columns\TextColumn::make('kode')
@@ -78,7 +89,8 @@ class ManajemenStokResource extends Resource
             //
         ];
     }
-    public static function canCreate(): bool {
+    public static function canCreate(): bool
+    {
         return false;
     }
     public static function getPages(): array

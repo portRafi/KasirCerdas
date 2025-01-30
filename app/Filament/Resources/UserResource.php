@@ -83,7 +83,6 @@ class UserResource extends Resource
         return $table
             ->poll('5s')
             ->columns([
-
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('no_hp')

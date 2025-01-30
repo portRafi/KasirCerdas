@@ -19,7 +19,7 @@ const props = defineProps({
 const user = ref(null);
 const bisnisName = ref('');
 const cabangName = ref('');
-
+const tanggalWaktu = ref('');
 const paymentMethod = ref('');
 const cart = ref([]);
 const showModal = ref(false);
@@ -39,9 +39,18 @@ const searchQuery = ref('');
 const sortOption = ref('asc');
 var isDiskonTransaksiActive = false;
 
+const updateCurrentDateTime = () => {
+  const now = new Date();
+  const formattedDate = now.toLocaleDateString('id-ID'); 
+  const formattedTime = now.toLocaleTimeString('id-ID', { hour12: false }); 
+  tanggalWaktu.value = `${formattedDate} ${formattedTime}`;
+};
+
 onMounted(async () => {
     const isPrinterActive = false;
     printeractive(isPrinterActive);
+    updateCurrentDateTime(); 
+    setInterval(updateCurrentDateTime, 1000);
 
     try {
         const response = await fetch('/api/userinfo', {
@@ -52,7 +61,6 @@ onMounted(async () => {
         if (!response.ok) {
             throw new Error('Failed to fetch data');
         }
-
         const data = await response.json();
 
         bisnisName.value = data.bisnis.nama_bisnis;
@@ -444,6 +452,8 @@ const print = async () => {
         printable.Misc.centerLine(10),
         printable.Keyboard.enter(2),
         printable.Align.left(printable.Font.normal(`ID Transaksi: ` + generateRandomString())),
+        printable.Keyboard.enter(1),
+        printable.Align.left(printable.Font.normal(`Tanggal: ${tanggalWaktu}`)),
         printable.Keyboard.enter(1),
         printable.Align.left(printable.Font.normal(`Kasir: ${namakasir}`)),
         printable.Keyboard.enter(2),

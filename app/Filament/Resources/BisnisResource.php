@@ -41,13 +41,21 @@ class BisnisResource extends Resource
                     ->maxLength(255),
             ]);
     }
-    
+
     public static function table(Table $table): Table
     {
         return $table
-            ->query(Bisnis::where([
-                ['id', '=', Auth::user()->bisnis_id]
-            ]))
+            ->query(function () {
+                $query = Bisnis::query();
+                if (Auth::user()->hasRole('admin_bisnis')) {
+                    $query->where([
+                        ['id', '=', Auth::user()->bisnis_id]
+                    ]);
+                } else if (Auth::user()->hasRole('super_admin')) {
+                    $query->get();
+                }
+                return $query;
+            })
             ->columns([
                 // Tables\Columns\TextColumn::make('id')
                 //     ->searchable(),

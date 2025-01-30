@@ -17,8 +17,9 @@ use App\Filament\Resources\KasirResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role; 
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Gate;
+
 class KasirResource extends Resource
 {
     protected static ?string $model = User::class;
@@ -57,7 +58,7 @@ class KasirResource extends Resource
                     ->label('cabangs_id')
                     ->options(function () {
                         return Cabang::where('bisnis_id', Auth::user()->bisnis_id)
-                        ->pluck('nama_cabang', 'id');
+                            ->pluck('nama_cabang', 'id');
                     })
                     ->searchable(),
             ]);
@@ -66,9 +67,22 @@ class KasirResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(User::where([
-                ['bisnis_id', '=', Auth::user()->bisnis_id]
-            ]))
+            ->query(function () {
+                $query = User::query();
+                if (Auth::user()->hasRole('admin_cabang')) {
+                    $query->where([
+                        ['bisnis_id', '=', Auth::user()->bisnis_id],
+                        ['cabangs_id', '=', Auth::user()->cabangs_id]
+                    ]);
+                } else if (Auth::user()->hasRole('admin_bisnis')) {
+                    $query->where([
+                        ['bisnis_id', '=', Auth::user()->bisnis_id]
+                    ]);
+                } else if (Auth::user()->hasRole('super_admin')) {
+                    $query->get();
+                }
+                return $query;
+            })
             ->poll('5s')
             ->columns([
                 Tables\Columns\TextColumn::make('name')

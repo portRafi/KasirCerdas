@@ -44,28 +44,35 @@ class DataTransaksiResource extends Resource
     protected static ?string $activeNavigationIcon = 'heroicon-s-clipboard-document-list';
     protected static ?string $navigationGroup = 'laporan';
     protected static ?string $navigationLabel = 'Data Transaksi';
- 
+
     public static function form(Form $form): Form
     {
         return $form
-        ->schema([
-            
-        ]);
+            ->schema([]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->query(
-                DataTransaksi::where([
-                    ['bisnis_id', '=', Auth::user()->bisnis_id],
-                    // ['cabangs_id', '=', Auth::user()->cabangs_id]
-                ])
-                )
-                    
+            ->query(function () {
+                $query = DataTransaksi::query();
+                if (Auth::user()->hasRole('admin_cabang')) {
+                    $query->where([
+                        ['bisnis_id', '=', Auth::user()->bisnis_id],
+                        ['cabangs_id', '=', Auth::user()->cabangs_id]
+                    ]);
+                } else if (Auth::user()->hasRole('admin_bisnis')) {
+                    $query->where([
+                        ['bisnis_id', '=', Auth::user()->bisnis_id]
+                    ]);
+                } else if (Auth::user()->hasRole('super_admin')) {
+                    $query->get();
+                }
+                return $query;
+            })
             ->poll('5s')
             ->columns([
-                
+
                 Tables\Columns\TextColumn::make('kode_transaksi')
                     ->label('Kode Transaksi')
                     ->numeric()
@@ -122,7 +129,7 @@ class DataTransaksiResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('cabangs_id')
-                ->label('Cabang')
+                    ->label('Cabang')
                     ->options(
                         Cabang::where('bisnis_id', '=', Auth::user()->bisnis_id)->pluck('nama_cabang', 'id')->toArray()
                     ),
@@ -143,7 +150,7 @@ class DataTransaksiResource extends Resource
                             ->label('End Date')
                             ->required(),
                     ])
-                    ->columns(2) 
+                    ->columns(2)
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             isset($data['start_date']) && isset($data['end_date']),
@@ -153,7 +160,7 @@ class DataTransaksiResource extends Resource
                         );
                     }),
             ], layout: FiltersLayout::AboveContent)
-            
+
             ->actions([
                 Tables\Actions\Action::make('Detail')
                     ->label('Detail')
