@@ -27,22 +27,19 @@ class Dashboard extends BaseDashboard
                 DatePicker::make('startDate')
                     ->maxDate(fn (Get $get) => $get('endDate') ?: now())
                     ->afterStateUpdated(function ($state, callable $set) {
-                        $this->getStats(); // Memperbarui data saat startDate diperbarui
+                        $this->getStats(); 
                     }),
                 DatePicker::make('endDate')
                     ->minDate(fn (Get $get) => $get('startDate') ?: now())
                     ->maxDate(now())
                     ->afterStateUpdated(function ($state, callable $set) {
-                        $this->getStats(); // Memperbarui data saat endDate diperbarui
+                        $this->getStats(); 
                     }),
             ])->columns(2),
         ]);
     }
 
-    // Tambahkan method getStats di sini
-    public function getStats()
-    {
-        // Contoh logika perhitungan statistik
+    public function getStats()  {
     $startDate = !is_null($this->filters['startDate'] ?? null) ? Carbon::parse($this->filters['startDate']) : null;
     $endDate = !is_null($this->filters['endDate'] ?? null) ? Carbon::parse($this->filters['endDate']) : null;  
 
