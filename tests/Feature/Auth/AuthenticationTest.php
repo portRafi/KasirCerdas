@@ -29,9 +29,9 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        if (Auth::user() && Auth::user()->roless === 'kasir') {
+        if (Auth::user() && Auth::user()->hasRole(4)) {
             $response->assertRedirect(RouteServiceProvider::POS_HOME);
-        } else if (Auth::user() && Auth::user()->roless === 'admin') {
+        } else if (Auth::user() && Auth::user()->hasRole(1) || Auth::user() && Auth::user()->hasRole(6) || Auth::user() && Auth::user()->hasRole(7)) {
             $response->assertRedirect(RouteServiceProvider::ADMIN_HOME);
         }
     }

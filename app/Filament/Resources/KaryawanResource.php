@@ -50,10 +50,11 @@ class KaryawanResource extends Resource
                     ->dehydrated(fn($state) => filled($state)),
                 Forms\Components\Select::make('roles')
                     ->relationship('roles', 'name', function ($query) {
-                        return $query->where([
-                            ['id', '!=', 1],
-                            ['id', '!=', 9],
-                        ]);
+                        if (Auth::user()->hasRole(7)) {
+                            return $query->where('id', 4);
+                        } else {
+                            return $query->whereNotIn('id', [1, 9]);
+                        }
                     })
                     ->preload()
                     ->searchable(),
@@ -61,7 +62,7 @@ class KaryawanResource extends Resource
                 Forms\Components\Hidden::make('bisnis_id')
                     ->default(Auth::user()->bisnis_id),
                 Forms\Components\Select::make('cabangs_id')
-                    ->label('cabangs_id')
+                    ->label('Cabang')
                     ->options(function () {
                         return Cabang::where('bisnis_id', Auth::user()->bisnis_id)
                             ->pluck('nama_cabang', 'id');
@@ -78,8 +79,12 @@ class KaryawanResource extends Resource
                 if (Auth::user()->hasRole(7)) {
                     $query->where([
                         ['bisnis_id', '=', Auth::user()->bisnis_id],
-                        ['cabangs_id', '=', Auth::user()->cabangs_id]
+                        ['cabangs_id', '=', Auth::user()->cabangs_id],
+                        
                     ]);
+                    // $query->whereHas('role', function ($query) {
+                    //     $query->where('roles.id', '!=', 4);
+                    // });
                 } else if (Auth::user()->hasRole(6)) {
                     $query->where([
                         ['bisnis_id', '=', Auth::user()->bisnis_id]
@@ -97,8 +102,11 @@ class KaryawanResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\SelectColumn::make('roles')
-                    ->options(Role::whereNotIn('id', [1, 9])->pluck('name', 'id')->toArray()),
+                Auth::user()->hasRole(6) ?
+                    Tables\Columns\SelectColumn::make('roles')
+                    ->options(function () {
+                        return Role::whereNotIn('id', [1, 9])->pluck('name', 'id')->toArray();
+                    }) : Tables\Columns\TextColumn::make('roles.name')->badge(),
                 Tables\Columns\TextColumn::make('bisnis.nama_bisnis')
                     ->badge()
                     ->color('success')

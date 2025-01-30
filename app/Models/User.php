@@ -14,6 +14,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use TomatoPHP\FilamentDiscord\Traits\InteractsWithDiscord;
+use Spatie\Permission\Models\Role;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -64,15 +65,18 @@ class User extends Authenticatable implements FilamentUser
         return $this->avatar_url ? Storage::url("$this->avatar_url") : null;
     }
 
-        public function bisnis()
-        {
-            return $this->belongsTo(Bisnis::class);
-        }
-        public function cabang()
-        {
-            return $this->belongsTo(Cabang::class, 'cabangs_id');
-        }
-        
+    public function bisnis()
+    {
+        return $this->belongsTo(Bisnis::class);
+    }
+    public function cabang()
+    {
+        return $this->belongsTo(Cabang::class, 'cabangs_id');
+    }
+    // public function roles()
+    // {
+        // return $this->belongsToMany(Role::class);
+    // }
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->email && $this->password;

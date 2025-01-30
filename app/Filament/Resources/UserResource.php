@@ -18,7 +18,7 @@ use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role; // Impor model Role dari Spatie
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Gate;
 
 class UserResource extends Resource
