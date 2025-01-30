@@ -15,10 +15,10 @@ const props = defineProps({
     diskontransaksi_minimalpembelian: Number,
 })
 
-onMounted(() => {
-    const isPrinterActive = false;
-    printeractive(isPrinterActive);
-});
+
+const user = ref(null);
+const bisnisName = ref('');
+const cabangName = ref('');
 
 const paymentMethod = ref('');
 const cart = ref([]);
@@ -38,6 +38,30 @@ const printerStatusClass = ref('badge bg-danger');
 const searchQuery = ref('');
 const sortOption = ref('asc');
 var isDiskonTransaksiActive = false;
+
+onMounted(async () => {
+    const isPrinterActive = false;
+    printeractive(isPrinterActive);
+
+    try {
+        const response = await fetch('/api/userinfo', {
+            method: 'GET',
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch data');
+        }
+
+        const data = await response.json();
+
+        bisnisName.value = data.bisnis.nama_bisnis;
+        cabangName.value = data.cabang.nama_cabang;
+        user.value = data.user;
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+    }
+});
 
 
 const filteredAndSortedProducts = computed(() => {
@@ -312,14 +336,14 @@ const checkout = async () => {
         } else if (response.data.success) {
             alert('Printer Mati, nyalakan terlebih dahulu.');
             return;
-        // const response = await axios.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
-        // if (response.data.success && isPrinterActive) {
-        //     alert('Checkout berhasil!');
-        //     // print()
-        //     window.location.reload();
-        // } else if (!isPrinterActive && response.data.success) {
-        //     alert('Printer Mati, nyalakan terlebih dahulu.');
-        //     return;
+            // const response = await axios.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
+            // if (response.data.success && isPrinterActive) {
+            //     alert('Checkout berhasil!');
+            //     // print()
+            //     window.location.reload();
+            // } else if (!isPrinterActive && response.data.success) {
+            //     alert('Printer Mati, nyalakan terlebih dahulu.');
+            //     return;
         } else {
             alert('Terjadi kesalahan. Silakan coba lagi.');
         }
@@ -414,8 +438,9 @@ const print = async () => {
     };
     const texts = [
         printable.Align.reset(),
-        printable.Align.center(printable.Font.large('PT. Ionbit Cafe')),
+        printable.Align.center(printable.Font.large(bisnisName.value)),
         printable.Keyboard.enter(1),
+        printable.Align.center(printable.Font.normal(cabangName.value)),
         printable.Misc.centerLine(10),
         printable.Keyboard.enter(2),
         printable.Align.left(printable.Font.normal(`ID Transaksi: ` + generateRandomString())),

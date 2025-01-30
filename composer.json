@@ -18,7 +18,7 @@
         "inertiajs/inertia-laravel": "^0.6.8",
         "joaopaulolndev/filament-edit-profile": "^1.0",
         "laravel/framework": "^10.10",
-        "laravel/sanctum": "^3.2",
+        "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "3.0",
         "maatwebsite/excel": "^3.1",
