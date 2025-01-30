@@ -47,11 +47,11 @@ class BisnisResource extends Resource
         return $table
             ->query(function () {
                 $query = Bisnis::query();
-                if (Auth::user()->hasRole('admin_bisnis')) {
+                if (Auth::user()->hasRole(6)) {
                     $query->where([
                         ['id', '=', Auth::user()->bisnis_id]
                     ]);
-                } else if (Auth::user()->hasRole('super_admin')) {
+                } else if (Auth::user()->hasRole(1)) {
                     $query->get();
                 }
                 return $query;
@@ -86,7 +86,7 @@ class BisnisResource extends Resource
         ];
     }
     public static function canCreate(): bool {
-        if (!auth()->user()->hasRole('super_admin')) {
+        if (!auth()->user()->hasRole(1)) {
             return false;
         } 
         return true;
@@ -94,10 +94,10 @@ class BisnisResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        if (auth()->user()->hasRole('admin_bisnis')) {
+        if (auth()->user()->hasRole(6)) {
             return true;
         }
-        else if (auth()->user()->hasRole('super_admin')) {
+        else if (auth()->user()->hasRole(1)) {
             return true;
         }
         return false;

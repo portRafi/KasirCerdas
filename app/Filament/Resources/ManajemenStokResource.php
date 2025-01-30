@@ -40,18 +40,18 @@ class ManajemenStokResource extends Resource
             ->poll('15s')
             ->query(function () {
                 $query = Barang::query();
-                if (Auth::user()->hasRole('admin_cabang')) {
+                if (Auth::user()->hasRole(7)) {
                     $query->where([
                         ['bisnis_id', '=', Auth::user()->bisnis_id],
                         ['cabangs_id', '=', Auth::user()->cabangs_id],
                         ['stok', '=', 0]
                     ]);
-                } else if (Auth::user()->hasRole('admin_bisnis')) {
+                } else if (Auth::user()->hasRole(6)) {
                     $query->where([
                         ['bisnis_id', '=', Auth::user()->bisnis_id],
                         ['stok', '=', 0]
                     ]);
-                } else if (Auth::user()->hasRole('super_admin')) {
+                } else if (Auth::user()->hasRole(1)) {
                     $query->where('stok', '=', 0); 
                 }
                 return $query;

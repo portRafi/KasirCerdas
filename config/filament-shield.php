@@ -17,9 +17,9 @@ return [
         'fqcn' => 'App\\Models\\User',
     ],
 
-    'super_admin' => [
+    1 => [
         'enabled' => true,
-        'name' => 'super_admin',
+        'name' => 1,
         'define_via_gate' => false,
         'intercept_gate' => 'before', // after
     ],

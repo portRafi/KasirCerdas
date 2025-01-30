@@ -42,16 +42,16 @@ class MetodePembayaranResource extends Resource
         return $table
             ->query(function () {
                 $query = MetodePembayaran::query();
-                if (Auth::user()->hasRole('admin_cabang')) {
+                if (Auth::user()->hasRole(7)) {
                     $query->where([
                         ['bisnis_id', '=', Auth::user()->bisnis_id],
                         ['cabangs_id', '=', Auth::user()->cabangs_id]
                     ]);
-                } else if (Auth::user()->hasRole('admin_bisnis')) {
+                } else if (Auth::user()->hasRole(6)) {
                     $query->where([
                         ['bisnis_id', '=', Auth::user()->bisnis_id]
                     ]);
-                } else if (Auth::user()->hasRole('super_admin')) {
+                } else if (Auth::user()->hasRole(1)) {
                     $query->get();
                 }
                 return $query;

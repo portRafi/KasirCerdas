@@ -19,7 +19,7 @@ use App\Http\Controllers\LoginController;
 */
 
 //sistem sortir login kasir/admin
-Route::get('redirects', [LoginController::class, 'index']);
+Route::get('redirects', [LoginController::class, 'index'])->name('redirects');
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [

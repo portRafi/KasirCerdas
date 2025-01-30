@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\KasirResource\Pages;
+namespace App\Filament\Resources\KaryawanResource\Pages;
 
-use App\Filament\Resources\KasirResource;
+use App\Filament\Resources\KaryawanResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
-class ListKasirs extends ListRecords
+class ListKaryawans extends ListRecords
 {
-    protected static string $resource = KasirResource::class;
+    protected static string $resource = KaryawanResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -18,6 +18,6 @@ class ListKasirs extends ListRecords
     }
     public function getTitle(): string
     {
-        return __('Data Kasir');
+        return __('Pendataan Karyawan');
     }
 }

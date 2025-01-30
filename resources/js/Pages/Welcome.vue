@@ -117,7 +117,7 @@ onBeforeUnmount(() => {
             <!-- Login Button -->
             <div v-if="canLogin" class="hidden md:block text-end">
                 <template v-if="$page.props.auth.user">
-                    <a :href="route('pos')"
+                    <a :href="route('redirects')"
                         class="flex border-2 border-blue-500 rounded-3xl px-6 py-[6px] items-center text-blue-500 font-bold hover:bg-blue-500 hover:text-white transition-colors">
                         Dashboard
                     </a>

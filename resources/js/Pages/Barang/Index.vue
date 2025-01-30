@@ -506,7 +506,7 @@ const print = async () => {
             <div class="overflow-y-auto flex-grow max-h-[70%]">
                 <div class="flex pt-6 pb-5 items-center justify-left border-b">
                     <div class="hidden sm:flex text-center">
-                        <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo" class="w-auto h-[35px]">
+                        <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo" class="w-auto h-[35px] object-cover">
                     </div>
                 </div>
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\KasirResource\Pages;
+namespace App\Filament\Resources\KaryawanResource\Pages;
 
-use App\Filament\Resources\KasirResource;
+use App\Filament\Resources\KaryawanResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditKasir extends EditRecord
+class EditKaryawan extends EditRecord
 {
-    protected static string $resource = KasirResource::class;
+    protected static string $resource = KaryawanResource::class;
 
     protected function getHeaderActions(): array
     {

@@ -13,21 +13,21 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\View\TablesRenderHook;
-use App\Filament\Resources\KasirResource\Pages;
+use App\Filament\Resources\KaryawanResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Gate;
 
-class KasirResource extends Resource
+class KaryawanResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
     protected static ?string $activeNavigationIcon = 'heroicon-m-user-plus';
     protected static ?string $navigationGroup = 'Setting';
-    protected static ?string $navigationLabel = 'Role Kasir';
+    protected static ?string $navigationLabel = 'Pendataan Karyawan';
     public static function form(Form $form): Form
     {
         return $form
@@ -49,9 +49,15 @@ class KasirResource extends Resource
                     ->dehydrateStateUsing(fn($state) => Hash::make($state))
                     ->dehydrated(fn($state) => filled($state)),
                 Forms\Components\Select::make('roles')
-                    ->relationship('roles', 'name')
+                    ->relationship('roles', 'name', function ($query) {
+                        return $query->where([
+                            ['id', '!=', 1],
+                            ['id', '!=', 9],
+                        ]);
+                    })
                     ->preload()
                     ->searchable(),
+
                 Forms\Components\Hidden::make('bisnis_id')
                     ->default(Auth::user()->bisnis_id),
                 Forms\Components\Select::make('cabangs_id')
@@ -69,16 +75,16 @@ class KasirResource extends Resource
         return $table
             ->query(function () {
                 $query = User::query();
-                if (Auth::user()->hasRole('admin_cabang')) {
+                if (Auth::user()->hasRole(7)) {
                     $query->where([
                         ['bisnis_id', '=', Auth::user()->bisnis_id],
                         ['cabangs_id', '=', Auth::user()->cabangs_id]
                     ]);
-                } else if (Auth::user()->hasRole('admin_bisnis')) {
+                } else if (Auth::user()->hasRole(6)) {
                     $query->where([
                         ['bisnis_id', '=', Auth::user()->bisnis_id]
                     ]);
-                } else if (Auth::user()->hasRole('super_admin')) {
+                } else if (Auth::user()->hasRole(1)) {
                     $query->get();
                 }
                 return $query;
@@ -92,7 +98,7 @@ class KasirResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\SelectColumn::make('roles')
-                    ->options(Role::all()->pluck('name', 'id')),
+                    ->options(Role::whereNotIn('id', [1, 9])->pluck('name', 'id')->toArray()),
                 Tables\Columns\TextColumn::make('bisnis.nama_bisnis')
                     ->badge()
                     ->color('success')
@@ -133,15 +139,15 @@ class KasirResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListKasirs::route('/'),
-            'create' => Pages\CreateKasir::route('/create'),
-            'edit' => Pages\EditKasir::route('/{record}/edit'),
+            'index' => Pages\ListKaryawans::route('/'),
+            'create' => Pages\CreateKaryawan::route('/create'),
+            'edit' => Pages\EditKaryawan::route('/{record}/edit'),
         ];
     }
 
     // public static function shouldRegisterNavigation(): bool
     // {
-    //     if(!auth()->user()->hasRole('super_admin')) {
+    //     if(!auth()->user()->hasRole(1)) {
     //         return false;   
     //     }
     //     return true;
