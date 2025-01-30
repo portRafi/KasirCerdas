@@ -20,9 +20,7 @@ use App\Http\Controllers\LoginController;
 
 //sistem sortir login kasir/admin
 Route::get('redirects', [LoginController::class, 'index']);
-Route::get('/testjancuk',function(){
-    return redirect('/admin');
-});
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -30,9 +28,6 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
-Route::get('/2', function() {
-    return Inertia::render('Welcome2');
 });
 
 Route::get('/dashboard', [BarangController::class, 'index'])

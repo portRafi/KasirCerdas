@@ -25,7 +25,7 @@
         "mike42/escpos-php": "^4.0",
         "psr/simple-cache": "2.0",
         "pxlrbt/filament-excel": "^2.3",
-        "spatie/laravel-permission": "^6.9",
+        "spatie/laravel-permission": "^6.10",
         "tightenco/ziggy": "^2.4",
         "tomatophp/filament-discord": "^1.0",
         "tomatophp/filament-invoices": "^1.0"
