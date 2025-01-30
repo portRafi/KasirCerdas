@@ -331,7 +331,7 @@ onBeforeUnmount(() => {
                         </li>
                         <li class="flex items-center space-x-3">
                             <i class="pi pi-envelope text-blue-500"></i>
-                            <span class="text-gray-500">info@hello@ionbit.id</span>
+                            <span class="text-gray-500">@hello@ionbit.id</span>
                         </li>
                     </ul>
                 </div>
