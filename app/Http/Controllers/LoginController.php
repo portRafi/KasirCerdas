@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Spatie\Permission\Models\Role;
-use App\Models\User;
 
 class LoginController extends Controller
 {
