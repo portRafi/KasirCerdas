@@ -85,18 +85,18 @@ class DataShiftResource extends Resource
             ]);
     }
 
-    public static  function canCreate(): bool
-    {
-        $shiftCount = DataShift::where('bisnis_id', Auth::user()->bisnis_id)
-            ->where('cabangs_id', Auth::user()->cabangs_id)
-            ->count();
+    // public static  function canCreate(): bool
+    // {
+    //     $shiftCount = DataShift::where('bisnis_id', Auth::user()->bisnis_id)
+    //         ->where('cabangs_id', Auth::user()->cabangs_id)
+    //         ->count();
 
-        if ($shiftCount >= 2) {
-            return (false);
-        } else {
-            return (true);
-        }
-    }
+    //     if ($shiftCount >= 2) {
+    //         return (false);
+    //     } else {
+    //         return (true);
+    //     }
+    // }
     public static function getRelations(): array
     {
         return [
@@ -112,14 +112,14 @@ class DataShiftResource extends Resource
             'edit' => Pages\EditDataShift::route('/{record}/edit'),
         ];
     }
-    public static function shouldRegisterNavigation(): bool
-    {
-        if(!auth()->user()->hasRole(6)) {
-            return false;   
-        } else if (!auth()->user()->hasRole(1)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+    // public static function shouldRegisterNavigation(): bool
+    // {
+    //     if(!auth()->user()->hasRole(6)) {
+    //         return false;   
+    //     } else if (!auth()->user()->hasRole(1)) {
+    //         return false;
+    //     } else {
+    //         return true;
+    //     }
+    // }
 }
