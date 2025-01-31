@@ -366,7 +366,7 @@ const checkout = async () => {
 
 function generateRandomString() {
     const prefix = 'KC_';
-    const randomPart = Math.random().toString(36).substring(2, 7);
+    const randomPart = Math.random().toString(36).replace(/[^a-z]/g, '').substring(0, 5).toUpperCase();
     return prefix + randomPart;
 }
 
