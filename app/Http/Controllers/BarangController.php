@@ -16,7 +16,7 @@ use Inertia\Inertia;
 class BarangController extends Controller
 {
     public function index()
-    {   
+    {
         if (Auth::user()->hasRole(7)) {
             $barangs = Barang::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
@@ -42,7 +42,33 @@ class BarangController extends Controller
                 ['cabangs_id', '=', Auth::user()->cabangs_id],
                 ['is_Active', '=', true]
             ])->sum('jumlah_diskon');
-        }
+        } 
+        else if (Auth::user()->hasRole(4)) {
+            $barangs = Barang::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                ['stok', '>=', 1]
+            ])->get();
+            $metodepembayaran = MetodePembayaran::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                ['is_Active', '=', true]
+            ])->get();
+            $pajak = Pajak::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+            ])->sum('jumlah_pajak');
+            $diskontransaksi_minimalpembelian = DiskonTransaksi::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                ['is_Active', '=', true]
+            ])->sum('minimum_pembelian');
+            $diskontransaksi_getjumlah = DiskonTransaksi::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                ['is_Active', '=', true]
+            ])->sum('jumlah_diskon');
+        } 
         else if (Auth::user()->hasRole(6)) {
             $barangs = Barang::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
@@ -63,7 +89,7 @@ class BarangController extends Controller
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
                 ['is_Active', '=', true]
             ])->sum('jumlah_diskon');
-        }
+        } 
         else if (Auth::user()->hasRole(1)) {
             $barangs = Barang::all();
             $metodepembayaran = MetodePembayaran::all();
@@ -71,7 +97,7 @@ class BarangController extends Controller
             $diskontransaksi_minimalpembelian = DiskonTransaksi::all()->sum('minimum_pembelian');
             $diskontransaksi_getjumlah = DiskonTransaksi::all()->sum('jumlah_diskon');
         }
-        
+
         $namaKasir = Auth::user()->name;
 
         return Inertia::render('Barang/Index', [
@@ -80,7 +106,7 @@ class BarangController extends Controller
             'pajak' => $pajak,
             'namakasir' => $namaKasir,
             'diskontransaksi_getjumlah' => $diskontransaksi_getjumlah,
-            'diskontransaksi_minimalpembelian' => $diskontransaksi_minimalpembelian, 
+            'diskontransaksi_minimalpembelian' => $diskontransaksi_minimalpembelian,
         ]);
     }
     public function store(Request $request)
@@ -103,23 +129,26 @@ class BarangController extends Controller
             ], 400);
         }
 
+        $totalHargaBeli = 0;
+        $totalHargaJual = 0;
+        $totalHargaAfterDiskon = 0;
+        $totalHargaAfterPajak = 0;
+        $totalDiskonTransaksi = 0;
+        $totalDiskon = 0;
+        $totalHarga = 0;
+        $totalPajak = 0;
+        $keuntungan = 0;
+
         foreach ($request->cart as $item) {
-            DataTransaksi::create([
-                'bisnis_id' => Auth::user()->bisnis_id,
-                'cabangs_id' => Auth::user()->cabangs_id,
-                'kode_transaksi' => $item['kode_transaksi'],
-                'email_staff' => Auth::user()->email,
-                'metode_pembayaran' => $request->metode_pembayaran,
-                'total_harga_beli' => $item['total_harga_asli'],
-                'total_harga_jual' => $item['total_harga_without_pajak_diskon'],
-                'total_harga_after_diskon' => $item['total_harga_after_diskon'],
-                'total_harga_after_pajak' => $item['total_harga_after_pajak'],
-                'total_diskon_transaksi' => $item['total_diskon_transaksi'],
-                'total_diskon' => $item['total_diskon'],
-                'total_harga' => $item['total_harga'],
-                'total_pajak' => $item['total_pajak'],
-                'keuntungan' => $item['total_harga_after_diskon'] - $item['total_harga_asli']
-            ]);
+            $totalHargaBeli += $item['total_harga_asli'];
+            $totalHargaJual += $item['total_harga_without_pajak_diskon'];
+            $totalHargaAfterDiskon += $item['total_harga_after_diskon'];
+            $totalHargaAfterPajak += $item['total_harga_after_pajak'];
+            $totalDiskonTransaksi += $item['total_diskon_transaksi'];
+            $totalDiskon += $item['total_diskon'];
+            $totalHarga += $item['total_harga'];
+            $totalPajak += $item['total_pajak'];
+
             DataPajak::create([
                 'bisnis_id' => auth()->user()->bisnis_id,
                 'cabangs_id' => auth()->user()->cabangs_id,
@@ -143,11 +172,29 @@ class BarangController extends Controller
                 'metode_pembayaran' => $request->metode_pembayaran,
             ]);
         }
+        $keuntungan = $totalHargaAfterDiskon - $totalHargaBeli;
+
+        DataTransaksi::create([
+            'bisnis_id' => Auth::user()->bisnis_id,
+            'cabangs_id' => Auth::user()->cabangs_id,
+            'kode_transaksi' => $request->cart[0]['kode_transaksi'], 
+            'email_staff' => Auth::user()->email,
+            'metode_pembayaran' => $request->metode_pembayaran,
+            'total_harga_beli' => $totalHargaBeli,
+            'total_harga_jual' => $totalHargaJual,
+            'total_harga_after_diskon' => $totalHargaAfterDiskon,
+            'total_harga_after_pajak' => $totalHargaAfterPajak,
+            'total_diskon_transaksi' => $totalDiskonTransaksi,
+            'total_diskon' => $totalDiskon,
+            'total_harga' => $totalHarga,
+            'total_pajak' => $totalPajak,
+            'keuntungan' => $keuntungan
+        ]);
         return response()->json([
             'success' => true,
             'message' => 'Checkout berhasil!'
         ]);
-        
+
         $barangs = Barang::where([
             ['bisnis_id', '=', Auth::user()->bisnis_id],
             ['cabangs_id', '=', Auth::user()->cabangs_id],

@@ -339,6 +339,7 @@ const checkout = async () => {
         const response = await axios.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
         if (response.data.success) {
             alert('Checkout berhasil!');
+            isDiskonTransaksiActive = false;
             // print()
             // window.location.reload();
         } else if (response.data.success) {
