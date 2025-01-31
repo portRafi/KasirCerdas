@@ -16,31 +16,62 @@ use Inertia\Inertia;
 class BarangController extends Controller
 {
     public function index()
-    {
-        $barangs = Barang::where([
-            ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id],
-            ['stok', '>=', 1]
-        ])->get();
-        $metodepembayaran = MetodePembayaran::where([
-            ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id],
-            ['is_Active', '=', true]
-        ])->get();
-        $pajak = Pajak::where([
-            ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id],
-        ])->sum('jumlah_pajak');
-        $diskontransaksi_minimalpembelian = DiskonTransaksi::where([
-            ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id],
-            ['is_Active', '=', true]
-        ])->sum('minimum_pembelian');
-        $diskontransaksi_getjumlah = DiskonTransaksi::where([
-            ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id],
-            ['is_Active', '=', true]
-        ])->sum('jumlah_diskon');
+    {   
+        if (Auth::user()->hasRole(7)) {
+            $barangs = Barang::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                ['stok', '>=', 1]
+            ])->get();
+            $metodepembayaran = MetodePembayaran::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                ['is_Active', '=', true]
+            ])->get();
+            $pajak = Pajak::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+            ])->sum('jumlah_pajak');
+            $diskontransaksi_minimalpembelian = DiskonTransaksi::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                ['is_Active', '=', true]
+            ])->sum('minimum_pembelian');
+            $diskontransaksi_getjumlah = DiskonTransaksi::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                ['is_Active', '=', true]
+            ])->sum('jumlah_diskon');
+        }
+        else if (Auth::user()->hasRole(6)) {
+            $barangs = Barang::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['stok', '>=', 1]
+            ])->get();
+            $metodepembayaran = MetodePembayaran::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['is_Active', '=', true]
+            ])->get();
+            $pajak = Pajak::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+            ])->sum('jumlah_pajak');
+            $diskontransaksi_minimalpembelian = DiskonTransaksi::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['is_Active', '=', true]
+            ])->sum('minimum_pembelian');
+            $diskontransaksi_getjumlah = DiskonTransaksi::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['is_Active', '=', true]
+            ])->sum('jumlah_diskon');
+        }
+        else if (Auth::user()->hasRole(1)) {
+            $barangs = Barang::all();
+            $metodepembayaran = MetodePembayaran::all();
+            $pajak = Pajak::all()->sum('jumlah_pajak');
+            $diskontransaksi_minimalpembelian = DiskonTransaksi::all()->sum('minimum_pembelian');
+            $diskontransaksi_getjumlah = DiskonTransaksi::all()->sum('jumlah_diskon');
+        }
+        
         $namaKasir = Auth::user()->name;
 
         return Inertia::render('Barang/Index', [
