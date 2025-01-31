@@ -33,6 +33,9 @@ class DataShiftResource extends Resource
                 Forms\Components\TextInput::make('shift')
                     ->required()
                     ->numeric(),
+                Forms\Components\TextInput::make('nama_shift')
+                    ->label('Nama Shift')
+                    ->required(),
                 Forms\Components\TimePicker::make('shift_start')
                     ->seconds(false)
                     ->label('Jam Shift Dimulai')

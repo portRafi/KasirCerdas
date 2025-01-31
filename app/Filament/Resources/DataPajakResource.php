@@ -19,6 +19,7 @@ use App\Filament\Resources\DataPajakResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\DataPajakResource\RelationManagers;
+use Filament\Tables\Columns\Summarizers\Sum;
 
 class DataPajakResource extends Resource
 {
@@ -62,6 +63,7 @@ class DataPajakResource extends Resource
                 Tables\Columns\TextColumn::make('jumlah_pajak')
                     ->label('Jumlah Pajak')
                     ->money('IDR')
+                    ->summarize(Sum::make())
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->date()

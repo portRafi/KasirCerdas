@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use App\Models\User;
+use App\Models\DataShift;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -58,10 +59,9 @@ class ManajemenShiftResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\SelectColumn::make('shift')
-                ->options([
-                    '1' => 'Shift Pagi',
-                    '2' => 'Shift Sore'
-                ])
+                ->options(DataShift::where([
+                    
+                ])->pluck('nama_shift', 'id'))
                 ->selectablePlaceholder(false),
                 Tables\Columns\TextColumn::make('bisnis.nama_bisnis')
                     ->badge()

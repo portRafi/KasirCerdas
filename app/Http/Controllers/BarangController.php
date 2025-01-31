@@ -17,7 +17,7 @@ class BarangController extends Controller
 {
     public function index()
     {
-        if (Auth::user()->hasRole(7)) {
+        if (Auth::user()->hasRole(7)) { //ADMIN BISNIS
             $barangs = Barang::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
                 ['cabangs_id', '=', Auth::user()->cabangs_id],
@@ -43,7 +43,9 @@ class BarangController extends Controller
                 ['is_Active', '=', true]
             ])->sum('jumlah_diskon');
         } 
-        else if (Auth::user()->hasRole(4)) {
+
+
+        else if (Auth::user()->hasRole(4)) { //KASIR
             $barangs = Barang::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
                 ['cabangs_id', '=', Auth::user()->cabangs_id],
@@ -67,9 +69,14 @@ class BarangController extends Controller
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
                 ['cabangs_id', '=', Auth::user()->cabangs_id],
                 ['is_Active', '=', true]
-            ])->sum('jumlah_diskon');
+            ])->first();
+            
+            $diskon = $diskontransaksi_getjumlah->jumlah_diskon;
+            // dd($diskontransaksi_getjumlah->jumlah_diskon);
         } 
-        else if (Auth::user()->hasRole(6)) {
+
+
+        else if (Auth::user()->hasRole(6)) { //ADMIN CABANG
             $barangs = Barang::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
                 ['stok', '>=', 1]
@@ -90,12 +97,14 @@ class BarangController extends Controller
                 ['is_Active', '=', true]
             ])->sum('jumlah_diskon');
         } 
-        else if (Auth::user()->hasRole(1)) {
+        else if (Auth::user()->hasRole(1)) { //SUPERADMIN
             $barangs = Barang::all();
             $metodepembayaran = MetodePembayaran::all();
             $pajak = Pajak::all()->sum('jumlah_pajak');
             $diskontransaksi_minimalpembelian = DiskonTransaksi::all()->sum('minimum_pembelian');
             $diskontransaksi_getjumlah = DiskonTransaksi::all()->sum('jumlah_diskon');
+
+            dd($diskontransaksi_getjumlah);
         }
 
         $namaKasir = Auth::user()->name;
@@ -105,7 +114,7 @@ class BarangController extends Controller
             'metodepembayaran' => $metodepembayaran,
             'pajak' => $pajak,
             'namakasir' => $namaKasir,
-            'diskontransaksi_getjumlah' => $diskontransaksi_getjumlah,
+            'diskontransaksi_getjumlah' => $diskon,
             'diskontransaksi_minimalpembelian' => $diskontransaksi_minimalpembelian,
         ]);
     }
@@ -191,10 +200,11 @@ class BarangController extends Controller
             'total_pajak' => $totalPajak,
             'keuntungan' => $keuntungan
         ]);
-        return response()->json([
-            'success' => true,
-            'message' => 'Checkout berhasil!'
-        ]);
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Checkout berhasil!'
+        // ]);
+        return redirect()->back()->with('type', 'success')->with('message', 'berhasil checkout.');
 
         $barangs = Barang::where([
             ['bisnis_id', '=', Auth::user()->bisnis_id],

@@ -1,10 +1,11 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import 'primeicons/primeicons.css'
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
+import FlashMessage from '@/Components/FlashMessage.vue';
 
 const props = defineProps({
     barangs: Array,
@@ -14,7 +15,6 @@ const props = defineProps({
     diskontransaksi_getjumlah: Number,
     diskontransaksi_minimalpembelian: Number,
 })
-
 
 const user = ref(null);
 const bisnisName = ref('');
@@ -172,7 +172,10 @@ const addToCart = () => {
         const totalPajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
         const totalDiskon = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
         const totalBelanjaSebelumDiskonPajak = cart.value.reduce((total, item) => total + item.total_harga_without_pajak_diskon, totalHargaSebelumDiskonPajak);
-        const totalDiskonTransaksiEx = (totalBelanjaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && !isDiskonTransaksiActive) ? (isDiskonTransaksiActive = true, props.diskontransaksi_getjumlah) : 0;
+
+        const getDiskonTransaksi = (props.diskontransaksi_getjumlah <= 100) ? (totalBelanjaSebelumDiskonPajak * ( props.diskontransaksi_getjumlah / 100)) : props.diskontransaksi_getjumlah;
+        const totalDiskonTransaksiEx = (totalBelanjaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && !isDiskonTransaksiActive) ? (isDiskonTransaksiActive = true, getDiskonTransaksi) : 0;
+      
         const totalHargaAfterDiskon = totalHargaSebelumDiskonPajak - totalDiskon;
         const totalHarga = (totalHargaSebelumDiskonPajak - totalDiskon - totalDiskonTransaksiEx) + totalPajak;
         const existingProductIndex = cart.value.findIndex(item => item.kode === selectedProduct.value.kode);
@@ -277,6 +280,7 @@ const removeFromCart = (index) => {
         const totalHargaSebelumDiskonPajak = cart.value.reduce((total, item) => {
             return total + item.total_harga_without_pajak_diskon;
         }, 0);
+        const getDiskonTransaksi = (props.diskontransaksi_getjumlah <= 100) ? (totalHargaSebelumDiskonPajak * ( props.diskontransaksi_getjumlah / 100)) : props.diskontransaksi_getjumlah;
 
         console.log('Barang dihapus:', removedItem);
         console.log('Total harga setelah penghapusan:', totalHargaSebelumDiskonPajak);
@@ -293,7 +297,7 @@ const removeFromCart = (index) => {
 
             cart.value.forEach((item) => {
                 if (!foundItem && item.total_harga_without_pajak_diskon >= props.diskontransaksi_minimalpembelian) {
-                    item.total_diskon_transaksi = props.diskontransaksi_getjumlah;
+                    item.total_diskon_transaksi = getDiskonTransaksi;
                     foundItem = true;
                 } else {
                     item.total_diskon_transaksi = 0;
@@ -336,26 +340,27 @@ const checkout = async () => {
     }));
 
     try {
-        const response = await axios.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
-        if (response.data.success) {
-            alert('Checkout berhasil!');
-            isDiskonTransaksiActive = false;
+        router.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
+        // const response = await axios.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
+        // if (response.data.success) {
+        //     alert('Checkout berhasil!');
+        //     isDiskonTransaksiActive = false;
             // print()
             // window.location.reload();
-        } else if (response.data.success) {
-            alert('Printer Mati, nyalakan terlebih dahulu.');
-            return;
-            // const response = await axios.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
-            // if (response.data.success && isPrinterActive) {
-            //     alert('Checkout berhasil!');
-            //     // print()
-            //     window.location.reload();
-            // } else if (!isPrinterActive && response.data.success) {
-            //     alert('Printer Mati, nyalakan terlebih dahulu.');
-            //     return;
-        } else {
-            alert('Terjadi kesalahan. Silakan coba lagi.');
-        }
+        // } else if (response.data.success) {
+        //     alert('Printer Mati, nyalakan terlebih dahulu.');
+        //     return;
+        //     // const response = await axios.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
+        //     // if (response.data.success && isPrinterActive) {
+        //     //     alert('Checkout berhasil!');
+        //     //     // print()
+        //     //     window.location.reload();
+        //     // } else if (!isPrinterActive && response.data.success) {
+        //     //     alert('Printer Mati, nyalakan terlebih dahulu.');
+        //     //     return;
+        // } else {
+            // alert('Terjadi kesalahan. Silakan coba lagi.');
+        // }
 
         cart.value = [];
     } catch (error) {
@@ -500,7 +505,7 @@ const print = async () => {
 <template>
 
     <Head title="Dashboard Kasir" />
-
+    <FlashMessage></FlashMessage>
     <!-- <AuthenticatedLayout class="h-screen overflow-hidden"> -->
     <div class="overflow-hidden flex flex-col lg:flex-row h-screen bg-gray-100">
         <div class="w-full lg:w-1/4 bg-white p-4 pt-0 flex flex-col min-h-[90%] rounded-b-xl">

@@ -14,7 +14,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 
-class LaporanPenjualanBarangWidget extends BaseWidget
+class LaporanTransaksi extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full';
     public function table(Table $table): Table
