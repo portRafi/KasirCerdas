@@ -179,6 +179,7 @@ class BarangController extends Controller
             'cabangs_id' => Auth::user()->cabangs_id,
             'kode_transaksi' => $request->cart[0]['kode_transaksi'], 
             'email_staff' => Auth::user()->email,
+            'nama_kasir' => Auth::user()->name,
             'metode_pembayaran' => $request->metode_pembayaran,
             'total_harga_beli' => $totalHargaBeli,
             'total_harga_jual' => $totalHargaJual,

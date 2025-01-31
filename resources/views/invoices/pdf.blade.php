@@ -2,107 +2,88 @@
 use App\Models\DataTransaksi;
 use App\Models\BarangAfterCheckout;
 
-$datatransaksi = DataTransaksi::where('kode_transaksi', $invoice->kode_transaksi)->get();
+$datatransaksi = DataTransaksi::where('kode_transaksi', $invoice->kode_transaksi)->first();
 $items = BarangAfterCheckout::where('kode_transaksi', $invoice->kode_transaksi)->get();
 @endphp
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">  
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #fff;
-        }
-
-        .transaksi-container {
-            max-width: 100%;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .transaksi-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .transaksi-details label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .transaksi-details span {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px; /* Adjust padding for better spacing */
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        .total-row {
-            font-weight: bold;
-        }
-
-        @media print {
-            body {
-                margin: 0;
-                padding: 0;
-            }
-
-            .transaksi-container {
-                box-shadow: none;
-                border: none;
-            }
-
-            .transaksi-details label {
-                display: inline-block;
-                width: 120px;
-            }
-        }
-    </style>
-
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 </head>
 
+<style>
+    * {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+</style>
+
 <body>
-    <div class="transaksi-container">
-        <div class="transaksi-header">
-            @foreach ($items as $item)
-            <h2>Transaksi</h2>  
-        </div>
-        <div class="transaksi-details">
-        <div class="item">
-            <h1>Invoice #{{ $invoice->invoice_number  ?? null}}</h1>
-            <p>Kode Transaksi: {{ $item->kode_transaksi  ?? null}}</p>
-            <p>Kode Barang: {{ $item->kode ?? null}}</p>
-            <p>Quantity: {{ $item->quantity  ?? null}}</p>
-            <p>Nama Barang: {{ $item->nama  ?? null}}</p>
-            <p>Total Harga: ${{ number_format($item->total_harga) ?? null }}</p>
-            <p>Metode Pembayaran: {{ $item->metode_pembayaran ?? null    }}</p>
-        </div>
-        @endforeach
+    <div style="text-align: left;border-top:1px solid #000;">
+        <div style="font-size: 24px;color: #666;">INVOICE</div>
+    </div>
+    <table style="line-height: 1.5;">
+        <tr>
+            <td><b>Kode Transaksi:</b> {{ $datatransaksi->kode_transaksi}}</td>
+        </tr>
+        <tr>
+            <td><b>Date:</b> {{ $datatransaksi->created_at }}</td>
+        </tr>
+        <tr>
+            <td><b>Kasir:</b> {{ $datatransaksi->nama_kasir }}</td>
+        </tr>
+    </table>
+
+    <div style="border-bottom: 2px solid #ccc; padding: 20px; display:flex; justify-content:center; align-items:center">
+        <div style="text-align: center;">
+            <table style="width: 100%; margin: 0 auto; border-collapse: collapse; line-height: 1.4; font-family: Arial, sans-serif;">
+                <tr style="font-weight: bold; background-color: #f7f7f7; border: 1px solid #ccc;">
+                    <td style="padding: 10px; border: 1px solid #ccc; width: 40px;">Kode Item</td>
+                    <td style="padding: 10px; border: 1px solid #ccc; width: 220px;">Nama Item</td>
+                    <td style="padding: 10px; text-align:right; border: 1px solid #ccc; width: 90px;">Harga (Rp)</td>
+                    <td style="padding: 10px; text-align:right; border: 1px solid #ccc; width: 75px;">Quantity</td>
+                    <td style="padding: 10px; text-align:right; border: 1px solid #ccc; width: 90px;">Subtotal (Rp)</td>
+                </tr>
+
+                @foreach ($items as $item)
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ccc;">{{ $item->kode }}</td>
+                    <td style="padding: 10px; border: 1px solid #ccc;">{{ $item->nama }}</td>
+                    <td style="padding: 10px; text-align:right; border: 1px solid #ccc;">{{ number_format($item->harga_jual, 0, ',', '.') }}</td>
+                    <td style="padding: 10px; text-align:right; border: 1px solid #ccc;">{{ $item->quantity }}</td>
+                    <td style="padding: 10px; text-align:right; border: 1px solid #ccc;">{{ number_format($item->total_harga, 0, ',', '.') }}</td>
+                </tr>
+                @endforeach
+            </table>
+            <div class="data-pembayaran" style="display: flex; justify-content: flex-end; width: 100%; margin-top:3%">
+                <div class="box" style="width: 35%; margin-left:auto">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="text-align: left; padding-right: 20px;">Pajak (Rp)</td>
+                            <td style="text-align: right;">{{ number_format($datatransaksi->total_pajak ?? 0, 0, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding-right: 20px;">Diskon (Rp)</td>
+                            <td style="text-align: right;">{{ number_format($datatransaksi->total_diskon ?? 0, 0, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding-right: 20px;">Dis. Transaksi (Rp)</td>
+                            <td style="text-align: right;">{{ number_format($datatransaksi->total_diskon_transaksi ?? 0, 0, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding-right: 20px;">Total (Rp)</td>
+                            <td style="text-align: right;">{{ number_format($datatransaksi->total_harga ?? 0, 0, ',', '.') }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
+
+    <p>Metode Pembayaran: <u><b>{{ $datatransaksi->metode_pembayaran }}</b></u></p>
+    <p><i>Note: Jika ada kesalahan, segera hubungi Admin</i></p>
 </body>
+
 </html>

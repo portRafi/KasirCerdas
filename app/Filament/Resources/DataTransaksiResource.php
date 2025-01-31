@@ -178,7 +178,7 @@ class DataTransaksiResource extends Resource
                     ->color('primary')
                     ->action(function ($record) {
                         $pdf = PDF::loadView('invoices.pdf', ['invoice' => $record]);
-                        return response()->streamDownload(fn() => print($pdf->stream()), "invoice_{$record->invoice_number}.pdf");
+                        return response()->streamDownload(fn() => print($pdf->stream()), "invoice_{$record->kode_transaksi}.pdf");
                     })
             ])
             ->bulkActions([
