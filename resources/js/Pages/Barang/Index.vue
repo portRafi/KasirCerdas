@@ -150,7 +150,6 @@ const saveCartChanges = () => {
     showModalCart.value = false;
 };
 
-
 const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
 const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
 const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
@@ -206,6 +205,8 @@ const addToCart = () => {
             existingItem.total_pajak += totalPajak;
             existingItem.stok = selectedProduct.value.stok - existingItem.quantity;
 
+            existingItem.note = note.value || existingItem.note;
+
         } else {
             if (quantity.value > selectedProduct.value.stok) {
                 alert('Quantity di keranjang gabisa melebihi stok');
@@ -230,6 +231,7 @@ const addToCart = () => {
                 satuan: selectedProduct.value.satuan,
                 keterangan: selectedProduct.value.keterangan,
                 stok: selectedProduct.value.stok - quantity.value,
+                note: note.value || "",
             });
         }
 
@@ -237,6 +239,7 @@ const addToCart = () => {
         console.log(cart);
         console.log(totalDiskonTransaksiEx);
 
+        note.value = "";
         // const calculateTotalForCart = () => {
         //     const totalDiskon = cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
         //     const totalPajak = cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
@@ -697,7 +700,6 @@ const print = async () => {
                             rows="3" placeholder="Add special instructions..."></textarea>
                     </div>
                 </div>
-
                 <div class="p-4 bg-gray-50 flex justify-end space-x-2">
                     <button @click="showModalCart = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
                         Cancel
@@ -749,7 +751,8 @@ const print = async () => {
                     <button @click="showModal = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
                         Cancel
                     </button>
-                    <button @click="addToCart" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    <button @click="addToCart" 
+                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
                         Add to Cart
                     </button>
                 </div>
