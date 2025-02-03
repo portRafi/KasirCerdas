@@ -147,13 +147,15 @@ class BarangController extends Controller
         $totalHarga = 0;
         $totalPajak = 0;
         $keuntungan = 0;
+        $totalDiskonTransaksi = $request->cart[0]['total_diskon_transaksi'] ?? 0;
+
 
         foreach ($request->cart as $item) {
             $totalHargaBeli += $item['total_harga_asli'];
             $totalHargaJual += $item['total_harga_without_pajak_diskon'];
             $totalHargaAfterDiskon += $item['total_harga_after_diskon'];
             $totalHargaAfterPajak += $item['total_harga_after_pajak'];
-            $totalDiskonTransaksi += $item['total_diskon_transaksi'];
+            // $totalDiskonTransaksi += $item['total_diskon_transaksi'];
             $totalDiskon += $item['total_diskon'];
             $totalHarga += $item['total_harga'];
             $totalPajak += $item['total_pajak'];

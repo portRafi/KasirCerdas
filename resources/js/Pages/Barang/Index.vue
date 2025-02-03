@@ -38,37 +38,39 @@ const printerStatusClass = ref('badge bg-danger');
 const searchQuery = ref('');
 const sortOption = ref('asc');
 var isDiskonTransaksiActive = false;
+var isCooldown = false;
+var isPrinterActive = false;
 
 const updateCurrentDateTime = () => {
-  const now = new Date();
-  const formattedDate = now.toLocaleDateString('id-ID'); 
-  const formattedTime = now.toLocaleTimeString('id-ID', { hour12: false }); 
-  tanggalWaktu.value = `${formattedDate} ${formattedTime}`;
+    const now = new Date();
+    const formattedDate = now.toLocaleDateString('id-ID');
+    const formattedTime = now.toLocaleTimeString('id-ID', { hour12: false });
+    tanggalWaktu.value = `${formattedDate} ${formattedTime}`;
 };
 
 onMounted(async () => {
     const isPrinterActive = false;
     printeractive(isPrinterActive);
-    updateCurrentDateTime(); 
+    updateCurrentDateTime();
     setInterval(updateCurrentDateTime, 1000);
 
-    try {
-        const response = await fetch('/api/userinfo', {
-            method: 'GET',
-            credentials: 'include',
-        });
+    // try {
+    //     const response = await fetch('/api/userinfo', {
+    //         method: 'GET',
+    //         credentials: 'include',
+    //     });
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch data');
-        }
-        const data = await response.json();
+    //     if (!response.ok) {
+    //         throw new Error('Failed to fetch data');
+    //     }
+    //     const data = await response.json();
 
-        bisnisName.value = data.bisnis.nama_bisnis;
-        cabangName.value = data.cabang.nama_cabang;
-        user.value = data.user;
-    } catch (error) {
-        console.error('Error fetching user info:', error);
-    }
+    //     bisnisName.value = data.bisnis.nama_bisnis;
+    //     cabangName.value = data.cabang.nama_cabang;
+    //     user.value = data.user;
+    // } catch (error) {
+    //     console.error('Error fetching user info:', error);
+    // }
 });
 
 
@@ -162,7 +164,13 @@ const calculateDiskonTransaksi = () => {
         return 0;
     }
 };
+const calculateGrandTotal = () => calculateTotal() - calculateDiskonTransaksi();
 
+const syncDiskonTransaksi = (newDiskon) => {
+    cart.value.forEach(item => {
+        item.total_diskon_transaksi = newDiskon;
+    });
+};
 
 const addToCart = () => {
     if (selectedProduct.value) {
@@ -173,12 +181,13 @@ const addToCart = () => {
         const totalDiskon = (selectedProduct.value.diskon <= 100) ? totalHargaPerItem * (selectedProduct.value.diskon / 100) : selectedProduct.value.diskon;
         const totalBelanjaSebelumDiskonPajak = cart.value.reduce((total, item) => total + item.total_harga_without_pajak_diskon, totalHargaSebelumDiskonPajak);
 
-        const getDiskonTransaksi = (props.diskontransaksi_getjumlah <= 100) ? (totalBelanjaSebelumDiskonPajak * ( props.diskontransaksi_getjumlah / 100)) : props.diskontransaksi_getjumlah;
-        const totalDiskonTransaksiEx = (totalBelanjaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && !isDiskonTransaksiActive) ? (isDiskonTransaksiActive = true, getDiskonTransaksi) : 0;
-      
+        const getDiskonTransaksi = (props.diskontransaksi_getjumlah <= 100) ? (totalBelanjaSebelumDiskonPajak * (props.diskontransaksi_getjumlah / 100)) : props.diskontransaksi_getjumlah;
+        const totalDiskonTransaksiEx = (totalBelanjaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) ? (isDiskonTransaksiActive = true, getDiskonTransaksi) : 0;
+
         const totalHargaAfterDiskon = totalHargaSebelumDiskonPajak - totalDiskon;
-        const totalHarga = (totalHargaSebelumDiskonPajak - totalDiskon - totalDiskonTransaksiEx) + totalPajak;
+        const totalHarga = (totalHargaSebelumDiskonPajak - totalDiskon) + totalPajak;
         const existingProductIndex = cart.value.findIndex(item => item.kode === selectedProduct.value.kode);
+        syncDiskonTransaksi(totalDiskonTransaksiEx);
 
         if (existingProductIndex !== -1) {
             const existingItem = cart.value[existingProductIndex];
@@ -250,6 +259,54 @@ const addToCart = () => {
     }
 };
 
+const removeFromCart = (index) => {
+    if (isCooldown) {
+        console.log('cooldown');
+        return;
+    }
+
+    if (cart.value.length > 0) {
+        isCooldown = true;
+        const removedItem = cart.value.splice(index, 1)[0];
+        const totalHargaSebelumDiskonPajak = cart.value.reduce((total, item) => {
+            return total + item.total_harga_without_pajak_diskon;
+        }, 0);
+        const getDiskonTransaksi = (props.diskontransaksi_getjumlah <= 100) ? (totalHargaSebelumDiskonPajak * (props.diskontransaksi_getjumlah / 100)) : props.diskontransaksi_getjumlah;
+        const totalDiskonTransaksiEx = (totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) ? (isDiskonTransaksiActive = true, getDiskonTransaksi) : 0;
+
+        console.log('Barang dihapus:', removedItem);
+        console.log('Total harga setelah penghapusan:', totalHargaSebelumDiskonPajak);
+
+        if (totalHargaSebelumDiskonPajak < props.diskontransaksi_minimalpembelian) {
+            if (isDiskonTransaksiActive) {
+                isDiskonTransaksiActive = false;
+                cart.value.forEach(item => {
+                    item.total_diskon_transaksi = 0;
+                });
+                console.log('diskontransaksi dihilangkan karena kurang dari minimal pembelian');
+            }
+        }
+        else if (totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian) {
+            if (isDiskonTransaksiActive) {
+                isDiskonTransaksiActive = true;
+                cart.value.forEach(item => {
+                    item.total_diskon_transaksi = calculateDiskonTransaksi();
+                });
+                syncDiskonTransaksi(totalDiskonTransaksiEx);
+                console.log('diskontransaksi tidak hilang karena masih diatas dari minimal pembelian');
+
+            }
+        }
+        console.log('isDiskonTransaksiActive:', isDiskonTransaksiActive);
+
+        setTimeout(() => {
+            isCooldown = false;
+            console.log('Cooldown selesai, Anda dapat menghapus barang lagi.');
+        }, 1000);
+    } else {
+        console.log('Keranjang kosong, tidak ada yang bisa dihapus.');
+    }
+};
 
 const formatCurrency = (value) => {
     if (!value) return "0";
@@ -265,62 +322,6 @@ const decreaseQty = () => {
         quantity.value--;
     }
 };
-
-let isCooldown = false;
-
-const removeFromCart = (index) => {
-    if (isCooldown) {
-        console.log('cooldown');
-        return;
-    }
-
-    if (cart.value.length > 0) {
-        isCooldown = true;
-        const removedItem = cart.value.splice(index, 1)[0];
-        const totalHargaSebelumDiskonPajak = cart.value.reduce((total, item) => {
-            return total + item.total_harga_without_pajak_diskon;
-        }, 0);
-        const getDiskonTransaksi = (props.diskontransaksi_getjumlah <= 100) ? (totalHargaSebelumDiskonPajak * ( props.diskontransaksi_getjumlah / 100)) : props.diskontransaksi_getjumlah;
-
-        console.log('Barang dihapus:', removedItem);
-        console.log('Total harga setelah penghapusan:', totalHargaSebelumDiskonPajak);
-
-        if (totalHargaSebelumDiskonPajak < props.diskontransaksi_minimalpembelian) {
-            if (isDiskonTransaksiActive) {
-                isDiskonTransaksiActive = false;
-                cart.value.forEach(item => {
-                    item.total_diskon_transaksi = 0;
-                });
-            }
-        } else {
-            let foundItem = false;
-
-            cart.value.forEach((item) => {
-                if (!foundItem && item.total_harga_without_pajak_diskon >= props.diskontransaksi_minimalpembelian) {
-                    item.total_diskon_transaksi = getDiskonTransaksi;
-                    foundItem = true;
-                } else {
-                    item.total_diskon_transaksi = 0;
-                }
-            });
-
-            if (!foundItem) {
-                isDiskonTransaksiActive = false;
-            }
-        }
-
-        console.log('isDiskonTransaksiActive:', isDiskonTransaksiActive);
-
-        setTimeout(() => {
-            isCooldown = false;
-            console.log('Cooldown selesai, Anda dapat menghapus barang lagi.');
-        }, 1000);
-    } else {
-        console.log('Keranjang kosong, tidak ada yang bisa dihapus.');
-    }
-};
-
-let isPrinterActive = false;
 
 const checkout = async () => {
     if (!paymentMethod.value) {
@@ -345,8 +346,8 @@ const checkout = async () => {
         // if (response.data.success) {
         //     alert('Checkout berhasil!');
         //     isDiskonTransaksiActive = false;
-            // print()
-            // window.location.reload();
+        // print()
+        // window.location.reload();
         // } else if (response.data.success) {
         //     alert('Printer Mati, nyalakan terlebih dahulu.');
         //     return;
@@ -359,7 +360,7 @@ const checkout = async () => {
         //     //     alert('Printer Mati, nyalakan terlebih dahulu.');
         //     //     return;
         // } else {
-            // alert('Terjadi kesalahan. Silakan coba lagi.');
+        // alert('Terjadi kesalahan. Silakan coba lagi.');
         // }
 
         cart.value = [];
@@ -452,9 +453,9 @@ const print = async () => {
     };
     const texts = [
         printable.Align.reset(),
-        printable.Align.center(printable.Font.large(bisnisName.value)),
-        printable.Keyboard.enter(1),
-        printable.Align.center(printable.Font.normal(cabangName.value)),
+        // printable.Align.center(printable.Font.large(bisnisName.value)),
+        // printable.Keyboard.enter(1),
+        // printable.Align.center(printable.Font.normal(cabangName.value)),
         printable.Misc.centerLine(10),
         printable.Keyboard.enter(2),
         printable.Align.left(printable.Font.normal(`ID Transaksi: ` + generateRandomString())),
@@ -512,7 +513,8 @@ const print = async () => {
             <div class="overflow-y-auto flex-grow max-h-[70%]">
                 <div class="flex pt-6 pb-5 items-center justify-left border-b">
                     <div class="hidden sm:flex text-center">
-                        <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo" class="w-auto h-[35px] object-cover">
+                        <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo"
+                            class="w-auto h-[35px] object-cover">
                     </div>
                 </div>
 
@@ -564,7 +566,7 @@ const print = async () => {
                     </div>
                     <div class="flex justify-between border-t pt-2">
                         <span class="text-gray-600 text-base">Total</span>
-                        <span class="text-base font-semibold">Rp {{ formatCurrency(calculateTotal()) }}</span>
+                        <span class="text-base font-semibold">Rp {{ formatCurrency(calculateGrandTotal()) }}</span>
                     </div>
                 </div>
             </div>
@@ -572,7 +574,7 @@ const print = async () => {
             <div class="grid grid-cols-4 gap-2 mt-4">
                 <button @click="checkout"
                     class="col-span-4 p-2 bg-blue-500 text-white font-semibold hover:bg-blue-600 rounded-xl mb-6">
-                    Checkout ( Rp.<span>{{ formatCurrency(calculateTotal()) }}</span> )
+                    Checkout ( Rp.<span>{{ formatCurrency(calculateGrandTotal()) }}</span> )
                 </button>
             </div>
         </div>
