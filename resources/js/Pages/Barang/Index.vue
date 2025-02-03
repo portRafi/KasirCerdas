@@ -169,6 +169,7 @@ const saveCartChanges = () => {
     selectedItem.total_pajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
     selectedItem.total_harga = totalHargaSebelumDiskonPajak + totalPajak;
     showModalCart.value = false;
+<<<<<<< HEAD
     console.log('total diskon transaksi ex', totalDiskonTransaksiEx);
     console.log('calculate diskon transaksi', calculateDiskonTransaksi());
     console.log('syncdiskontranskasi', syncDiskonTransaksi());
@@ -176,6 +177,29 @@ const saveCartChanges = () => {
     console.log('tset', tset);
     
     syncDiskonTransaksi(totalDiskonTransaksiEx)
+=======
+};
+
+const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
+const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
+const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
+const calculateDiskonBarang = () => cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
+const calculateDiskonTransaksi = () => {
+    const itemWithDiskon = cart.value.find(item => item.total_diskon_transaksi > 0);
+    if (itemWithDiskon) {
+        return itemWithDiskon.total_diskon_transaksi;
+    } else {
+        console.log('No item with diskon transaksi greater than 0');
+        return 0;
+    }
+};
+const calculateGrandTotal = () => calculateTotal() - calculateDiskonTransaksi();
+
+const syncDiskonTransaksi = (newDiskon) => {
+    cart.value.forEach(item => {
+        item.total_diskon_transaksi = newDiskon;
+    });
+>>>>>>> 361768ac20b74b06386db859e3ec72a4d3729d9d
 };
 
 const addToCart = () => {
@@ -211,6 +235,8 @@ const addToCart = () => {
             existingItem.stok = selectedProduct.value.stok - existingItem.quantity;
             syncDiskonTransaksi(totalDiskonTransaksiEx)
 
+            existingItem.note = note.value || existingItem.note;
+
         } else {
             if (quantity.value > selectedProduct.value.stok) {
                 alert('Quantity di keranjang gabisa melebihi stok');
@@ -235,12 +261,37 @@ const addToCart = () => {
                 satuan: selectedProduct.value.satuan,
                 keterangan: selectedProduct.value.keterangan,
                 stok: selectedProduct.value.stok - quantity.value,
+                note: note.value || "",
             });
         }
 
         showModal.value = false;
         console.log(cart);
         console.log(totalDiskonTransaksiEx);
+<<<<<<< HEAD
+=======
+
+        note.value = "";
+        // const calculateTotalForCart = () => {
+        //     const totalDiskon = cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
+        //     const totalPajak = cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
+        //     const totalDiskonTransaksi = cart.value.reduce((sum, item) => sum + item.total_diskon_transaksi, 0);
+        //     const totalHarga = cart.value.reduce((sum, item) => sum + item.total_harga, 0);
+        //     const totalDiskonBarang = cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
+        //     const totalHargasblmdskntrnsks = cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
+
+        //     console.log('Total harga sblm diskon transaksi: ', totalHargasblmdskntrnsks);
+        //     console.log('Total diskon: ', totalDiskon);
+        //     console.log('Total pajak: ', totalPajak);
+        //     console.log('Total diskon barang: ', totalDiskonBarang);
+        //     console.log('Total diskon transaksi: ', totalDiskonTransaksi);
+        //     console.log('Total harga: ', totalHarga);
+        //     console.log('const calculatedt: ', calculateDiskonTransaksi());
+        //     console.log('isDTactive?', isDiskonTransaksiActive);
+        // };
+
+        // calculateTotalForCart();
+>>>>>>> 361768ac20b74b06386db859e3ec72a4d3729d9d
     }
 };
 
@@ -682,7 +733,6 @@ const print = async () => {
                             rows="3" placeholder="Add special instructions..."></textarea>
                     </div>
                 </div>
-
                 <div class="p-4 bg-gray-50 flex justify-end space-x-2">
                     <button @click="showModalCart = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
                         Cancel
@@ -734,7 +784,8 @@ const print = async () => {
                     <button @click="showModal = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
                         Cancel
                     </button>
-                    <button @click="addToCart" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    <button @click="addToCart" 
+                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
                         Add to Cart
                     </button>
                 </div>
