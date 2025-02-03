@@ -1,7 +1,6 @@
 <script setup>
 import { Head, router } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue';
-import axios from 'axios';
 import 'primeicons/primeicons.css'
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -16,9 +15,9 @@ const props = defineProps({
     diskontransaksi_minimalpembelian: Number,
 })
 
-const user = ref(null);
-const bisnisName = ref('');
-const cabangName = ref('');
+// const user = ref(null);
+// const bisnisName = ref('');
+// const cabangName = ref('');
 const tanggalWaktu = ref('');
 const paymentMethod = ref('');
 const cart = ref([]);
@@ -169,7 +168,6 @@ const saveCartChanges = () => {
     selectedItem.total_pajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
     selectedItem.total_harga = totalHargaSebelumDiskonPajak + totalPajak;
     showModalCart.value = false;
-<<<<<<< HEAD
     console.log('total diskon transaksi ex', totalDiskonTransaksiEx);
     console.log('calculate diskon transaksi', calculateDiskonTransaksi());
     console.log('syncdiskontranskasi', syncDiskonTransaksi());
@@ -177,29 +175,6 @@ const saveCartChanges = () => {
     console.log('tset', tset);
     
     syncDiskonTransaksi(totalDiskonTransaksiEx)
-=======
-};
-
-const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
-const calculateTotal = () => cart.value.reduce((sum, item) => sum + item.total_harga, 0);
-const calculateSubtotal = () => cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
-const calculateDiskonBarang = () => cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
-const calculateDiskonTransaksi = () => {
-    const itemWithDiskon = cart.value.find(item => item.total_diskon_transaksi > 0);
-    if (itemWithDiskon) {
-        return itemWithDiskon.total_diskon_transaksi;
-    } else {
-        console.log('No item with diskon transaksi greater than 0');
-        return 0;
-    }
-};
-const calculateGrandTotal = () => calculateTotal() - calculateDiskonTransaksi();
-
-const syncDiskonTransaksi = (newDiskon) => {
-    cart.value.forEach(item => {
-        item.total_diskon_transaksi = newDiskon;
-    });
->>>>>>> 361768ac20b74b06386db859e3ec72a4d3729d9d
 };
 
 const addToCart = () => {
@@ -233,9 +208,8 @@ const addToCart = () => {
             existingItem.total_diskon = totalDiskon;
             existingItem.total_pajak += totalPajak;
             existingItem.stok = selectedProduct.value.stok - existingItem.quantity;
-            syncDiskonTransaksi(totalDiskonTransaksiEx)
-
             existingItem.note = note.value || existingItem.note;
+            syncDiskonTransaksi(totalDiskonTransaksiEx)
 
         } else {
             if (quantity.value > selectedProduct.value.stok) {
@@ -267,31 +241,8 @@ const addToCart = () => {
 
         showModal.value = false;
         console.log(cart);
-        console.log(totalDiskonTransaksiEx);
-<<<<<<< HEAD
-=======
-
         note.value = "";
-        // const calculateTotalForCart = () => {
-        //     const totalDiskon = cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
-        //     const totalPajak = cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
-        //     const totalDiskonTransaksi = cart.value.reduce((sum, item) => sum + item.total_diskon_transaksi, 0);
-        //     const totalHarga = cart.value.reduce((sum, item) => sum + item.total_harga, 0);
-        //     const totalDiskonBarang = cart.value.reduce((sum, item) => sum + item.total_diskon, 0);
-        //     const totalHargasblmdskntrnsks = cart.value.reduce((sum, item) => sum + item.total_harga_without_pajak_diskon, 0);
-
-        //     console.log('Total harga sblm diskon transaksi: ', totalHargasblmdskntrnsks);
-        //     console.log('Total diskon: ', totalDiskon);
-        //     console.log('Total pajak: ', totalPajak);
-        //     console.log('Total diskon barang: ', totalDiskonBarang);
-        //     console.log('Total diskon transaksi: ', totalDiskonTransaksi);
-        //     console.log('Total harga: ', totalHarga);
-        //     console.log('const calculatedt: ', calculateDiskonTransaksi());
-        //     console.log('isDTactive?', isDiskonTransaksiActive);
-        // };
-
-        // calculateTotalForCart();
->>>>>>> 361768ac20b74b06386db859e3ec72a4d3729d9d
+        console.log(totalDiskonTransaksiEx);
     }
 };
 
@@ -733,6 +684,7 @@ const print = async () => {
                             rows="3" placeholder="Add special instructions..."></textarea>
                     </div>
                 </div>
+
                 <div class="p-4 bg-gray-50 flex justify-end space-x-2">
                     <button @click="showModalCart = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
                         Cancel
