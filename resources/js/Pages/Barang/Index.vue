@@ -124,7 +124,8 @@ const openProductModal = (barang) => {
 const editProductCart = (item, index) => {
     selectedProduct.value = item;
     selectedIndex.value = index;
-    quantity.value = item.quantity;
+    // quantity.value = item.quantity;
+    quantity.value = 1;
     note.value = item.note;
     satuan.value = item.satuan;
     keterangan.value = item.value;
@@ -137,16 +138,16 @@ const saveCartChanges = () => {
     const totalPajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
     const getDiskonTransaksi = (props.diskontransaksi_getjumlah <= 100) ? totalHargaSebelumDiskonPajak * (props.diskontransaksi_getjumlah / 100) : props.diskontransaksi_getjumlah;
     const totalDiskonTransaksiEx = totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian ? (isDiskonTransaksiActive = true, getDiskonTransaksi) : 0;
-    
+
     if (quantity.value > stok) {
         alert('Quantity di keranjang tidak boleh melebihi stok');
         return;
     }
 
-    if (quantity.value === selectedItem.quantity) {
-        alert('Jumlah tidak boleh sama');
-        return;
-    }
+    // if (quantity.value === selectedItem.quantity) {
+    //     alert('Jumlah tidak boleh sama');
+    //     return;
+    // }
 
     if (totalHargaSebelumDiskonPajak < props.diskontransaksi_minimalpembelian && isDiskonTransaksiActive) {
         isDiskonTransaksiActive = false;
@@ -155,26 +156,30 @@ const saveCartChanges = () => {
     }
 
     if (totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && isDiskonTransaksiActive) {
-        selectedItem.total_diskon_transaksi = totalDiskonTransaksiEx;
+        // selectedItem.total_diskon_transaksi = totalDiskonTransaksiEx;
+        cart.value.forEach(item => {
+            item.total_diskon_transaksi += totalDiskonTransaksiEx;
+        });
         console.log('Diskon transaksi bertambah karena sudah di atas dari minimal pembelian', totalDiskonTransaksiEx);
     }
-    
+
     selectedItem.stok -= quantity.value;
-    selectedItem.quantity = quantity.value;
+    selectedItem.quantity += quantity.value;
     selectedItem.note = note.value;
     selectedItem.satuan = satuan.value;
     selectedItem.keterangan = keterangan.value;
-    selectedItem.total_harga_without_pajak_diskon = totalHargaSebelumDiskonPajak;
-    selectedItem.total_pajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
-    selectedItem.total_harga = totalHargaSebelumDiskonPajak + totalPajak;
+    selectedItem.total_harga_without_pajak_diskon += totalHargaSebelumDiskonPajak;
+    selectedItem.total_pajak += totalHargaSebelumDiskonPajak * (props.pajak / 100);
+    selectedItem.total_harga += totalHargaSebelumDiskonPajak + totalPajak;
     showModalCart.value = false;
     console.log('total diskon transaksi ex', totalDiskonTransaksiEx);
-    console.log('calculate diskon transaksi', calculateDiskonTransaksi());
-    console.log('syncdiskontranskasi', syncDiskonTransaksi());
-    let tset = calculateDiskonTransaksi() + totalDiskonTransaksiEx;
-    console.log('tset', tset);
-    
-    syncDiskonTransaksi(totalDiskonTransaksiEx)
+    // console.log('calculate diskon transaksi', calculateDiskonTransaksi());
+    // console.log('syncdiskontranskasi', syncDiskonTransaksi());
+    // let tset = calculateDiskonTransaksi() + totalDiskonTransaksiEx;
+    // console.log('tset', tset);
+
+
+    // syncDiskonTransaksi(totalDiskonTransaksiEx)
 };
 
 const addToCart = () => {
@@ -736,8 +741,7 @@ const print = async () => {
                     <button @click="showModal = false" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
                         Cancel
                     </button>
-                    <button @click="addToCart" 
-                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    <button @click="addToCart" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
                         Add to Cart
                     </button>
                 </div>

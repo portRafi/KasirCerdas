@@ -115,14 +115,14 @@ class DataShiftResource extends Resource
             'edit' => Pages\EditDataShift::route('/{record}/edit'),
         ];
     }
-    // public static function shouldRegisterNavigation(): bool
-    // {
-    //     if(!auth()->user()->hasRole(6)) {
-    //         return false;   
-    //     } else if (!auth()->user()->hasRole(1)) {
-    //         return false;
-    //     } else {
-    //         return true;
-    //     }
-    // }
+    public static function shouldRegisterNavigation(): bool
+    {
+        if(!auth()->user()->hasRole(6)) {
+            return false;   
+        } else if (!auth()->user()->hasRole(1)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
