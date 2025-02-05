@@ -83,6 +83,7 @@ class BarangResource extends Resource
                     ->numeric(),
                 Forms\Components\Select::make('diskon')
                     ->preload()
+                    ->required()
                     ->options(Diskon::where([
                         ['bisnis_id', Auth::user()->bisnis_id],
                         ['cabangs_id', Auth::user()->cabangs_id],

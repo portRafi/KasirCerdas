@@ -155,7 +155,6 @@ class BarangController extends Controller
             $totalHargaJual += $item['total_harga_without_pajak_diskon'];
             $totalHargaAfterDiskon += $item['total_harga_after_diskon'];
             $totalHargaAfterPajak += $item['total_harga_after_pajak'];
-            // $totalDiskonTransaksi += $item['total_diskon_transaksi'];
             $totalDiskon += $item['total_diskon'];
             $totalHarga += $item['total_harga'];
             $totalPajak += $item['total_pajak'];
@@ -176,7 +175,7 @@ class BarangController extends Controller
                 'quantity' => $item['quantity'],
                 'harga_jual' => $item['harga_jual'],
                 'harga_beli' => $item['harga_beli'],
-                'total_harga' => $item['total_harga'],
+                'total_harga' => $item['total_harga'], //blm termasuk potongan diskon transaksi
                 'total_diskon' => $item['total_diskon'],
                 'total_pajak' => $item['total_pajak'],
                 'note' => $item['note'] ?? '',
@@ -198,7 +197,7 @@ class BarangController extends Controller
             'total_harga_after_pajak' => $totalHargaAfterPajak,
             'total_diskon_transaksi' => $totalDiskonTransaksi,
             'total_diskon' => $totalDiskon,
-            'total_harga' => $totalHarga,
+            'total_harga' => $totalHarga - $totalDiskonTransaksi,
             'total_pajak' => $totalPajak,
             'keuntungan' => $keuntungan
         ]);

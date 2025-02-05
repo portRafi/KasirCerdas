@@ -124,8 +124,7 @@ const openProductModal = (barang) => {
 const editProductCart = (item, index) => {
     selectedProduct.value = item;
     selectedIndex.value = index;
-    // quantity.value = item.quantity;
-    quantity.value = 1;
+    quantity.value = item.quantity;
     note.value = item.note;
     satuan.value = item.satuan;
     keterangan.value = item.value;
@@ -133,53 +132,54 @@ const editProductCart = (item, index) => {
 };
 const saveCartChanges = () => {
     const selectedItem = cart.value[selectedIndex.value];
+    const keterangan = selectedItem.keterangan;
+    const totalHargaPerItemAsli = selectedItem.harga_beli * quantity.value;
     const stok = selectedItem.stok;
     const totalHargaSebelumDiskonPajak = quantity.value * selectedItem.harga_jual;
     const totalPajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
-    const getDiskonTransaksi = (props.diskontransaksi_getjumlah <= 100) ? totalHargaSebelumDiskonPajak * (props.diskontransaksi_getjumlah / 100) : props.diskontransaksi_getjumlah;
-    const totalDiskonTransaksiEx = totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian ? (isDiskonTransaksiActive = true, getDiskonTransaksi) : 0;
+    const foundItem = cart.value.find(item => item.kode === selectedItem.kode);
+    const getTHAD = totalHargaSebelumDiskonPajak - foundItem.total_diskon
 
     if (quantity.value > stok) {
         alert('Quantity di keranjang tidak boleh melebihi stok');
         return;
     }
 
-    // if (quantity.value === selectedItem.quantity) {
-    //     alert('Jumlah tidak boleh sama');
-    //     return;
-    // }
-
-    if (totalHargaSebelumDiskonPajak < props.diskontransaksi_minimalpembelian && isDiskonTransaksiActive) {
-        isDiskonTransaksiActive = false;
-        selectedItem.total_diskon_transaksi = 0;
-        console.log('Diskon transaksi belum bertambah karena kurang dari minimal pembelian');
+    if (quantity.value === selectedItem.quantity) {
+        alert('Jumlah tidak boleh sama');
+        return;
     }
-
-    if (totalHargaSebelumDiskonPajak >= props.diskontransaksi_minimalpembelian && isDiskonTransaksiActive) {
-        // selectedItem.total_diskon_transaksi = totalDiskonTransaksiEx;
-        cart.value.forEach(item => {
-            item.total_diskon_transaksi += totalDiskonTransaksiEx;
-        });
-        console.log('Diskon transaksi bertambah karena sudah di atas dari minimal pembelian', totalDiskonTransaksiEx);
-    }
-
     selectedItem.stok -= quantity.value;
-    selectedItem.quantity += quantity.value;
+    selectedItem.quantity = quantity.value;
     selectedItem.note = note.value;
     selectedItem.satuan = satuan.value;
-    selectedItem.keterangan = keterangan.value;
-    selectedItem.total_harga_without_pajak_diskon += totalHargaSebelumDiskonPajak;
-    selectedItem.total_pajak += totalHargaSebelumDiskonPajak * (props.pajak / 100);
-    selectedItem.total_harga += totalHargaSebelumDiskonPajak + totalPajak;
+    selectedItem.keterangan = keterangan;
+    selectedItem.total_harga_without_pajak_diskon = totalHargaSebelumDiskonPajak;
+    selectedItem.total_pajak = totalPajak;
+    selectedItem.total_harga = totalHargaSebelumDiskonPajak + totalPajak - foundItem.total_diskon;
+    selectedItem.total_harga_asli = totalHargaPerItemAsli;
+    selectedItem.total_harga_after_diskon = getTHAD;
+    selectedItem.total_harga_after_pajak = getTHAD + totalPajak;
+
+    if (calculateSubtotal() < props.diskontransaksi_minimalpembelian && isDiskonTransaksiActive) {
+        isDiskonTransaksiActive = false;
+        selectedItem.total_diskon_transaksi = 0;
+    }
+
+    if (calculateSubtotal() >= props.diskontransaksi_minimalpembelian && isDiskonTransaksiActive && props.diskontransaksi_getjumlah <= 100) {
+        cart.value.forEach(item => {
+            item.total_diskon_transaksi = (calculateSubtotal() * (props.diskontransaksi_getjumlah / 100));
+        });
+    }
+    if (calculateSubtotal() >= props.diskontransaksi_minimalpembelian && isDiskonTransaksiActive && props.diskontransaksi_getjumlah > 100) {
+        cart.value.forEach(item => {
+            item.total_diskon_transaksi = props.diskontransaksi_getjumlah;
+        });
+    }
+
+
     showModalCart.value = false;
-    console.log('total diskon transaksi ex', totalDiskonTransaksiEx);
-    // console.log('calculate diskon transaksi', calculateDiskonTransaksi());
-    // console.log('syncdiskontranskasi', syncDiskonTransaksi());
-    // let tset = calculateDiskonTransaksi() + totalDiskonTransaksiEx;
-    // console.log('tset', tset);
-
-
-    // syncDiskonTransaksi(totalDiskonTransaksiEx)
+    // console.log(cart);
 };
 
 const addToCart = () => {
@@ -245,9 +245,9 @@ const addToCart = () => {
         }
 
         showModal.value = false;
-        console.log(cart);
+        // console.log(cart);
         note.value = "";
-        console.log(totalDiskonTransaksiEx);
+        // console.log(totalDiskonTransaksiEx);
     }
 };
 
@@ -627,7 +627,8 @@ const print = async () => {
                         class="border rounded-xl p-3 lg:p-5 cursor-pointer hover:shadow-md transition-shadow w-full flex flex-col justify-center"
                         @click="openProductModal(barang)">
                         <div class="flex items-start gap-2 lg:gap-4">
-                            <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gray-300 rounded-lg overflow-hidden flex-shrink-0 flex justify-center items-center">
+                            <div
+                                class="w-20 h-20 lg:w-24 lg:h-24 bg-gray-300 rounded-lg overflow-hidden flex-shrink-0 flex justify-center items-center">
                                 <img :src="'http://127.0.0.1:8000/storage/barang/foto/' + barang.foto" alt="">
                             </div>
                             <div class="flex flex-col flex-grow">
