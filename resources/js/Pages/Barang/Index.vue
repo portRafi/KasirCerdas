@@ -627,8 +627,8 @@ const print = async () => {
                         class="border rounded-xl p-3 lg:p-5 cursor-pointer hover:shadow-md transition-shadow w-full flex flex-col justify-center"
                         @click="openProductModal(barang)">
                         <div class="flex items-start gap-2 lg:gap-4">
-                            <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gray-300 rounded-lg overflow-hidden flex-shrink-0">
-                                <img src="" alt="">
+                            <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gray-300 rounded-lg overflow-hidden flex-shrink-0 flex justify-center items-center">
+                                <img :src="'http://127.0.0.1:8000/storage/barang/foto/' + barang.foto" alt="">
                             </div>
                             <div class="flex flex-col flex-grow">
                                 <h3 class="font-bold text-base lg:text-lg">
