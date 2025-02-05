@@ -77,14 +77,16 @@ class KaryawanResource extends Resource
             ->query(function () {
                 $query = User::query();
                 if (Auth::user()->hasRole(7)) {
-                    $query->where([
-                        ['bisnis_id', '=', Auth::user()->bisnis_id],
-                        ['cabangs_id', '=', Auth::user()->cabangs_id],
-                        
-                    ]);
-                    // $query->whereHas('role', function ($query) {
-                    //     $query->where('roles.id', '!=', 4);
-                    // });
+                    // $query->where([
+                    //     ['bisnis_id', '=', Auth::user()->bisnis_id],
+                    //     ['cabangs_id', '=', Auth::user()->cabangs_id],
+
+                    // ]);
+                    $query->whereHas('roles', function ($query) {
+                        $query->where('bisnis_id', Auth::user()->bisnis_id)
+                              ->where('cabangs_id', Auth::user()->cabangs_id)
+                              ->where('roles.id', '=', 4);
+                    })->with('roles');
                 } else if (Auth::user()->hasRole(6)) {
                     $query->where([
                         ['bisnis_id', '=', Auth::user()->bisnis_id]
