@@ -654,7 +654,7 @@ const print = async () => {
                 </div>
             </div>
         </div>
-        <div v-if="showModalCart" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div v-if="showModalCart" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" @click.self="showModalCart = false">
             <div class="bg-white rounded-lg w-96 overflow-hidden">
                 <div class="p-4 border-b">
                     <div class="flex items-center space-x-4">
@@ -702,7 +702,7 @@ const print = async () => {
                 </div>
             </div>
         </div>
-        <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" @click.self="showModal = false">
             <div class="bg-white rounded-lg w-96 overflow-hidden">
                 <div class="p-4 border-b">
                     <div class="flex items-center space-x-4">
