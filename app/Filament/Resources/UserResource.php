@@ -83,11 +83,9 @@ class UserResource extends Resource
         return $table
             ->query(function () {
                 $query = User::query();
-                $query->whereHas('roles', function ($query) {
-                    $query->where('bisnis_id', Auth::user()->bisnis_id)
-                        ->where('cabangs_id', Auth::user()->cabangs_id)
-                        ->where('roles.id', '=', 6);
-                })->with('roles');
+                    $query->whereHas('roles', function ($query) {
+                        $query->where('roles.id', '=', 6);
+                    })->with('roles');
                 return $query;
             })
             ->poll('5s')
@@ -98,8 +96,7 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\SelectColumn::make('roles')
-                    ->options(Role::all()->pluck('name', 'id')),
+                Tables\Columns\TextColumn::make('roles.name')->badge(), 
                 Tables\Columns\TextColumn::make('bisnis.nama_bisnis')
                     ->badge()
                     ->color('success')
