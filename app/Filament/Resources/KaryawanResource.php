@@ -55,9 +55,7 @@ class KaryawanResource extends Resource
                         } else {
                             return $query->whereNotIn('id', [1, 9]);
                         }
-                    })
-                    ->preload()
-                    ->searchable(),
+                    }),
 
                 Forms\Components\Hidden::make('bisnis_id')
                     ->default(Auth::user()->bisnis_id),
@@ -77,11 +75,6 @@ class KaryawanResource extends Resource
             ->query(function () {
                 $query = User::query();
                 if (Auth::user()->hasRole(7)) {
-                    // $query->where([
-                    //     ['bisnis_id', '=', Auth::user()->bisnis_id],
-                    //     ['cabangs_id', '=', Auth::user()->cabangs_id],
-
-                    // ]);
                     $query->whereHas('roles', function ($query) {
                         $query->where('bisnis_id', Auth::user()->bisnis_id)
                               ->where('cabangs_id', Auth::user()->cabangs_id)
@@ -89,7 +82,8 @@ class KaryawanResource extends Resource
                     })->with('roles');
                 } else if (Auth::user()->hasRole(6)) {
                     $query->where([
-                        ['bisnis_id', '=', Auth::user()->bisnis_id]
+                        ['bisnis_id', '=', Auth::user()->bisnis_id],
+                        ['email', '!=', Auth::user()->email]
                     ]);
                 } else if (Auth::user()->hasRole(1)) {
                     $query->get();
@@ -104,11 +98,7 @@ class KaryawanResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-                Auth::user()->hasRole(6) ?
-                    Tables\Columns\SelectColumn::make('roles')
-                    ->options(function () {
-                        return Role::whereNotIn('id', [1, 9])->pluck('name', 'id')->toArray();
-                    }) : Tables\Columns\TextColumn::make('roles.name')->badge(),
+                Tables\Columns\TextColumn::make('roles.name')->badge(), 
                 Tables\Columns\TextColumn::make('bisnis.nama_bisnis')
                     ->badge()
                     ->color('success')

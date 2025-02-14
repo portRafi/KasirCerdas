@@ -27,7 +27,7 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
     protected static ?string $activeNavigationIcon = 'heroicon-m-user-plus';
     protected static ?string $navigationGroup = 'Setting';
-    protected static ?string $navigationLabel = 'Pendataan Owner';
+    protected static ?string $navigationLabel = 'Pendataan Admin Bisnis';
 
     public static function form(Form $form): Form
     {
@@ -81,6 +81,15 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(function () {
+                $query = User::query();
+                $query->whereHas('roles', function ($query) {
+                    $query->where('bisnis_id', Auth::user()->bisnis_id)
+                        ->where('cabangs_id', Auth::user()->cabangs_id)
+                        ->where('roles.id', '=', 6);
+                })->with('roles');
+                return $query;
+            })
             ->poll('5s')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
@@ -138,8 +147,8 @@ class UserResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        if(!auth()->user()->hasRole(1)) {
-            return false;   
+        if (!auth()->user()->hasRole(1)) {
+            return false;
         }
         return true;
     }

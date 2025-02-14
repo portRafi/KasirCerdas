@@ -252,7 +252,7 @@ const addToCart = () => {
 };
 
 const removeFromCart = (index) => {
-    if (isCooldown) {
+    if (isCooldown) {      
         console.log('cooldown');
         return;
     }

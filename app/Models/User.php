@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -14,7 +13,6 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use TomatoPHP\FilamentDiscord\Traits\InteractsWithDiscord;
-use Spatie\Permission\Models\Role;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -49,17 +47,6 @@ class User extends Authenticatable implements FilamentUser
         'password' => 'hashed',
     ];
 
-    // public function setPasswordAttribute($password)
-    // {
-    //     $this->attributes['password'] = bcrypt($password);
-    // }
-
-
-    // public function addres() : Morphone 
-    // {
-    //     return $this->morphone(related:addres::class,name:'addresable');
-    // }
-
     public function getFilamentAvatarUrl(): ?string
     {
         return $this->avatar_url ? Storage::url("$this->avatar_url") : null;
@@ -73,10 +60,6 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsTo(Cabang::class, 'cabangs_id');
     }
-    // public function roles()
-    // {
-        // return $this->belongsToMany(Role::class);
-    // }
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->email && $this->password;

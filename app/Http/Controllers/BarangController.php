@@ -72,7 +72,6 @@ class BarangController extends Controller
             ])->first();
             
             $diskon = $diskontransaksi_getjumlah->jumlah_diskon;
-            // dd($diskontransaksi_getjumlah->jumlah_diskon);
         } 
 
 
@@ -201,10 +200,6 @@ class BarangController extends Controller
             'total_pajak' => $totalPajak,
             'keuntungan' => $keuntungan
         ]);
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Checkout berhasil!'
-        // ]);
         return redirect()->back()->with('type', 'success')->with('message', 'berhasil checkout.');
 
         $barangs = Barang::where([
