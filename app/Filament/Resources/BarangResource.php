@@ -43,7 +43,7 @@ class BarangResource extends Resource
                 Forms\Components\Hidden::make('cabangs_id')
                     ->default(Auth::user()->cabangs_id),
                 Forms\Components\FileUpload::make('foto')
-                    ->image(),
+                    ->image()
                     ->label('Foto Barang'),
                 Forms\Components\TextInput::make('kode')
                     ->placeholder('Kode Barang')
