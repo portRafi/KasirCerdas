@@ -246,8 +246,7 @@ const checkout = async () => {
                         <div class="flex items-start gap-2 lg:gap-4">
                             <div
                                 class="w-20 h-20 lg:w-24 lg:h-24 bg-gray-300 rounded-lg overflow-hidden flex-shrink-0 flex justify-center items-center">
-                                <!-- <img :src="'assets/' + barang.foto" alt=""> -->
-                                <img src="assets/silverqueen.png" alt="demo_item_image">
+                                <img :src="'assets/' + barang.foto" alt="demo_img">
                             </div>
                             <div class="flex flex-col flex-grow">
                                 <h3 class="font-bold text-base lg:text-lg">
