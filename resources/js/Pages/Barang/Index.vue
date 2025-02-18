@@ -314,7 +314,12 @@ const checkout = async () => {
     }));
 
     try {
+        //FOR TESTING ONLY
+
         router.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
+
+        ///// YANG DIBAWAH INI UNTUK PROD /////
+
         // if (isPrinterActive) {
         //     router.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
         //     //print()
