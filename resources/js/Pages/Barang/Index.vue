@@ -52,24 +52,6 @@ onMounted(async () => {
     printeractive(isPrinterActive);
     updateCurrentDateTime();
     setInterval(updateCurrentDateTime, 1000);
-
-    // try {
-    //     const response = await fetch('/api/userinfo', {
-    //         method: 'GET',
-    //         credentials: 'include',
-    //     });
-
-    //     if (!response.ok) {
-    //         throw new Error('Failed to fetch data');
-    //     }
-    //     const data = await response.json();
-
-    //     bisnisName.value = data.bisnis.nama_bisnis;
-    //     cabangName.value = data.cabang.nama_cabang;
-    //     user.value = data.user;
-    // } catch (error) {
-    //     console.error('Error fetching user info:', error);
-    // }
 });
 
 const calculateTotalPajak = () => cart.value.reduce((sum, item) => sum + item.total_pajak, 0);
