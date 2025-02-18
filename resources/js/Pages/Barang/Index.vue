@@ -315,27 +315,17 @@ const checkout = async () => {
 
     try {
         router.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
-        // const response = await axios.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
-        // if (response.data.success) {
-        //     alert('Checkout berhasil!');
-        //     isDiskonTransaksiActive = false;
-        // print()
-        // window.location.reload();
-        // } else if (response.data.success) {
-        //     alert('Printer Mati, nyalakan terlebih dahulu.');
-        //     return;
-        //     // const response = await axios.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
-        //     // if (response.data.success && isPrinterActive) {
-        //     //     alert('Checkout berhasil!');
-        //     //     // print()
-        //     //     window.location.reload();
-        //     // } else if (!isPrinterActive && response.data.success) {
+        // if (isPrinterActive) {
+        //     router.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
+        //     //print()
+        // }
+        // else if (!isPrinterActive) {
         //     //     alert('Printer Mati, nyalakan terlebih dahulu.');
         //     //     return;
-        // } else {
-        // alert('Terjadi kesalahan. Silakan coba lagi.');
         // }
-
+        // else {
+        //     alert('Ada Kesalahan')
+        // }
         cart.value = [];
     } catch (error) {
         console.error('Checkout gagal:', error);
