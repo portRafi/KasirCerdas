@@ -139,7 +139,6 @@ const saveCartChanges = () => {
     const totalPajak = totalHargaSebelumDiskonPajak * (props.pajak / 100);
     const foundItem = cart.value.find(item => item.kode === selectedItem.kode);
     const getTHAD = totalHargaSebelumDiskonPajak - foundItem.total_diskon
-
     if (quantity.value > stok) {
         alert('Quantity di keranjang tidak boleh melebihi stok');
         return;
