@@ -35,11 +35,9 @@ Route::get('/dashboard', [BarangController::class, 'index'])
     ->name('dashboard');
     
 Route::get('/rejected', [\App\Http\Controllers\RejectedController::class, 'index'])->name('rejected');
-
-
+Route::get('/demo', [\App\Http\Controllers\DummyController::class, 'index'])->name('demo');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/demo', [\App\Http\Controllers\DummyController::class, 'index'])->name('demo');
     Route::get('/pos', [\App\Http\Controllers\BarangController::class, 'index'])->name('pos');
     Route::resource('/barangs', BarangController::class);
     Route::resource('/metodepembayaran', BarangController::class);
