@@ -34,7 +34,10 @@ Route::get('/dashboard', [BarangController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
     
-Route::get('/rejected', [\App\Http\Controllers\RejectedController::class, 'index'])->name('rejected');
+Route::get('/rejected', function(){
+    return Inertia::render('Rejected');
+});
+
 Route::get('/demo', [\App\Http\Controllers\DummyController::class, 'index'])->name('demo');
 
 Route::middleware('auth')->group(function () {
