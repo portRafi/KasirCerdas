@@ -158,7 +158,6 @@ const saveCartChanges = () => {
         });
     }
 
-
     showModalCart.value = false;
     // console.log(cart);
 };
