@@ -35,16 +35,16 @@ Route::get('/dashboard', [BarangController::class, 'index'])
     ->name('dashboard');
     
 Route::get('/rejected', [\App\Http\Controllers\RejectedController::class, 'index'])->name('rejected');
-Route::get('/demo', [\App\Http\Controllers\DummyController::class, 'index'])->name('demo');
-Route::get('/pos', [\App\Http\Controllers\BarangController::class, 'index'])->name('pos');
-Route::resource('/barangs', BarangController::class);
-Route::resource('/metodepembayaran', BarangController::class);
-Route::resource('/pajak', BarangController::class);
-Route::post('/checkout', [BarangController::class, 'store']);
 
 
 
 Route::middleware('auth')->group(function () {
+    Route::get('/demo', [\App\Http\Controllers\DummyController::class, 'index'])->name('demo');
+    Route::get('/pos', [\App\Http\Controllers\BarangController::class, 'index'])->name('pos');
+    Route::resource('/barangs', BarangController::class);
+    Route::resource('/metodepembayaran', BarangController::class);
+    Route::resource('/pajak', BarangController::class);
+    Route::post('/checkout', [BarangController::class, 'store']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

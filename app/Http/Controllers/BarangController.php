@@ -20,28 +20,25 @@ class BarangController extends Controller
         if (Auth::user()->hasRole(7)) { //ADMIN BISNIS
             $barangs = Barang::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
-                ['cabangs_id', '=', Auth::user()->cabangs_id],
                 ['stok', '>=', 1]
             ])->get();
             $metodepembayaran = MetodePembayaran::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
-                ['cabangs_id', '=', Auth::user()->cabangs_id],
                 ['is_Active', '=', true]
             ])->get();
             $pajak = Pajak::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
-                ['cabangs_id', '=', Auth::user()->cabangs_id],
             ])->sum('jumlah_pajak');
             $diskontransaksi_minimalpembelian = DiskonTransaksi::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
-                ['cabangs_id', '=', Auth::user()->cabangs_id],
                 ['is_Active', '=', true]
             ])->sum('minimum_pembelian');
             $diskontransaksi_getjumlah = DiskonTransaksi::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
-                ['cabangs_id', '=', Auth::user()->cabangs_id],
                 ['is_Active', '=', true]
-            ])->sum('jumlah_diskon');
+            ])->first();
+            
+            $diskon = $diskontransaksi_getjumlah->jumlah_diskon;
         } 
 
 
@@ -78,23 +75,30 @@ class BarangController extends Controller
         else if (Auth::user()->hasRole(6)) { //ADMIN CABANG
             $barangs = Barang::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
                 ['stok', '>=', 1]
             ])->get();
             $metodepembayaran = MetodePembayaran::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
                 ['is_Active', '=', true]
             ])->get();
             $pajak = Pajak::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
             ])->sum('jumlah_pajak');
             $diskontransaksi_minimalpembelian = DiskonTransaksi::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
                 ['is_Active', '=', true]
             ])->sum('minimum_pembelian');
             $diskontransaksi_getjumlah = DiskonTransaksi::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
                 ['is_Active', '=', true]
-            ])->sum('jumlah_diskon');
+            ])->first();
+            
+            $diskon = $diskontransaksi_getjumlah->jumlah_diskon;
         } 
         else if (Auth::user()->hasRole(1)) { //SUPERADMIN
             $barangs = Barang::all();
