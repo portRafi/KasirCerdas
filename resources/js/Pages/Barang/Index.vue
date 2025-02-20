@@ -10,14 +10,14 @@ const props = defineProps({
     barangs: Array,
     metodepembayaran: Array,
     pajak: Number,
-    namakasir: Array,
+    namakasir: String,
     diskontransaksi_getjumlah: Number,
     diskontransaksi_minimalpembelian: Number,
+    namaBisnis: String,
+    namaCabang: String,
+    alamatCabang: String,
 })
 
-// const user = ref(null);
-// const bisnisName = ref('');
-// const cabangName = ref('');
 const tanggalWaktu = ref('');
 const paymentMethod = ref('');
 const cart = ref([]);
@@ -295,6 +295,12 @@ const decreaseQty = () => {
     }
 };
 
+function generateRandomString() {
+    const prefix = 'KC_';
+    const randomPart = Math.random().toString(36).replace(/[^a-z]/g, '').substring(0, 5).toUpperCase();
+    return prefix + randomPart;
+}
+
 const checkout = async () => {
     if (!paymentMethod.value) {
         alert('Silakan pilih metode pembayaran terlebih dahulu.');
@@ -306,42 +312,30 @@ const checkout = async () => {
         return;
     }
 
-    const kodeTransaksi = generateRandomString();
+    var kodeTransaksi = generateRandomString();
     const cartWithTransactionCode = cart.value.map(item => ({
         ...item,
         kode_transaksi: kodeTransaksi
     }));
 
     try {
-        //FOR TESTING ONLY
-
-        router.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
-
-        ///// YANG DIBAWAH INI UNTUK PROD /////
-
-        // if (isPrinterActive) {
-        //     router.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
-        //     //print()
-        // }
-        // else if (!isPrinterActive) {
-        //     //     alert('Printer Mati, nyalakan terlebih dahulu.');
-        //     //     return;
-        // }
-        // else {
-        //     alert('Ada Kesalahan')
-        // }
+        if (isPrinterActive) {
+            router.post('/checkout', { cart: cartWithTransactionCode, metode_pembayaran: paymentMethod.value });
+            print(kodeTransaksi);
+        }
+        else if (!isPrinterActive) {
+                alert('Printer Mati, nyalakan terlebih dahulu.');
+                return;
+        }
+        else {
+            alert('Ada Kesalahan')
+        }
         cart.value = [];
     } catch (error) {
         console.error('Checkout gagal:', error);
         alert('Checkout gagal. Silakan coba lagi.');
     }
 };
-
-function generateRandomString() {
-    const prefix = 'KC_';
-    const randomPart = Math.random().toString(36).replace(/[^a-z]/g, '').substring(0, 5).toUpperCase();
-    return prefix + randomPart;
-}
 
 const connect = async () => {
     if (printer.value && writer.value) {
@@ -394,7 +388,7 @@ function printeractive(isPrinterActive) {
     }
 }
 
-const print = async () => {
+const print = async (kodeTransaksi) => {
     if (!printer.value || !writer.value) {
         alert('Pastikan printer sudah terhubung.');
         return;
@@ -420,16 +414,21 @@ const print = async () => {
     };
     const texts = [
         printable.Align.reset(),
-        // printable.Align.center(printable.Font.large(bisnisName.value)),
-        // printable.Keyboard.enter(1),
-        // printable.Align.center(printable.Font.normal(cabangName.value)),
-        printable.Misc.centerLine(10),
+        printable.Align.center(printable.Font.large(props.namaBisnis)),
+        printable.Keyboard.enter(1),
+        printable.Align.center(printable.Font.normal(props.namaCabang)),
+        printable.Keyboard.enter(1),
+        printable.Align.center(printable.Font.normal(props.alamatCabang)),
+        printable.Keyboard.enter(1),
+        printable.Misc.centerLine(30),
         printable.Keyboard.enter(2),
-        printable.Align.left(printable.Font.normal(`ID Transaksi: ` + generateRandomString())),
+        printable.Align.left(printable.Font.normal(`ID Transaksi: ${kodeTransaksi}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Tanggal: ${tanggalWaktu}`)),
+        printable.Align.left(printable.Font.normal(`Tanggal: ${tanggalWaktu.value}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Kasir: ${namakasir}`)),
+        printable.Align.left(printable.Font.normal(`Kasir: `+props.namakasir)),
+        printable.Keyboard.enter(1),
+        printable.Misc.centerLine(30),
         printable.Keyboard.enter(2),
     ];
 
@@ -441,17 +440,22 @@ const print = async () => {
     });
 
     texts.push(
+        printable.Misc.centerLine(30),
+        printable.Keyboard.enter(2),
+        printable.Align.left(printable.Font.normal(`Pembayaran\t: ${paymentMethod.value}`)),
+        printable.Keyboard.enter(1),
         printable.Align.left(printable.Font.normal(`Subtotal\t: Rp ${formatCurrency(calculateSubtotal())}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Tax\t: Rp ${formatCurrency(calculateTotalPajak())}`)),
+        printable.Align.left(printable.Font.normal(`Pajak\t: Rp ${formatCurrency(calculateTotalPajak())}`)),
         printable.Keyboard.enter(1),
         printable.Align.left(printable.Font.normal(`Diskon\t: Rp ${formatCurrency(calculateDiskonBarang())}`)),
         printable.Keyboard.enter(1),
         printable.Align.left(printable.Font.normal(`Diskon Transaksi\t: Rp ${formatCurrency(calculateDiskonTransaksi())}`)),
         printable.Keyboard.enter(1),
-        printable.Align.left(printable.Font.normal(`Total\t: Rp ${formatCurrency(calculateTotalPajak())}`)),
+        printable.Align.left(printable.Font.normal(`Total\t: Rp ${formatCurrency(calculateGrandTotal())}`)),
         printable.Keyboard.enter(2),
         printable.Align.center(printable.Font.normal('Terima Kasih')),
+        printable.Keyboard.enter(2),
         printable.Align.reset()
     );
 
@@ -461,7 +465,7 @@ const print = async () => {
             const encodedText = encoder.encode(text);
             await writer.value.write(encodedText);
         }
-        alert('Cetak selesai!');
+        // alert('Cetak selesai!');
     } catch (error) {
         console.error('Error saat mencetak:', error);
         alert('Gagal mencetak.');
@@ -480,6 +484,7 @@ const print = async () => {
             <div class="overflow-y-auto flex-grow max-h-[70%]">
                 <div class="flex pt-6 pb-5 items-center justify-left border-b">
                     <div class="hidden sm:flex text-center">
+                        <!-- <button @click="connect" class="btnConnect">Connect</button> -->
                         <img src="assets/kasircerdas_logo.png" alt="Kasir Cerdas Logo"
                             class="w-auto h-[35px] object-cover">
                     </div>
@@ -588,12 +593,12 @@ const print = async () => {
                                     <DropdownLink :href="route('profile.edit')">Profile</DropdownLink>
                                     <DropdownLink :href="route('logout')" method="post" as="button">Log Out
                                     </DropdownLink>
-                                    <DropdownLink as="button" @click.prevent="connect">Connect Bluetooth</DropdownLink>
+                                    <!-- <DropdownLink as="button" @click.prevent="connect">Connect Bluetooth</DropdownLink> -->
                                 </template>
                             </Dropdown>
 
                         </span>
-                        <i id="printer-icon" style="color: red; font-size: 21px"></i>
+                        <i id="printer-icon" style="color: red; font-size: 21px; cursor: pointer" @click="connect"></i>
                     </div>
                 </div>
 

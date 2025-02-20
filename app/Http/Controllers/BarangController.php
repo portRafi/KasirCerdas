@@ -107,10 +107,15 @@ class BarangController extends Controller
             $diskontransaksi_minimalpembelian = DiskonTransaksi::all()->sum('minimum_pembelian');
             $diskontransaksi_getjumlah = DiskonTransaksi::all()->sum('jumlah_diskon');
 
-            dd($diskontransaksi_getjumlah);
+            // dd($diskontransaksi_getjumlah);
         }
 
         $namaKasir = Auth::user()->name;
+
+        $user = Auth::user();
+        $namaBisnis = $user->bisnis ? $user->bisnis->nama_bisnis : null;
+        $namaCabang = $user->cabang ? $user->cabang->nama_cabang : null;
+        $alamatCabang = $user->cabang ? $user->cabang->alamat : null;
 
         return Inertia::render('Barang/Index', [
             'barangs' => $barangs,
@@ -119,6 +124,9 @@ class BarangController extends Controller
             'namakasir' => $namaKasir,
             'diskontransaksi_getjumlah' => $diskon,
             'diskontransaksi_minimalpembelian' => $diskontransaksi_minimalpembelian,
+            'namaBisnis' => $namaBisnis,
+            'namaCabang' => $namaCabang,
+            'alamatCabang' => $alamatCabang,
         ]);
     }
     public function store(Request $request)
