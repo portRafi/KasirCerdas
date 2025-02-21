@@ -61,7 +61,7 @@ class ManajemenShiftResource extends Resource
                 Tables\Columns\SelectColumn::make('shift')
                 ->options(DataShift::where([
                     
-                ])->pluck('nama_shift', 'id'))
+                ])->pluck('nama_shift', 'shift'))
                 ->selectablePlaceholder(false),
                 Tables\Columns\TextColumn::make('bisnis.nama_bisnis')
                     ->badge()
