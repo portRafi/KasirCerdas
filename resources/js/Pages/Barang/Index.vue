@@ -420,15 +420,15 @@ const print = async (kodeTransaksi) => {
         printable.Keyboard.enter(1),
         printable.Align.center(printable.Font.normal(props.alamatCabang)),
         printable.Keyboard.enter(1),
-        printable.Misc.centerLine(30),
+        printable.Misc.centerLine(32),
         printable.Keyboard.enter(2),
         printable.Align.left(printable.Font.normal(`ID Transaksi: ${kodeTransaksi}`)),
         printable.Keyboard.enter(1),
         printable.Align.left(printable.Font.normal(`Tanggal: ${tanggalWaktu.value}`)),
         printable.Keyboard.enter(1),
         printable.Align.left(printable.Font.normal(`Kasir: `+props.namakasir)),
-        printable.Keyboard.enter(1),
-        printable.Misc.centerLine(30),
+        printable.Keyboard.enter(2),
+        printable.Misc.centerLine(32),
         printable.Keyboard.enter(2),
     ];
 
@@ -440,7 +440,8 @@ const print = async (kodeTransaksi) => {
     });
 
     texts.push(
-        printable.Misc.centerLine(30),
+        printable.Keyboard.enter(2),
+        printable.Misc.centerLine(32),
         printable.Keyboard.enter(2),
         printable.Align.left(printable.Font.normal(`Pembayaran\t: ${paymentMethod.value}`)),
         printable.Keyboard.enter(1),
