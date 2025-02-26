@@ -16,19 +16,38 @@ class DatasWidget extends BaseWidget
     protected function getStats(): array
     {
    
-        $totalBarang = Barang::where([
-            ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id],
-        ])->count();
-        $totalKasir = User::where([
-            ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id],
-        ])->count();
-        $totalMPAktif = MetodePembayaran::where([
-            ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id],
-            ['is_Active', '=', true],
-        ])->count();
+        if (Auth::user()->hasRoles(7)) {
+            $totalBarang = Barang::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+            ])->count();
+            $totalKasir = User::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+            ])->count();
+            $totalMPAktif = MetodePembayaran::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+                ['is_Active', '=', true],
+            ])->count();
+        }
+        else if (Auth::user()->hasRoles(6)) {
+            $totalBarang = Barang::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+            ])->count();
+            $totalKasir = User::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+            ])->count();
+            $totalMPAktif = MetodePembayaran::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['is_Active', '=', true],
+            ])->count();
+        }
+        else if (Auth::user()->hasRoles(1)) {
+            $totalBarang = Barang::all()->count();
+            $totalKasir = User::all()->count();
+            $totalMPAktif = MetodePembayaran::all()->count();
+        }
 
         return [
             Stat::make('Jumlah Barang', $totalBarang)

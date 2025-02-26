@@ -20,10 +20,21 @@ class JumlahTransaksiWidgetHariIni extends BaseWidget
         $startDate = Carbon::now()->startOfDay();
         $endDate = Carbon::now()->endOfDay();
 
-        $query = DataTransaksi::where([
-            ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ['cabangs_id', '=', Auth::user()->cabangs_id],
-        ]);
+        
+        if (Auth::user()->hasRoles(7)) {
+            $query = DataTransaksi::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ['cabangs_id', '=', Auth::user()->cabangs_id],
+            ]);
+        }
+        else if (Auth::user()->hasRoles(6)) {
+            $query = DataTransaksi::where([
+                ['bisnis_id', '=', Auth::user()->bisnis_id],
+            ]);
+        }
+        else if (Auth::user()->hasRoles(1)) {
+            $query = DataTransaksi::all();
+        }
 
         $query->whereBetween('created_at', [$startDate, $endDate]);
 

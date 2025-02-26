@@ -16,10 +16,21 @@ class GrafikTransaksi extends ChartWidget
     protected function getData(): array 
     {   
         $data = Trend::query(
-            DataTransaksi::where([
-                ['bisnis_id', '=', Auth::user()->bisnis_id],
-                ['cabangs_id', '=', Auth::user()->cabangs_id],
-            ])
+            if (Auth::user()->hasRoles(7)) {
+                DataTransaksi::where([
+                    ['bisnis_id', '=', Auth::user()->bisnis_id],
+                    ['cabangs_id', '=', Auth::user()->cabangs_id],
+                ]);
+            }
+            else if (Auth::user()->hasRoles(6)) {
+                DataTransaksi::where([
+                    ['bisnis_id', '=', Auth::user()->bisnis_id],
+                ]);
+                
+            }
+            else if (Auth::user()->hasRoles(1)) {
+                DataTransaksi::all();
+            }
         )
         ->between(
             start: now()->startOfYear(),
