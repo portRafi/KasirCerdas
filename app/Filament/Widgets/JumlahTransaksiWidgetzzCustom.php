@@ -20,18 +20,18 @@ class JumlahTransaksiWidgetzzCustom extends BaseWidget
         $startDate = !is_null($this->filters['startDate'] ?? null) ? Carbon::parse($this->filters['startDate']) : null;
         $endDate = !is_null($this->filters['endDate'] ?? null) ? Carbon::parse($this->filters['endDate']) : null;
 
-        if (Auth::user()->hasRoles(7)) {
+        if (Auth::user()->hasRole(7)) {
             $query = DataTransaksi::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
                 ['cabangs_id', '=', Auth::user()->cabangs_id],
             ]);
         }
-        else if (Auth::user()->hasRoles(6)) {
+        else if (Auth::user()->hasRole(6)) {
             $query = DataTransaksi::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
             ]);
         }
-        else if (Auth::user()->hasRoles(1)) {
+        else if (Auth::user()->hasRole(1)) {
             $query = DataTransaksi::all();
         }
 

@@ -6,7 +6,7 @@ use actions;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Widgets\TableWidget as BaseWidget; 
+use Filament\Widgets\TableWidget as BaseWidget;
 use App\Models\DataTransaksi;
 use App\Models\PenjualanBarang;
 use Illuminate\Support\Facades\Auth;
@@ -20,22 +20,20 @@ class LaporanTransaksi extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->query( 
-                if (Auth::user()->hasRoles(7)) {
-                    DataTransaksi::where([
+            ->query(function ($query) {
+                if (Auth::user()->hasRole(7)) {
+                    $query->where([
                         ['bisnis_id', '=', Auth::user()->bisnis_id],
                         ['cabangs_id', '=', Auth::user()->cabangs_id],
                     ])->with('cabang');
-                }
-                else if (Auth::user()->hasRoles(6)) {
-                    DataTransaksi::where([
+                } else if (Auth::user()->hasRole(6)) {
+                    $query->where([
                         ['bisnis_id', '=', Auth::user()->bisnis_id],
                     ]);
+                } else if (Auth::user()->hasRole(1)) {
+                    $query->get();
                 }
-                else if (Auth::user()->hasRoles(1)) {
-                    DataTransaksi::all();
-                }
-            )
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('cabang.nama_cabang')
                     ->label('Nama Cabang')

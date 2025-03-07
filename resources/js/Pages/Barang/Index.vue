@@ -409,7 +409,7 @@ const print = async (kodeTransaksi) => {
             large: (text) => '\x1D' + '\x21' + '\x11' + text,
         },
         Misc: {
-            centerLine: (count) => '\x1B' + '\x61' + '\x31' + '-'.repeat(count)
+            centerLine: (count) => '\x1B' + '\x61' + '\x31' + '-'.repeat(count) 
         }
     };
     const texts = [
