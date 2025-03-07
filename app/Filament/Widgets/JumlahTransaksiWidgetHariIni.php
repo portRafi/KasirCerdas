@@ -20,23 +20,21 @@ class JumlahTransaksiWidgetHariIni extends BaseWidget
         $startDate = Carbon::now()->startOfDay();
         $endDate = Carbon::now()->endOfDay();
 
-        
         if (Auth::user()->hasRole(7)) {
             $query = DataTransaksi::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
                 ['cabangs_id', '=', Auth::user()->cabangs_id],
-            ]);
-        }
-        else if (Auth::user()->hasRole(6)) {
+            ])->whereBetween('created_at', [$startDate, $endDate]);
+        } 
+        elseif (Auth::user()->hasRole(6)) {
             $query = DataTransaksi::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ]);
-        }
-        else if (Auth::user()->hasRole(1)) {
-            $query = DataTransaksi::all();
+            ])->whereBetween('created_at', [$startDate, $endDate]); 
+        } 
+        elseif (Auth::user()->hasRole(1)) {
+            $query = DataTransaksi::whereBetween('created_at', [$startDate, $endDate]);
         }
 
-        $query->whereBetween('created_at', [$startDate, $endDate]);
 
         $totalTransaksi = $query->count();
         $totalPendapatan = $query->sum('total_harga_after_diskon');
@@ -44,8 +42,8 @@ class JumlahTransaksiWidgetHariIni extends BaseWidget
         $totalPajak = $query->sum('total_pajak');
 
         return [
-            Stat::make('Jumlah Transaksi Hari   Ini', $totalTransaksi)
-                ->description('Data Transaksi Hari  Ini')
+            Stat::make('Jumlah Transaksi Hari Ini', $totalTransaksi)
+                ->description('Data Transaksi Hari Ini')
                 ->descriptionIcon('heroicon-s-circle-stack', IconPosition::Before)
                 ->color('primary'),
 
@@ -63,7 +61,6 @@ class JumlahTransaksiWidgetHariIni extends BaseWidget
                 ->description('Total Pajak Hari Ini')
                 ->descriptionIcon('heroicon-s-circle-stack', IconPosition::Before)
                 ->color('primary'),
-
         ];
     }
 }

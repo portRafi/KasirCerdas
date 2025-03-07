@@ -26,7 +26,6 @@ class GrafikKeuntungan extends ChartWidget
             ]);
         }
 
-        // Ambil data keuntungan per bulan
         $data = Trend::model(DataTransaksi::class)
             ->between(
                 start: now()->startOfYear(),

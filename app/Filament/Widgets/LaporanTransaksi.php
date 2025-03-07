@@ -20,19 +20,21 @@ class LaporanTransaksi extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->query(function ($query) {
+            ->query(function () {
+                $query = DataTransaksi::query();
                 if (Auth::user()->hasRole(7)) {
                     $query->where([
                         ['bisnis_id', '=', Auth::user()->bisnis_id],
-                        ['cabangs_id', '=', Auth::user()->cabangs_id],
-                    ])->with('cabang');
+                        ['cabangs_id', '=', Auth::user()->cabangs_id]
+                    ]);
                 } else if (Auth::user()->hasRole(6)) {
                     $query->where([
-                        ['bisnis_id', '=', Auth::user()->bisnis_id],
+                        ['bisnis_id', '=', Auth::user()->bisnis_id]
                     ]);
                 } else if (Auth::user()->hasRole(1)) {
                     $query->get();
                 }
+                return $query;
             })
             ->columns([
                 Tables\Columns\TextColumn::make('cabang.nama_cabang')

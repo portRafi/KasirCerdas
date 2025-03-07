@@ -24,19 +24,15 @@ class JumlahTransaksiWidgetjBulanIni extends BaseWidget
             $query = DataTransaksi::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
                 ['cabangs_id', '=', Auth::user()->cabangs_id],
-            ]);
+            ])->whereBetween('created_at', [$startDate, $endDate]);
         }
         else if (Auth::user()->hasRole(6)) {
             $query = DataTransaksi::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
-            ]);
+            ])->whereBetween('created_at', [$startDate, $endDate]);
         }
         else if (Auth::user()->hasRole(1)) {
-            $query = DataTransaksi::all();
-        }
-
-        if ($startDate && $endDate) {
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query = DataTransaksi::whereBetween('created_at', [$startDate, $endDate]);
         }
 
         $totalTransaksi = $query->count();

@@ -11,33 +11,25 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Forms\Components\Grid;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
-class JumlahTransaksiWidgetzzCustom extends BaseWidget
+class JumlahTransaksiWidgetAll extends BaseWidget
 {
     use InteractsWithPageFilters;
 
     protected function getStats(): array
     {
-        $startDate = !is_null($this->filters['startDate'] ?? null) ? Carbon::parse($this->filters['startDate']) : null;
-        $endDate = !is_null($this->filters['endDate'] ?? null) ? Carbon::parse($this->filters['endDate']) : null;
-
         if (Auth::user()->hasRole(7)) {
             $query = DataTransaksi::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
                 ['cabangs_id', '=', Auth::user()->cabangs_id],
             ]);
-        }
-        else if (Auth::user()->hasRole(6)) {
+        } else if (Auth::user()->hasRole(6)) {
             $query = DataTransaksi::where([
                 ['bisnis_id', '=', Auth::user()->bisnis_id],
             ]);
-        }
-        else if (Auth::user()->hasRole(1)) {
+        } else if (Auth::user()->hasRole(1)) {
             $query = DataTransaksi::all();
         }
 
-        if ($startDate && $endDate) {
-            $query->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()]);
-        }
 
         $totalTransaksi = $query->count();
         $totalPendapatan = $query->sum('total_harga_after_diskon');
@@ -64,9 +56,7 @@ class JumlahTransaksiWidgetzzCustom extends BaseWidget
                 ->description('Semua Total Pajak')
                 ->descriptionIcon('heroicon-s-circle-stack', IconPosition::Before)
                 ->color('primary'),
-          
+
         ];
-        
     }
-    
 }
